@@ -66,6 +66,7 @@
 - [x] CommentSerializer
 - [x] FeedbackSerializer
 - [x] NotificationSerializer
+- [x] Документация сериализаторов (SERIALIZERS_GUIDE.md)
 
 ### 5. Backend - Permissions
 
