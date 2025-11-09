@@ -56,16 +56,16 @@
 
 ### 4. Backend - Сериализаторы
 
-- [ ] UserRegistrationSerializer
-- [ ] UserProfileSerializer
-- [ ] CourseSerializer + CourseDetailSerializer
-- [ ] LessonSerializer + LessonDetailSerializer
-- [ ] AssignmentSerializer
-- [ ] SubmissionSerializer + SubmissionWithFilesSerializer
-- [ ] GradeSerializer
-- [ ] CommentSerializer
-- [ ] FeedbackSerializer
-- [ ] NotificationSerializer
+- [x] UserRegistrationSerializer
+- [x] UserProfileSerializer
+- [x] CourseSerializer + CourseDetailSerializer
+- [x] LessonSerializer + LessonDetailSerializer
+- [x] AssignmentSerializer
+- [x] SubmissionSerializer + SubmissionWithFilesSerializer
+- [x] GradeSerializer
+- [x] CommentSerializer
+- [x] FeedbackSerializer
+- [x] NotificationSerializer
 
 ### 5. Backend - Permissions
 
