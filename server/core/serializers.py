@@ -1,10 +1,25 @@
+"""
+Сериализаторы для приложения core.
+
+Содержит сериализаторы для общих моделей:
+- Обратная связь от пользователей (FeedbackSerializer)
+"""
+
 from rest_framework import serializers
 from .models import Feedback
 
 
 class FeedbackSerializer(serializers.ModelSerializer):
     """
-    Сериализатор для обратной связи
+    Сериализатор для обратной связи от пользователей.
+
+    Обратная связь может быть разных типов: баг, новая функция, улучшение, вопрос и т.д.
+    Поддерживает прикрепление скриншотов и ответы администратора.
+
+    Особенности:
+    - Автоматически устанавливает пользователя из запроса
+    - Поддерживает статусы: new, in_progress, resolved, closed
+    - screenshot_url: URL прикрепленного скриншота
     """
     user_name = serializers.CharField(source='user.get_full_name', read_only=True)
     user_email = serializers.EmailField(source='user.email', read_only=True)

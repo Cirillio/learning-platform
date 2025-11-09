@@ -1,3 +1,11 @@
+"""
+Сериализаторы для приложения users.
+
+Содержит сериализаторы для:
+- Регистрации пользователей (UserRegistrationSerializer)
+- Управления профилями пользователей (UserProfileSerializer)
+"""
+
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
@@ -8,7 +16,20 @@ User = get_user_model()
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
     """
-    Сериализатор для регистрации нового пользователя
+    Сериализатор для регистрации нового пользователя.
+
+    Обрабатывает создание пользователя с профилем, включая валидацию:
+    - Совпадение паролей
+    - Обязательные поля в зависимости от роли (специализация для преподавателей, студенческий билет для студентов)
+    - Создание профиля пользователя автоматически
+
+    Поля:
+    - username, email, password: стандартные поля пользователя
+    - role: роль пользователя (student/teacher)
+    - first_name, last_name: имя и фамилия
+    - bio, phone, birth_date, address, city, country: поля профиля
+    - specialization, experience_years: для преподавателей
+    - student_id, enrollment_year: для студентов
     """
     password = serializers.CharField(
         write_only=True,
@@ -93,7 +114,17 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
 class UserProfileSerializer(serializers.ModelSerializer):
     """
-    Сериализатор для профиля пользователя
+    Сериализатор для профиля пользователя.
+
+    Позволяет просматривать и редактировать профиль пользователя.
+    Включает поля из модели User (только для чтения) и UserProfile.
+
+    Особенности:
+    - username, email, role, date_joined: только для чтения
+    - first_name, last_name: можно редактировать
+    - avatar: изображение профиля
+    - Роле-специфичные поля (specialization, experience_years для преподавателей;
+      student_id, enrollment_year для студентов)
     """
     username = serializers.CharField(source='user.username', read_only=True)
     email = serializers.EmailField(source='user.email', read_only=True)

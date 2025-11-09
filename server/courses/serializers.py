@@ -1,3 +1,16 @@
+"""
+Сериализаторы для приложения courses.
+
+Содержит сериализаторы для всех моделей курса:
+- Категории курсов (CategorySerializer)
+- Курсы (CourseSerializer, CourseDetailSerializer)
+- Уроки (LessonSerializer, LessonDetailSerializer, LessonMaterialSerializer)
+- Задания (AssignmentSerializer, AssignmentFileSerializer)
+- Ответы на задания (SubmissionSerializer, SubmissionWithFilesSerializer, SubmissionFileSerializer)
+- Оценки (GradeSerializer)
+- Комментарии (CommentSerializer)
+"""
+
 from rest_framework import serializers
 from .models import (
     Category, Course, CourseEnrollment, Lesson, LessonMaterial,
@@ -7,7 +20,10 @@ from .models import (
 
 class CategorySerializer(serializers.ModelSerializer):
     """
-    Сериализатор для категорий курсов
+    Сериализатор для категорий курсов.
+
+    Используется для просмотра списка категорий и их деталей.
+    Категории используются для группировки курсов по темам.
     """
     class Meta:
         model = Category
@@ -16,7 +32,16 @@ class CategorySerializer(serializers.ModelSerializer):
 
 class CourseSerializer(serializers.ModelSerializer):
     """
-    Базовый сериализатор для курсов (список)
+    Базовый сериализатор для курсов (список).
+
+    Используется для отображения списка курсов с основной информацией.
+    Включает вычисляемые поля для удобства отображения.
+
+    Дополнительные поля:
+    - teacher_name: полное имя преподавателя
+    - category_name: название категории
+    - enrolled_count: количество записанных студентов
+    - cover_image_url: URL обложки курса
     """
     teacher_name = serializers.CharField(source='teacher.get_full_name', read_only=True)
     category_name = serializers.CharField(source='category.name', read_only=True)
@@ -36,7 +61,16 @@ class CourseSerializer(serializers.ModelSerializer):
 
 class CourseDetailSerializer(CourseSerializer):
     """
-    Детальный сериализатор для курсов
+    Детальный сериализатор для курсов.
+
+    Наследуется от CourseSerializer, добавляет дополнительные поля для детального просмотра.
+
+    Дополнительные поля:
+    - description: полное описание курса
+    - lessons_count: количество опубликованных уроков
+    - assignments_count: общее количество заданий во всех уроках
+    - is_enrolled: записан ли текущий пользователь на курс
+    - progress: процент прогресса текущего пользователя (если записан)
     """
     lessons_count = serializers.SerializerMethodField()
     assignments_count = serializers.SerializerMethodField()
@@ -71,7 +105,13 @@ class CourseDetailSerializer(CourseSerializer):
 
 class LessonMaterialSerializer(serializers.ModelSerializer):
     """
-    Сериализатор для материалов урока
+    Сериализатор для материалов урока.
+
+    Материалы урока - это файлы (PDF, документы, видео, изображения),
+    прикрепленные к уроку для дополнительного изучения.
+
+    Дополнительные поля:
+    - file_url: URL для скачивания файла
     """
     file_url = serializers.FileField(source='file', read_only=True)
 
@@ -85,7 +125,12 @@ class LessonMaterialSerializer(serializers.ModelSerializer):
 
 class LessonSerializer(serializers.ModelSerializer):
     """
-    Базовый сериализатор для уроков
+    Базовый сериализатор для уроков.
+
+    Используется для списка уроков курса.
+
+    Дополнительные поля:
+    - materials_count: количество прикрепленных материалов
     """
     materials_count = serializers.SerializerMethodField()
 
@@ -102,7 +147,14 @@ class LessonSerializer(serializers.ModelSerializer):
 
 class LessonDetailSerializer(LessonSerializer):
     """
-    Детальный сериализатор для уроков
+    Детальный сериализатор для уроков.
+
+    Наследуется от LessonSerializer, добавляет контент и материалы.
+
+    Дополнительные поля:
+    - content: полный текст урока
+    - materials: список всех материалов урока
+    - assignments_count: количество заданий в уроке
     """
     materials = LessonMaterialSerializer(many=True, read_only=True)
     assignments_count = serializers.SerializerMethodField()
@@ -118,7 +170,12 @@ class LessonDetailSerializer(LessonSerializer):
 
 class AssignmentFileSerializer(serializers.ModelSerializer):
     """
-    Сериализатор для файлов заданий
+    Сериализатор для файлов заданий.
+
+    Файлы, прикрепленные к заданию преподавателем для дополнительной информации.
+
+    Дополнительные поля:
+    - file_url: URL для скачивания файла
     """
     file_url = serializers.FileField(source='file', read_only=True)
 
@@ -129,7 +186,14 @@ class AssignmentFileSerializer(serializers.ModelSerializer):
 
 class AssignmentSerializer(serializers.ModelSerializer):
     """
-    Сериализатор для заданий
+    Сериализатор для заданий.
+
+    Задания - это работы, которые студенты должны выполнить и сдать.
+
+    Дополнительные поля:
+    - files: список прикрепленных файлов
+    - submissions_count: количество отправленных решений
+    - is_submitted: отправил ли текущий студент решение
     """
     files = AssignmentFileSerializer(many=True, read_only=True)
     submissions_count = serializers.SerializerMethodField()
@@ -156,7 +220,12 @@ class AssignmentSerializer(serializers.ModelSerializer):
 
 class SubmissionFileSerializer(serializers.ModelSerializer):
     """
-    Сериализатор для файлов ответов
+    Сериализатор для файлов ответов студентов.
+
+    Файлы, прикрепленные к решению задания студентом.
+
+    Дополнительные поля:
+    - file_url: URL для скачивания файла
     """
     file_url = serializers.FileField(source='file', read_only=True)
 
@@ -167,7 +236,14 @@ class SubmissionFileSerializer(serializers.ModelSerializer):
 
 class SubmissionSerializer(serializers.ModelSerializer):
     """
-    Сериализатор для ответов на задания
+    Сериализатор для ответов на задания.
+
+    Решения заданий, отправленные студентами.
+
+    Дополнительные поля:
+    - student_name: полное имя студента
+    - assignment_title: название задания
+    - files_count: количество прикрепленных файлов
     """
     student_name = serializers.CharField(source='student.get_full_name', read_only=True)
     assignment_title = serializers.CharField(source='assignment.title', read_only=True)
@@ -187,7 +263,13 @@ class SubmissionSerializer(serializers.ModelSerializer):
 
 class SubmissionWithFilesSerializer(SubmissionSerializer):
     """
-    Сериализатор для ответов с файлами
+    Сериализатор для ответов с файлами.
+
+    Наследуется от SubmissionSerializer, добавляет список файлов.
+    Используется для детального просмотра решения с прикрепленными файлами.
+
+    Дополнительные поля:
+    - files: список всех файлов решения
     """
     files = SubmissionFileSerializer(many=True, read_only=True)
 
@@ -197,7 +279,15 @@ class SubmissionWithFilesSerializer(SubmissionSerializer):
 
 class GradeSerializer(serializers.ModelSerializer):
     """
-    Сериализатор для оценок
+    Сериализатор для оценок.
+
+    Оценки, выставленные преподавателями за выполненные задания.
+
+    Дополнительные поля:
+    - submission_content: текст решения
+    - student_name: имя студента
+    - assignment_title: название задания
+    - graded_by_name: имя преподавателя, выставившего оценку
     """
     submission_content = serializers.CharField(source='submission.content', read_only=True)
     student_name = serializers.CharField(source='submission.student.get_full_name', read_only=True)
@@ -216,7 +306,15 @@ class GradeSerializer(serializers.ModelSerializer):
 
 class CommentSerializer(serializers.ModelSerializer):
     """
-    Сериализатор для комментариев
+    Сериализатор для комментариев.
+
+    Комментарии к урокам и заданиям. Поддерживает древовидную структуру (replies).
+
+    Дополнительные поля:
+    - author_name: имя автора комментария
+    - author_avatar: аватар автора
+    - replies_count: количество ответов на комментарий
+    - is_author: является ли текущий пользователь автором
     """
     author_name = serializers.CharField(source='author.get_full_name', read_only=True)
     author_avatar = serializers.ImageField(source='author.profile.avatar', read_only=True)

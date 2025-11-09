@@ -1,10 +1,25 @@
+"""
+Сериализаторы для приложения notifications.
+
+Содержит сериализаторы для:
+- Уведомлений пользователей (NotificationSerializer)
+"""
+
 from rest_framework import serializers
 from .models import Notification
 
 
 class NotificationSerializer(serializers.ModelSerializer):
     """
-    Сериализатор для уведомлений
+    Сериализатор для уведомлений пользователей.
+
+    Уведомления могут быть разных типов: новые задания, оцененные работы,
+    комментарии, обновления курсов и т.д.
+
+    Особенности:
+    - Поддерживает generic relations для связи с разными объектами
+    - Автоматически устанавливает получателя
+    - Отслеживает статус прочтения и отправки email
     """
     class Meta:
         model = Notification
