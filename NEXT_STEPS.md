@@ -36,23 +36,23 @@
 
 ### 3. Backend - Модели
 
-- [ ] Создать кастомную модель User (с ролями teacher/student)
-- [ ] Создать модель UserProfile
-- [ ] Создать модель Course
-- [ ] Создать модель CourseEnrollment
-- [ ] Создать модель Category
-- [ ] Создать модель Lesson
-- [ ] Создать модель LessonMaterial
-- [ ] Создать модель Assignment
-- [ ] Создать модель AssignmentFile
-- [ ] Создать модель Submission
-- [ ] Создать модель SubmissionFile
-- [ ] Создать модель Grade
-- [ ] Создать модель Comment
-- [ ] Создать модель Notification
-- [ ] Создать модель Feedback
-- [ ] Создать модель ActivityLog
-- [ ] Выполнить миграции
+- [x] Создать кастомную модель User (с ролями teacher/student)
+- [x] Создать модель UserProfile
+- [x] Создать модель Course
+- [x] Создать модель CourseEnrollment
+- [x] Создать модель Category
+- [x] Создать модель Lesson
+- [x] Создать модель LessonMaterial
+- [x] Создать модель Assignment
+- [x] Создать модель AssignmentFile
+- [x] Создать модель Submission
+- [x] Создать модель SubmissionFile
+- [x] Создать модель Grade
+- [x] Создать модель Comment
+- [x] Создать модель Notification
+- [x] Создать модель Feedback
+- [x] Создать модель ActivityLog
+- [x] Выполнить миграции
 
 ### 4. Backend - Сериализаторы
 
@@ -104,9 +104,9 @@
 
 ### 9. Backend - Django Admin
 
-- [ ] Зарегистрировать все модели в admin.py
-- [ ] Настроить list_display, list_filter, search_fields
-- [ ] Добавить inline редактирование где нужно
+- [x] Зарегистрировать все модели в admin.py
+- [x] Настроить list_display, list_filter, search_fields
+- [x] Добавить inline редактирование где нужно
 
 ### 10. Backend - Тесты
 
