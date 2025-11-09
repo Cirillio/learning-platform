@@ -70,11 +70,12 @@
 
 ### 5. Backend - Permissions
 
-- [ ] IsTeacher
-- [ ] IsStudent
-- [ ] IsOwner
-- [ ] IsCourseOwner
-- [ ] IsTeacherOrReadOnly
+- [x] IsTeacher
+- [x] IsStudent
+- [x] IsOwner
+- [x] IsCourseOwner
+- [x] IsTeacherOrReadOnly
+- [x] Документация permissions (PERMISSIONS_GUIDE.md)
 
 ### 6. Backend - API Views/ViewSets
 
