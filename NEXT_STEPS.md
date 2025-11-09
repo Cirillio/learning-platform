@@ -26,13 +26,13 @@
 
 ### 2. Backend - Django Settings
 
-- [ ] Настроить `settings.py`:
-  - [ ] Подключить DRF
-  - [ ] Настроить JWT (simplejwt)
-  - [ ] Настроить CORS
-  - [ ] Настроить Celery
-  - [ ] Настроить пути для MEDIA и STATIC
-  - [ ] Добавить созданные приложения в INSTALLED_APPS
+- [x] Настроить `settings.py`:
+  - [x] Подключить DRF
+  - [x] Настроить JWT (simplejwt)
+  - [x] Настроить CORS
+  - [x] Настроить Celery
+  - [x] Настроить пути для MEDIA и STATIC
+  - [x] Добавить созданные приложения в INSTALLED_APPS
 
 ### 3. Backend - Модели
 
