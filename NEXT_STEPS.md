@@ -79,30 +79,32 @@
 
 ### 6. Backend - API Views/ViewSets
 
-- [ ] Authentication endpoints (register, login, refresh, profile)
-- [ ] Courses ViewSet (CRUD + enroll)
-- [ ] Lessons ViewSet (CRUD)
-- [ ] Assignments ViewSet (CRUD)
-- [ ] Submissions ViewSet (CRUD)
-- [ ] Grades ViewSet (CRUD)
-- [ ] Comments ViewSet (CRUD)
-- [ ] Notifications ViewSet (list + mark as read)
-- [ ] Feedback ViewSet (POST для пользователей, GET для админа)
-- [ ] Categories ViewSet (read-only)
+- [x] Authentication endpoints (register, login, refresh, profile)
+- [x] Courses ViewSet (CRUD + enroll)
+- [x] Lessons ViewSet (CRUD)
+- [x] Assignments ViewSet (CRUD)
+- [x] Submissions ViewSet (CRUD)
+- [x] Grades ViewSet (CRUD)
+- [x] Comments ViewSet (CRUD)
+- [x] Notifications ViewSet (list + mark as read)
+- [x] Feedback ViewSet (POST для пользователей, GET для админа)
+- [x] Categories ViewSet (read-only)
+- [x] Документация Views (VIEWS_GUIDE.md)
 
 ### 7. Backend - URLs
 
-- [ ] Настроить роутинг для всех ViewSets
-- [ ] Добавить JWT endpoints
-- [ ] Документация API (опционально - drf-spectacular)
+- [x] Настроить роутинг для всех ViewSets
+- [x] Добавить JWT endpoints
+- [x] Документация URL routing
 
 ### 8. Backend - Celery Tasks
 
-- [ ] Task для email-уведомлений о дедлайнах
-- [ ] Task для уведомлений о новых оценках
-- [ ] Task для уведомлений о новых комментариях
-- [ ] Periodic task (beat) для проверки дедлайнов
-- [ ] Настроить Celery в settings.py
+- [x] Task для email-уведомлений о дедлайнах
+- [x] Task для уведомлений о новых оценках
+- [x] Task для уведомлений о новых комментариях
+- [x] Periodic task (beat) для проверки дедлайнов
+- [x] Настроить Celery в config/
+- [x] Документация Celery tasks
 
 ### 9. Backend - Django Admin
 

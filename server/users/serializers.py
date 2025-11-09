@@ -14,6 +14,19 @@ from .models import UserProfile
 User = get_user_model()
 
 
+class UserSerializer(serializers.ModelSerializer):
+    """
+    Базовый сериализатор для пользователя.
+    
+    Используется для отображения информации о пользователе
+    в списках и ссылках.
+    """
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'role', 'date_joined']
+        read_only_fields = ['id', 'date_joined']
+
+
 class UserRegistrationSerializer(serializers.ModelSerializer):
     """
     Сериализатор для регистрации нового пользователя.

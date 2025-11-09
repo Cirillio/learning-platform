@@ -2,12 +2,50 @@
 Permissions для приложения courses.
 
 Содержит permission классы для контроля доступа к объектам курсов:
+- IsTeacher: проверка, что пользователь является преподавателем
+- IsStudent: проверка, что пользователь является студентом
 - IsOwner: проверка, что пользователь является автором объекта
 - IsCourseOwner: проверка, что пользователь является преподавателем курса
 - IsTeacherOrReadOnly: преподаватели могут изменять, остальные только читать
 """
 
 from rest_framework.permissions import BasePermission, SAFE_METHODS
+
+
+class IsTeacher(BasePermission):
+    """
+    Permission для проверки, что пользователь является преподавателем.
+    
+    Используется для действий, доступных только преподавателям:
+    - Создание курсов
+    - Управление заданиями
+    - Выставление оценок
+    """
+    
+    def has_permission(self, request, view):
+        return (
+            request.user and
+            request.user.is_authenticated and
+            request.user.role == 'teacher'
+        )
+
+
+class IsStudent(BasePermission):
+    """
+    Permission для проверки, что пользователь является студентом.
+    
+    Используется для действий, доступных только студентам:
+    - Запись на курсы
+    - Отправка ответов на задания
+    - Просмотр своих оценок
+    """
+    
+    def has_permission(self, request, view):
+        return (
+            request.user and
+            request.user.is_authenticated and
+            request.user.role == 'student'
+        )
 
 
 class IsOwner(BasePermission):

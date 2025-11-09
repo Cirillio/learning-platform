@@ -2,11 +2,46 @@
 Сериализаторы для приложения core.
 
 Содержит сериализаторы для общих моделей:
+- Комментарии (CommentSerializer)
 - Обратная связь от пользователей (FeedbackSerializer)
 """
 
 from rest_framework import serializers
-from .models import Feedback
+from .models import Comment, Feedback
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    """
+    Сериализатор для комментариев.
+
+    Комментарии к урокам и заданиям. Поддерживает древовидную структуру (replies).
+
+    Дополнительные поля:
+    - author_name: имя автора комментария
+    - author_avatar: аватар автора
+    - replies_count: количество ответов на комментарий
+    - is_author: является ли текущий пользователь автором
+    """
+    author_name = serializers.CharField(source='author.get_full_name', read_only=True)
+    author_avatar = serializers.ImageField(source='author.profile.avatar', read_only=True)
+    replies_count = serializers.SerializerMethodField()
+    is_author = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Comment
+        fields = [
+            'id', 'content_type', 'object_id', 'author', 'author_name', 'author_avatar',
+            'text', 'parent', 'replies_count', 'is_author',
+            'created_at', 'updated_at', 'is_edited'
+        ]
+        read_only_fields = ['author', 'created_at', 'updated_at', 'is_edited']
+
+    def get_replies_count(self, obj):
+        return obj.replies.count()
+
+    def get_is_author(self, obj):
+        request = self.context.get('request')
+        return request and request.user == obj.author
 
 
 class FeedbackSerializer(serializers.ModelSerializer):

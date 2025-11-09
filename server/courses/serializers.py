@@ -8,13 +8,12 @@
 - Задания (AssignmentSerializer, AssignmentFileSerializer)
 - Ответы на задания (SubmissionSerializer, SubmissionWithFilesSerializer, SubmissionFileSerializer)
 - Оценки (GradeSerializer)
-- Комментарии (CommentSerializer)
 """
 
 from rest_framework import serializers
 from .models import (
     Category, Course, CourseEnrollment, Lesson, LessonMaterial,
-    Assignment, AssignmentFile, Submission, SubmissionFile, Grade, Comment
+    Assignment, AssignmentFile, Submission, SubmissionFile, Grade
 )
 
 
@@ -302,37 +301,3 @@ class GradeSerializer(serializers.ModelSerializer):
             'graded_at', 'updated_at'
         ]
         read_only_fields = ['graded_by', 'graded_at', 'updated_at']
-
-
-class CommentSerializer(serializers.ModelSerializer):
-    """
-    Сериализатор для комментариев.
-
-    Комментарии к урокам и заданиям. Поддерживает древовидную структуру (replies).
-
-    Дополнительные поля:
-    - author_name: имя автора комментария
-    - author_avatar: аватар автора
-    - replies_count: количество ответов на комментарий
-    - is_author: является ли текущий пользователь автором
-    """
-    author_name = serializers.CharField(source='author.get_full_name', read_only=True)
-    author_avatar = serializers.ImageField(source='author.profile.avatar', read_only=True)
-    replies_count = serializers.SerializerMethodField()
-    is_author = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Comment
-        fields = [
-            'id', 'content_type', 'object_id', 'author', 'author_name', 'author_avatar',
-            'text', 'parent', 'replies_count', 'is_author',
-            'created_at', 'updated_at', 'is_edited'
-        ]
-        read_only_fields = ['author', 'created_at', 'updated_at', 'is_edited']
-
-    def get_replies_count(self, obj):
-        return obj.replies.count()
-
-    def get_is_author(self, obj):
-        request = self.context.get('request')
-        return request and request.user == obj.author
