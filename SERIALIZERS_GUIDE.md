@@ -9,10 +9,12 @@
 Сериализаторы организованы по приложениям Django:
 
 ### users/serializers.py
+
 - `UserRegistrationSerializer` - Регистрация новых пользователей
 - `UserProfileSerializer` - Управление профилями пользователей
 
 ### courses/serializers.py
+
 - `CategorySerializer` - Категории курсов
 - `CourseSerializer` - Базовый сериализатор курсов
 - `CourseDetailSerializer` - Детальный просмотр курсов
@@ -28,9 +30,11 @@
 - `CommentSerializer` - Комментарии
 
 ### core/serializers.py
+
 - `FeedbackSerializer` - Обратная связь
 
 ### notifications/serializers.py
+
 - `NotificationSerializer` - Уведомления
 
 ## Детальное описание
@@ -40,11 +44,13 @@
 **Назначение:** Регистрация новых пользователей с автоматическим созданием профиля.
 
 **Особенности:**
+
 - Валидация совпадения паролей
 - Роле-специфичная валидация (специализация для преподавателей, студенческий билет для студентов)
 - Автоматическое создание UserProfile
 
 **Пример использования:**
+
 ```python
 from users.serializers import UserRegistrationSerializer
 
@@ -67,11 +73,13 @@ if serializer.is_valid():
 **Назначение:** Просмотр и редактирование профиля пользователя.
 
 **Особенности:**
+
 - Комбинирует поля User и UserProfile
 - Некоторые поля User доступны только для чтения
 - Поддержка роле-специфичных полей
 
 **Пример использования:**
+
 ```python
 from users.serializers import UserProfileSerializer
 
@@ -91,10 +99,12 @@ if serializer.is_valid():
 **Назначение:** Сериализация курсов для списка и детального просмотра.
 
 **Отличия:**
+
 - `CourseSerializer`: базовая информация для списков
 - `CourseDetailSerializer`: полная информация + статистика
 
 **Вычисляемые поля:**
+
 - `enrolled_count`: количество записанных студентов
 - `lessons_count`: количество уроков
 - `assignments_count`: общее количество заданий
@@ -102,6 +112,7 @@ if serializer.is_valid():
 - `progress`: прогресс обучения
 
 **Пример использования:**
+
 ```python
 from courses.serializers import CourseSerializer, CourseDetailSerializer
 
@@ -119,10 +130,12 @@ serializer = CourseDetailSerializer(course, context={'request': request})
 **Назначение:** Сериализация уроков курса.
 
 **Отличия:**
+
 - `LessonSerializer`: базовая информация
 - `LessonDetailSerializer`: + контент и материалы
 
 **Вычисляемые поля:**
+
 - `materials_count`: количество материалов
 - `assignments_count`: количество заданий
 
@@ -131,10 +144,12 @@ serializer = CourseDetailSerializer(course, context={'request': request})
 **Назначение:** Сериализация заданий для студентов.
 
 **Вычисляемые поля:**
+
 - `submissions_count`: количество отправленных решений
 - `is_submitted`: отправил ли текущий студент решение
 
 **Пример использования:**
+
 ```python
 from courses.serializers import AssignmentSerializer
 
@@ -148,10 +163,12 @@ serializer = AssignmentSerializer(assignment, context={'request': request})
 **Назначение:** Сериализация ответов студентов на задания.
 
 **Отличия:**
+
 - `SubmissionSerializer`: базовая информация
 - `SubmissionWithFilesSerializer`: + список файлов
 
 **Вычисляемые поля:**
+
 - `files_count`: количество прикрепленных файлов
 
 ### GradeSerializer
@@ -159,6 +176,7 @@ serializer = AssignmentSerializer(assignment, context={'request': request})
 **Назначение:** Сериализация оценок за выполненные задания.
 
 **Особенности:**
+
 - Включает информацию о студенте, задании и преподавателе
 - Только для чтения (оценки выставляются через API)
 
@@ -167,10 +185,12 @@ serializer = AssignmentSerializer(assignment, context={'request': request})
 **Назначение:** Сериализация комментариев к урокам и заданиям.
 
 **Особенности:**
+
 - Поддержка древовидной структуры (parent/replies)
 - Generic relations для связи с разными объектами
 
 **Вычисляемые поля:**
+
 - `replies_count`: количество ответов
 - `is_author`: является ли текущий пользователь автором
 
@@ -179,6 +199,7 @@ serializer = AssignmentSerializer(assignment, context={'request': request})
 **Назначение:** Сериализация обратной связи от пользователей.
 
 **Особенности:**
+
 - Автоматическая установка пользователя из запроса
 - Поддержка типов: bug, feature, improvement, question, other
 - Статусы: new, in_progress, resolved, closed
@@ -188,6 +209,7 @@ serializer = AssignmentSerializer(assignment, context={'request': request})
 **Назначение:** Сериализация уведомлений пользователей.
 
 **Особенности:**
+
 - Generic relations для связи с любыми объектами
 - Отслеживание статуса прочтения
 - Интеграция с email-уведомлениями
@@ -195,6 +217,7 @@ serializer = AssignmentSerializer(assignment, context={'request': request})
 ## Общие паттерны использования
 
 ### Валидация данных
+
 ```python
 serializer = SomeSerializer(data=request.data)
 if serializer.is_valid():
@@ -206,16 +229,19 @@ else:
 ```
 
 ### Частичное обновление
+
 ```python
 serializer = SomeSerializer(instance, data=request.data, partial=True)
 ```
 
 ### Контекст для вычисляемых полей
+
 ```python
 serializer = SomeSerializer(data, context={'request': request})
 ```
 
 ### Работа с файлами
+
 ```python
 # Сериализаторы автоматически обрабатывают FileField и ImageField
 # URL доступен через *_url поля
