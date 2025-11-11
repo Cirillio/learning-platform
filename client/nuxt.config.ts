@@ -16,6 +16,13 @@ export default defineNuxtConfig({
     inject: true,
   },
 
+  // Runtime config для API URL
+  runtimeConfig: {
+    public: {
+      apiBase: process.env.NUXT_PUBLIC_API_BASE || 'http://localhost:8000/api'
+    }
+  },
+
   // Настройки рендеринга страниц
   routeRules: {
     // Главная страница - пререндеринг для лучшего SEO и производительности

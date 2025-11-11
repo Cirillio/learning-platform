@@ -121,12 +121,12 @@
 
 ### 11. Frontend - Базовая настройка
 
-- [ ] Настроить `nuxt.config.ts`:
-  - [ ] Nuxt UI
-  - [ ] Pinia
-  - [ ] Runtime config для API URL
-  - [ ] Middleware
-- [ ] Установить дополнительные пакеги (zod, @vueuse/core)
+- [x] Настроить `nuxt.config.ts`:
+  - [x] Nuxt UI
+  - [x] Pinia
+  - [x] Runtime config для API URL
+  - [x] Middleware
+- [x] Установить дополнительные пакеги (zod, @vueuse/core)
 
 ### 12. Frontend - Composables
 
