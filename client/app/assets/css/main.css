@@ -8,3 +8,7 @@
       sans-serif;
   }
 }
+
+:root {
+  --ui-radius: 1rem;
+}
