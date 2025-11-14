@@ -19,8 +19,8 @@ export default defineNuxtConfig({
   // Runtime config для API URL
   runtimeConfig: {
     public: {
-      apiBase: process.env.NUXT_PUBLIC_API_BASE || 'http://localhost:8000/api'
-    }
+      apiBase: process.env.NUXT_PUBLIC_API_BASE || "http://localhost:8000/api",
+    },
   },
 
   // Настройки рендеринга страниц
@@ -39,17 +39,13 @@ export default defineNuxtConfig({
 
     // API роуты - серверный рендеринг
     "/api/**": { ssr: true },
-
-    // Статические ресурсы - пререндеринг
-    "/about": { prerender: true },
-    "/contact": { prerender: true },
   },
 
   // Настройки Nitro для оптимизации
   nitro: {
     // Пререндеринг для статических страниц
     prerender: {
-      routes: ["/sitemap.xml"],
+      routes: ["/"],
     },
 
     // Оптимизация для production

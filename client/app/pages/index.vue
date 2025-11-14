@@ -9,7 +9,7 @@ const HomePageContent = ref();
 onMounted(async () => {
   try {
     // Динамический импорт компонента
-    const component = await import("~/components/home-page-content.vue");
+    const component = await import("~/components/home/page-content.vue");
     HomePageContent.value = component.default;
 
     isLoading.value = false;

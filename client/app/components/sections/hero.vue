@@ -13,7 +13,7 @@ const heroLinks = [
   {
     label: "Начать обучение",
     to: "/auth/register",
-    color: "secondary" as const,
+    color: "primary" as const,
     size: "xl" as const,
     trailingIcon: "i-heroicons-arrow-right",
     class: "group/btn",
@@ -22,7 +22,7 @@ const heroLinks = [
     label: "Посмотреть курсы",
     to: "/courses",
     color: "neutral" as const,
-    variant: "outline" as const,
+    variant: "subtle" as const,
     size: "xl" as const,
     class: "group/btn",
   },

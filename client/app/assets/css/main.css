@@ -10,5 +10,9 @@
 }
 
 :root {
-  --ui-radius: 1rem;
+  --ui-radius: 0.25rem;
+}
+
+body {
+  overflow: visible !important;
 }

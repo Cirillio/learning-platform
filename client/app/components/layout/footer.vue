@@ -20,7 +20,7 @@ const footerLinks: NavigationMenuItem[] = [
 <template>
   <UFooter
     :ui="{
-      root: 'border-t border-primary/25',
+      root: 'border-t border-primary/50',
     }"
   >
     <template #left>
