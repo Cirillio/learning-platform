@@ -1,4 +1,4 @@
-# Следующие шаги реализации
+ # Следующие шаги реализации
 
 ## ✅ Выполнено
 
@@ -130,8 +130,8 @@
 
 ### 12. Frontend - Composables
 
-- [ ] `useAuth.ts` (авторизация, JWT)
-- [ ] `useApi.ts` (базовый API клиент)
+- [x] `useAuth.ts` (авторизация, JWT)
+- [x] `useApi.ts` (базовый API клиент)
 - [ ] `useCourses.ts`
 - [ ] `useLessons.ts`
 - [ ] `useAssignments.ts`
@@ -144,14 +144,14 @@
 
 ### 13. Frontend - Stores (Pinia)
 
-- [ ] `auth.ts` (user, role, token, login/logout)
+- [x] `auth.ts` (user, role, token, login/logout)
 - [ ] `courses.ts` (courses list, filters, sorting)
 - [ ] `lessons.ts`
 - [ ] `notifications.ts` (notifications, unreadCount)
 
 ### 14. Frontend - Validation Schemas (Zod)
 
-- [ ] `auth.schema.ts`
+- [x] `auth.schema.ts`
 - [ ] `profile.schema.ts`
 - [ ] `course.schema.ts`
 - [ ] `lesson.schema.ts`
@@ -173,8 +173,8 @@
 - [ ] FileUpload (с drag&drop)
 - [ ] Modal, Card, Badge
 - [ ] Forms:
-  - [ ] RegisterForm
-  - [ ] LoginForm
+  - [x] RegisterForm
+  - [x] LoginForm
   - [ ] ProfileEditForm
   - [ ] CommentForm
   - [ ] SubmissionForm
@@ -197,9 +197,9 @@
 
 ### 17. Frontend - Pages
 
-- [ ] `index.vue` (главная)
-- [ ] `auth/login.vue`
-- [ ] `auth/register.vue`
+- [x] `index.vue` (главная)
+- [x] `auth/login.vue`
+- [x] `auth/register.vue`
 - [ ] `dashboard/index.vue` (роутинг по ролям)
 - [ ] `dashboard/teacher.vue`
 - [ ] `dashboard/student.vue`
