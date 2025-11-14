@@ -36,6 +36,7 @@ client/dist/
 *.swp
 *.swo
 /client/.obsidian/
+/client/.github/
 
 # Logs
 *.log
