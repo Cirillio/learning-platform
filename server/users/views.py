@@ -3,7 +3,9 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.views import TokenRefreshView
 from django.contrib.auth import get_user_model, authenticate
+from datetime import timedelta
 
 from .serializers import (
     UserRegistrationSerializer,
@@ -13,6 +15,65 @@ from .serializers import (
 from .models import UserProfile
 
 User = get_user_model()
+
+
+class RefreshTokenView(TokenRefreshView):
+    """
+    Обновление access токена с использованием refresh токена из куки.
+    Доступно для всех (AllowAny), но требует валидный refresh токен.
+    """
+    permission_classes = [AllowAny]
+
+    def post(self, request, *args, **kwargs):
+        # Получаем refresh_token из куки
+        refresh_token = request.COOKIES.get('refresh_token')
+        if not refresh_token:
+            return Response(
+                {'error': 'Refresh token not found in cookies'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Устанавливаем токен в request.data для стандартной обработки
+        request.data['refresh'] = refresh_token
+
+        # Вызываем родительский метод
+        response = super().post(request, *args, **kwargs)
+
+        if response.status_code == 200:
+            # Обновляем куки с новым access_token
+            new_access_token = response.data.get('access')
+            if new_access_token:
+                response.set_cookie(
+                    key='access_token',
+                    value=new_access_token,
+                    httponly=True,
+                    secure=True,
+                    samesite='Lax',
+                    max_age=900  # 15 минут
+                )
+                # Удаляем access и refresh из JSON ответа, так как они в куках
+                response.data.pop('access', None)
+                response.data.pop('refresh', None)
+
+        return response
+    
+
+class LogoutView(generics.GenericAPIView):
+    """
+    Выход пользователя.
+    Удаляет access и refresh токены из куки.
+    Доступно только авторизованным пользователям.
+    """
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        response = Response({'detail': 'Successfully logged out.'}, status=status.HTTP_200_OK)
+
+        # Удаляем куки с токенами
+        response.delete_cookie('access_token')
+        response.delete_cookie('refresh_token')
+
+        return response
 
 
 class LoginView(generics.GenericAPIView):
@@ -25,6 +86,7 @@ class LoginView(generics.GenericAPIView):
     def post(self, request, *args, **kwargs):
         username = request.data.get('username')
         password = request.data.get('password')
+        remember_me = request.data.get('remember_me', False)  # Флаг "запомнить меня"
 
         if not username or not password:
             return Response(
@@ -43,13 +105,38 @@ class LoginView(generics.GenericAPIView):
         # Генерируем JWT токены
         refresh = RefreshToken.for_user(user)
 
-        return Response({
+        # Устанавливаем время жизни в зависимости от remember_me
+        if remember_me:
+            # 30 дней для refresh токена
+            refresh.set_exp(lifetime=timedelta(days=30))
+        # access токен всегда 15 минут (из настроек)
+
+        response = Response({
             'user': UserSerializer(user).data,
-            'tokens': {
-                'refresh': str(refresh),
-                'access': str(refresh.access_token),
-            }
         }, status=status.HTTP_200_OK)
+
+        response.set_cookie(            
+            key='access_token',
+            value=str(refresh.access_token),
+            httponly=True,
+            secure=True,
+            samesite='Lax',
+            max_age=900  # 15 минут
+        )
+
+        # max_age для refresh токена: 30 дней если remember_me, иначе 7 дней
+        refresh_max_age = 30 * 24 * 60 * 60 if remember_me else 7 * 24 * 60 * 60
+
+        response.set_cookie(
+            key='refresh_token',
+            value=str(refresh),
+            httponly=True,
+            secure=True,
+            samesite='Lax',
+            max_age=refresh_max_age
+        )
+
+        return response
 
 
 class RegisterView(generics.CreateAPIView):
@@ -62,6 +149,7 @@ class RegisterView(generics.CreateAPIView):
     permission_classes = [AllowAny]
 
     def create(self, request, *args, **kwargs):
+        remember_me = request.data.get('remember_me', False)  # Флаг "запомнить меня"
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
@@ -69,11 +157,37 @@ class RegisterView(generics.CreateAPIView):
         # Генерируем JWT токены
         refresh = RefreshToken.for_user(user)
         
-        return Response({
+        response = Response({
             'user': UserSerializer(user).data,
-            'refresh': str(refresh),
-            'access': str(refresh.access_token),
         }, status=status.HTTP_201_CREATED)
+
+        # Устанавливаем время жизни в зависимости от remember_me
+        if remember_me:
+            # 30 дней для refresh токена
+            refresh.set_exp(lifetime=timedelta(days=30))
+
+        response.set_cookie(            
+            key='access_token',
+            value=str(refresh.access_token),
+            httponly=True,
+            secure=True,
+            samesite='Lax',
+            max_age=900
+        )
+
+        # max_age для refresh токена: 30 дней если remember_me, иначе 7 дней
+        refresh_max_age = 30 * 24 * 60 * 60 if remember_me else 7 * 24 * 60 * 60
+
+        response.set_cookie(
+            key='refresh_token',
+            value=str(refresh),
+            httponly=True,
+            secure=True,
+            samesite='Lax',
+            max_age=refresh_max_age
+        )
+
+        return response
 
 
 class UserProfileView(generics.RetrieveUpdateAPIView):
