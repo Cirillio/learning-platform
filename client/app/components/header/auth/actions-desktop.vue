@@ -1,21 +1,16 @@
 <script lang="ts" setup></script>
 
 <template>
-  <div class="flex rounded-full bg-elevated gap-1.5 p-1.5 items-center">
+  <div class="flex gap-1.5 items-center">
     <UButton
       to="/auth/login"
-      variant="ghost"
-      color="primary"
+      variant="soft"
+      color="secondary"
       size="lg"
-      icon="heroicons-arrow-right-end-on-rectangle-16-solid"
+      label="Войти"
       class="hidden sm:inline-flex"
     />
 
-    <UButton
-      size="lg"
-      to="/auth/register"
-      color="secondary"
-      icon="i-heroicons-user-plus-solid"
-    />
+    <UButton size="lg" to="/auth/register" color="primary" label="Регистрация" />
   </div>
 </template>

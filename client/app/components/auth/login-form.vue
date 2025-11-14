@@ -4,7 +4,6 @@ import type { FormSubmitEvent } from "#ui/types";
 
 const emit = defineEmits<{
   submit: [credentials: LoginForm];
-  register: [];
 }>();
 
 const props = defineProps<{

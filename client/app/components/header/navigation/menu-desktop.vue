@@ -11,24 +11,31 @@ const navigationItems = computed<NavigationMenuItem[]>(() => [
     active: route.path.startsWith("/courses"),
   },
   {
-    label: "Личный кабинет",
+    label: "Расписание",
     icon: "i-heroicons-user-circle",
-    to: "/dashboard",
-    active: route.path.startsWith("/dashboard"),
+    to: "/schedule",
+    active: route.path.startsWith("/schedule"),
+  },
+  {
+    label: "Библиотека",
+    icon: "i-heroicons-book-open",
+    to: "/library",
+    active: route.path.startsWith("/library"),
   },
 ]);
 </script>
 
 <template>
-  <div class="flex gap-1.5 bg-elevated p-1 rounded-full">
+  <div class="flex">
     <NuxtLink
       v-for="item in navigationItems"
       :key="item.label"
       :to="item.to"
       :class="{
-        'bg-primary text-inverted': item.active,
+        'text-primary border-primary': item.active,
+        'hover:text-primary border-transparent': !item.active,
       }"
-      class="px-4 flex items-center justify-center font-semibold py-1.5 rounded-full transition-all duration-100"
+      class="px-3 flex border-b-2 items-center justify-center font-semibold py-1.5 transition-all duration-150"
     >
       {{ item.label }}
     </NuxtLink>

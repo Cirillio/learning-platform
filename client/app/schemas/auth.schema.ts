@@ -52,8 +52,8 @@ export const registerSchema = z
       .min(1, "Фамилия обязательна")
       .max(30, "Фамилия не должна превышать 30 символов"),
 
-    role: z.enum(["teacher", "student"], {
-      message: "Выберите роль: преподаватель или студент",
+    role: z.literal("student", {
+      message: "Регистрация доступна только для студентов",
     }),
   })
   .refine((data) => data.password === data.password_confirm, {

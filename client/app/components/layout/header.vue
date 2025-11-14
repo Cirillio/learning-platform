@@ -30,10 +30,10 @@ const profileItems = ref<DropdownMenuItem[]>([
     :toggle="{
       color: 'primary',
       variant: 'ghost',
-      class: 'rounded-full lg:hidden',
+      class: 'rounded-md lg:hidden',
     }"
     :ui="{
-      root: 'relative border-0 ring-0',
+      root: 'border-0 ring-0 backdrop-blur-md bg-muted/80',
     }"
   >
     <template #title>
@@ -65,9 +65,7 @@ const profileItems = ref<DropdownMenuItem[]>([
           <div
             class="flex cursor-pointer hover:border-secondary/50 gap-2 border rounded-full items-center px-4 py-1.5 bg-muted transition-all duration-200 ease-in-out"
             :class="[
-              $route.path === '/dashboard'
-                ? 'border-secondary'
-                : 'border-transparent',
+              $route.path === '/dashboard' ? 'border-secondary' : 'border-transparent',
             ]"
           >
             <span class="font-semibold text-base">
