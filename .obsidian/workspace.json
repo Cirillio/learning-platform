@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "README.md",
+                "file": "NEXT_STEPS.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "README"
+              "title": "NEXT_STEPS"
             }
           }
         ]
@@ -172,6 +172,8 @@
   "active": "8b07d619e93b5dbb",
   "lastOpenFiles": [
     "server/db.sqlite3-journal",
+    "server/users/__pycache__/signals.cpython-312.pyc.140693011620624",
+    "README.md",
     "client/app/plugins/auth.ts",
     "client/server/middleware/auth.ts",
     "client/server/middleware",
@@ -181,7 +183,6 @@
     "client/app/plugins/auth.client.ts",
     "client/app/plugins/00.auth.client.ts",
     "client/app/utils/auth.ts",
-    "client/app/utils",
     "client/AUTH_SYSTEM.md",
     "JWT+Cookies.md",
     "client/public/hello-pic.png",
