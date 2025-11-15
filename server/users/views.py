@@ -22,10 +22,10 @@ class RefreshTokenView(TokenRefreshView):
     Обновление access токена с использованием refresh токена из куки.
     Доступно для всех (AllowAny), но требует валидный refresh токен.
     """
+    authentication_classes = [] # НЕ ПРИМЕНЯТЬ JWT-аутентификацию к этому view
     permission_classes = [AllowAny]
 
     def post(self, request, *args, **kwargs):
-        # Получаем refresh_token из куки
         refresh_token = request.COOKIES.get('refresh_token')
         if not refresh_token:
             return Response(
@@ -33,27 +33,36 @@ class RefreshTokenView(TokenRefreshView):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        # Устанавливаем токен в request.data для стандартной обработки
         request.data['refresh'] = refresh_token
-
-        # Вызываем родительский метод
         response = super().post(request, *args, **kwargs)
 
         if response.status_code == 200:
-            # Обновляем куки с новым access_token
             new_access_token = response.data.get('access')
+            new_refresh_token = response.data.get('refresh')
+
+            # Определяем, нужно ли "помнить" пользователя, на основе cookie
+            remember_me = request.COOKIES.get('auth_remember_me') == 'True'
+            refresh_max_age = 30 * 24 * 60 * 60 if remember_me else 7 * 24 * 60 * 60
+
             if new_access_token:
                 response.set_cookie(
-                    key='access_token',
-                    value=new_access_token,
-                    httponly=True,
-                    secure=True,
-                    samesite='Lax',
-                    max_age=900  # 15 минут
+                    key='access_token', value=new_access_token,
+                    httponly=True, secure=True, samesite='Lax', max_age=900
                 )
-                # Удаляем access и refresh из JSON ответа, так как они в куках
-                response.data.pop('access', None)
-                response.data.pop('refresh', None)
+            
+            if new_refresh_token:
+                response.set_cookie(
+                    key='refresh_token', value=new_refresh_token,
+                    httponly=True, secure=True, samesite='Lax', max_age=refresh_max_age
+                )
+                # Продлеваем жизнь и для remember_me cookie
+                response.set_cookie(
+                    key='auth_remember_me', value=str(remember_me),
+                    httponly=True, secure=True, samesite='Lax', max_age=refresh_max_age
+                )
+
+            response.data.pop('access', None)
+            response.data.pop('refresh', None)
 
         return response
     
@@ -68,11 +77,9 @@ class LogoutView(generics.GenericAPIView):
 
     def post(self, request, *args, **kwargs):
         response = Response({'detail': 'Successfully logged out.'}, status=status.HTTP_200_OK)
-
-        # Удаляем куки с токенами
         response.delete_cookie('access_token')
         response.delete_cookie('refresh_token')
-
+        response.delete_cookie('auth_remember_me') # Удаляем и remember_me
         return response
 
 
@@ -81,59 +88,37 @@ class LoginView(generics.GenericAPIView):
     Аутентификация пользователя.
     Доступно для всех (AllowAny).
     """
+    authentication_classes = []  # НЕ ПРИМЕНЯТЬ JWT-аутентификацию к этому view
     permission_classes = [AllowAny]
 
     def post(self, request, *args, **kwargs):
         username = request.data.get('username')
         password = request.data.get('password')
-        remember_me = request.data.get('remember_me', False)  # Флаг "запомнить меня"
-
-        if not username or not password:
-            return Response(
-                {'error': 'Username and password are required'},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+        remember_me = request.data.get('remember_me', False)
 
         user = authenticate(username=username, password=password)
-
         if user is None:
-            return Response(
-                {'error': 'Invalid credentials'},
-                status=status.HTTP_401_UNAUTHORIZED
-            )
+            return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 
-        # Генерируем JWT токены
         refresh = RefreshToken.for_user(user)
-
-        # Устанавливаем время жизни в зависимости от remember_me
-        if remember_me:
-            # 30 дней для refresh токена
-            refresh.set_exp(lifetime=timedelta(days=30))
-        # access токен всегда 15 минут (из настроек)
-
-        response = Response({
-            'user': UserSerializer(user).data,
-        }, status=status.HTTP_200_OK)
-
-        response.set_cookie(            
-            key='access_token',
-            value=str(refresh.access_token),
-            httponly=True,
-            secure=True,
-            samesite='Lax',
-            max_age=900  # 15 минут
-        )
-
-        # max_age для refresh токена: 30 дней если remember_me, иначе 7 дней
         refresh_max_age = 30 * 24 * 60 * 60 if remember_me else 7 * 24 * 60 * 60
+        
+        if remember_me:
+            refresh.set_exp(lifetime=timedelta(days=30))
+
+        response = Response({'user': UserSerializer(user).data}, status=status.HTTP_200_OK)
 
         response.set_cookie(
-            key='refresh_token',
-            value=str(refresh),
-            httponly=True,
-            secure=True,
-            samesite='Lax',
-            max_age=refresh_max_age
+            key='access_token', value=str(refresh.access_token),
+            httponly=True, secure=True, samesite='Lax', max_age=900
+        )
+        response.set_cookie(
+            key='refresh_token', value=str(refresh),
+            httponly=True, secure=True, samesite='Lax', max_age=refresh_max_age
+        )
+        response.set_cookie(
+            key='auth_remember_me', value=str(remember_me),
+            httponly=True, secure=True, samesite='Lax', max_age=refresh_max_age
         )
 
         return response
@@ -144,47 +129,36 @@ class RegisterView(generics.CreateAPIView):
     Регистрация нового пользователя.
     Доступно для всех (AllowAny).
     """
+    authentication_classes = []  # НЕ ПРИМЕНЯТЬ JWT-аутентификацию к этому view
     queryset = User.objects.all()
     serializer_class = UserRegistrationSerializer
     permission_classes = [AllowAny]
 
     def create(self, request, *args, **kwargs):
-        remember_me = request.data.get('remember_me', False)  # Флаг "запомнить меня"
+        remember_me = request.data.get('remember_me', False)
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
         
-        # Генерируем JWT токены
         refresh = RefreshToken.for_user(user)
-        
-        response = Response({
-            'user': UserSerializer(user).data,
-        }, status=status.HTTP_201_CREATED)
-
-        # Устанавливаем время жизни в зависимости от remember_me
-        if remember_me:
-            # 30 дней для refresh токена
-            refresh.set_exp(lifetime=timedelta(days=30))
-
-        response.set_cookie(            
-            key='access_token',
-            value=str(refresh.access_token),
-            httponly=True,
-            secure=True,
-            samesite='Lax',
-            max_age=900
-        )
-
-        # max_age для refresh токена: 30 дней если remember_me, иначе 7 дней
         refresh_max_age = 30 * 24 * 60 * 60 if remember_me else 7 * 24 * 60 * 60
 
+        if remember_me:
+            refresh.set_exp(lifetime=timedelta(days=30))
+        
+        response = Response({'user': UserSerializer(user).data}, status=status.HTTP_201_CREATED)
+
         response.set_cookie(
-            key='refresh_token',
-            value=str(refresh),
-            httponly=True,
-            secure=True,
-            samesite='Lax',
-            max_age=refresh_max_age
+            key='access_token', value=str(refresh.access_token),
+            httponly=True, secure=True, samesite='Lax', max_age=900
+        )
+        response.set_cookie(
+            key='refresh_token', value=str(refresh),
+            httponly=True, secure=True, samesite='Lax', max_age=refresh_max_age
+        )
+        response.set_cookie(
+            key='auth_remember_me', value=str(remember_me),
+            httponly=True, secure=True, samesite='Lax', max_age=refresh_max_age
         )
 
         return response
