@@ -30,19 +30,7 @@ class UserSerializer(serializers.ModelSerializer):
 class UserRegistrationSerializer(serializers.ModelSerializer):
     """
     Сериализатор для регистрации нового пользователя.
-
-    Обрабатывает создание пользователя с профилем, включая валидацию:
-    - Совпадение паролей
-    - Обязательные поля в зависимости от роли (специализация для преподавателей, студенческий билет для студентов)
-    - Создание профиля пользователя автоматически
-
-    Поля:
-    - username, email, password: стандартные поля пользователя
-    - role: роль пользователя (student/teacher)
-    - first_name, last_name: имя и фамилия
-    - bio, phone, birth_date, address, city, country: поля профиля
-    - specialization, experience_years: для преподавателей
-    - student_id, enrollment_year: для студентов
+    Создает только пользователя, профиль создается через сигнал.
     """
     password = serializers.CharField(
         write_only=True,
@@ -50,78 +38,28 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         validators=[validate_password]
     )
     password_confirm = serializers.CharField(write_only=True, required=True)
-    role = serializers.ChoiceField(
-        choices=User.ROLE_CHOICES,
-        default='student'
-    )
-
-    # Поля профиля
-    bio = serializers.CharField(max_length=500, required=False, allow_blank=True)
-    phone = serializers.CharField(max_length=20, required=False, allow_blank=True)
-    birth_date = serializers.DateField(required=False, allow_null=True)
-    address = serializers.CharField(max_length=255, required=False, allow_blank=True)
-    city = serializers.CharField(max_length=100, required=False, allow_blank=True)
-    country = serializers.CharField(max_length=100, required=False, allow_blank=True)
-
-    # Для преподавателей
-    specialization = serializers.CharField(max_length=200, required=False, allow_blank=True)
-    experience_years = serializers.IntegerField(required=False, allow_null=True, min_value=0)
-
-    # Для студентов
-    student_id = serializers.CharField(max_length=50, required=False, allow_blank=True)
-    enrollment_year = serializers.IntegerField(required=False, allow_null=True, min_value=1900)
+    role = serializers.HiddenField(default='student')
 
     class Meta:
         model = User
         fields = [
             'username', 'email', 'password', 'password_confirm', 'role',
-            'first_name', 'last_name',
-            'bio', 'phone', 'birth_date', 'address', 'city', 'country',
-            'specialization', 'experience_years', 'student_id', 'enrollment_year'
+            'first_name', 'last_name'
         ]
         extra_kwargs = {
             'email': {'required': True},
+            'first_name': {'required': True},
+            'last_name': {'required': True},
         }
 
     def validate(self, attrs):
         if attrs['password'] != attrs['password_confirm']:
             raise serializers.ValidationError({"password_confirm": "Пароли не совпадают."})
-
-        # Валидация роли-специфичных полей
-        role = attrs.get('role')
-        if role == 'teacher':
-            if not attrs.get('specialization'):
-                raise serializers.ValidationError({"specialization": "Специализация обязательна для преподавателей."})
-        elif role == 'student':
-            if not attrs.get('student_id'):
-                raise serializers.ValidationError({"student_id": "Студенческий билет обязателен для студентов."})
-
         return attrs
 
     def create(self, validated_data):
-        # Извлекаем поля профиля
-        profile_data = {
-            'bio': validated_data.pop('bio', ''),
-            'phone': validated_data.pop('phone', ''),
-            'birth_date': validated_data.pop('birth_date', None),
-            'address': validated_data.pop('address', ''),
-            'city': validated_data.pop('city', ''),
-            'country': validated_data.pop('country', ''),
-            'specialization': validated_data.pop('specialization', ''),
-            'experience_years': validated_data.pop('experience_years', None),
-            'student_id': validated_data.pop('student_id', ''),
-            'enrollment_year': validated_data.pop('enrollment_year', None),
-        }
-
-        # Удаляем password_confirm
         validated_data.pop('password_confirm')
-
-        # Создаем пользователя
         user = User.objects.create_user(**validated_data)
-
-        # Создаем профиль
-        UserProfile.objects.create(user=user, **profile_data)
-
         return user
 
 
