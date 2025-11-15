@@ -16,6 +16,9 @@ export default defineNuxtConfig({
     inject: true,
   },
 
+  devServer: {
+    port: 3001,
+  },
   // Runtime config для API URL
   runtimeConfig: {
     public: {
@@ -23,33 +26,11 @@ export default defineNuxtConfig({
     },
   },
 
-  // Настройки рендеринга страниц
   routeRules: {
-    // Главная страница - пререндеринг для лучшего SEO и производительности
-    "/": { prerender: true },
-
-    // Страницы аутентификации - SPA режим для лучшей интерактивности форм
-    "/auth/**": { ssr: false },
-
-    // Страницы курсов - SSR для динамического контента
+    "/": { ssr: true },
+    "/auth/**": { ssr: true },
+    "/dashboard/**": { ssr: true },
     "/courses/**": { ssr: true },
-
-    // Личный кабинет - SPA режим для богатого пользовательского интерфейса
-    "/dashboard/**": { ssr: false },
-
-    // API роуты - серверный рендеринг
-    "/api/**": { ssr: true },
-  },
-
-  // Настройки Nitro для оптимизации
-  nitro: {
-    // Пререндеринг для статических страниц
-    prerender: {
-      routes: ["/"],
-    },
-
-    // Оптимизация для production
-    compressPublicAssets: true,
   },
 
   // Настройки SSR
@@ -57,6 +38,6 @@ export default defineNuxtConfig({
 
   // Оптимизация загрузки
   experimental: {
-    payloadExtraction: false, // Отключаем для лучшей производительности
+    payloadExtraction: true, // Отключаем для лучшей производительности
   },
 });

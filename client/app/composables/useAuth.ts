@@ -1,9 +1,7 @@
-import type { User } from "~/types";
-
 export interface LoginCredentials {
   username: string;
   password: string;
-  remember?: boolean;
+  remember_me?: boolean;
 }
 
 export interface RegisterData {
@@ -14,6 +12,7 @@ export interface RegisterData {
   first_name: string;
   last_name: string;
   role: "teacher" | "student";
+  remember_me?: boolean;
 }
 
 /**
@@ -23,98 +22,58 @@ export interface RegisterData {
  */
 export const useAuth = () => {
   const authStore = useAuthStore();
-  const {
-    login: apiLogin,
-    register: apiRegister,
-    getProfile,
-    updateProfile,
-  } = useApi();
+  const { login: apiLogin, register: apiRegister, removeToken } = useApi();
 
-  /**
-   * Login user with credentials
-   * @param credentials - Username, password, and remember option
-   */
-  const login = async (credentials: LoginCredentials): Promise<void> => {
+  const login = async (credentials: LoginCredentials) => {
+    console.log("🔍 [Auth] Login credentials:", credentials);
     authStore.setLoading(true);
-    authStore.setError(null);
+    try {
+      const response = await apiLogin(credentials);
+      authStore.setUser(response.user);
 
-    const response = await apiLogin(credentials);
-
-    authStore.setTokens(response.tokens.access, response.tokens.refresh);
-    authStore.setUser(response.user);
-
-    authStore.setLoading(false);
-
-    await navigateTo("/dashboard");
+      await navigateTo("/dashboard");
+    } catch (error: any) {
+      authStore.setError(error.data?.error || "Login failed");
+      throw error;
+    } finally {
+      authStore.setLoading(false);
+    }
   };
 
-  /**
-   * Register new user
-   * @param userData - Registration data
-   */
-  const register = async (userData: RegisterData): Promise<void> => {
+  const register = async (userData: RegisterData) => {
     authStore.setLoading(true);
-    authStore.setError(null);
-
-    await apiRegister(userData);
-
-    // Auto-login after registration
-    await login({
-      username: userData.username,
-      password: userData.password,
-    });
-
-    authStore.setLoading(false);
+    try {
+      await apiRegister(userData);
+      await login({
+        username: userData.username,
+        password: userData.password,
+        remember_me: userData.remember_me,
+      });
+    } catch (error: any) {
+      authStore.setError(error.data?.error || "Registration failed");
+      throw error;
+    } finally {
+      authStore.setLoading(false);
+    }
   };
 
-  /**
-   * Logout current user
-   */
-  const logout = async (): Promise<void> => {
+  const logout = async () => {
+    try {
+      await removeToken();
+    } catch {}
+
     authStore.clearAuth();
+
     await navigateTo("/auth/login");
   };
 
-  /**
-   * Load user profile from API
-   */
-  const loadProfile = async (): Promise<void> => {
-    if (!authStore.isAuthenticated) return;
-
-    const profile = await getProfile();
-    authStore.setUser(profile);
-  };
-
-  /**
-   * Update user profile
-   * @param profileData - Partial user data to update
-   */
-  const updateUserProfile = async (
-    profileData: Partial<User>
-  ): Promise<void> => {
-    authStore.setLoading(true);
-    authStore.setError(null);
-
-    const updatedUser = await updateProfile(profileData);
-    authStore.setUser(updatedUser);
-
-    authStore.setLoading(false);
-  };
-
   return {
-    // State from store
     user: authStore.user,
     isAuthenticated: authStore.isAuthenticated,
     isLoading: authStore.isLoading,
     error: authStore.error,
-    isTeacher: authStore.isTeacher,
-    isStudent: authStore.isStudent,
-
-    // Methods
     login,
     register,
     logout,
-    loadProfile,
-    updateUserProfile,
   };
 };

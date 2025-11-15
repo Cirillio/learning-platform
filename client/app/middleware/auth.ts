@@ -1,12 +1,10 @@
-/**
- * Auth middleware
- * Protects routes that require authentication
- */
-export default defineNuxtRouteMiddleware((to, from) => {
+export default defineNuxtRouteMiddleware((to) => {
   const authStore = useAuthStore();
 
-  // Check if user is authenticated
   if (!authStore.isAuthenticated) {
-    return navigateTo("/auth/login");
+    return navigateTo({
+      path: "/auth/login",
+      query: { redirectTo: to.fullPath },
+    });
   }
 });

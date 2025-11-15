@@ -13,7 +13,7 @@ export const loginSchema = z.object({
     .min(1, "Пароль обязателен")
     .min(8, "Пароль должен содержать минимум 8 символов"),
 
-  remember: z.boolean().optional().default(false),
+  remember_me: z.boolean().optional().default(false),
 });
 
 // Register schema

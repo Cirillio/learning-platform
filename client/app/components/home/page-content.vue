@@ -10,15 +10,15 @@ useSeoMeta({
 <template>
   <div>
     <!-- Hero Section -->
-    <SectionsHero />
+    <HomeSectionsHero />
 
     <!-- Features Section -->
-    <SectionsFeatures />
+    <HomeSectionsFeatures />
 
     <!-- Testimonials Section -->
-    <SectionsTestimonials />
+    <HomeSectionsTestimonials />
 
     <!-- CTA Section -->
-    <SectionsCta />
+    <HomeSectionsCta />
   </div>
 </template>

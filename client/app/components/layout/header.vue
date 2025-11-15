@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import type { DropdownMenuItem } from "@nuxt/ui";
-const { isAuthenticated, user } = useAuthStore();
+
+const authStore = useAuthStore();
+const { isAuthenticated, user } = storeToRefs(authStore);
 
 const profileItems = ref<DropdownMenuItem[]>([
   {
@@ -12,7 +14,7 @@ const profileItems = ref<DropdownMenuItem[]>([
   {
     label: "Мои курсы",
     icon: "heroicons:code-bracket-square",
-    href: "/settings",
+    href: "/dashboard",
     color: "info",
   },
   {
@@ -30,10 +32,11 @@ const profileItems = ref<DropdownMenuItem[]>([
     :toggle="{
       color: 'primary',
       variant: 'ghost',
-      class: 'rounded-md lg:hidden',
+      class: 'rounded-md md:hidden',
     }"
     :ui="{
       root: 'border-0 ring-0 backdrop-blur-md bg-muted/80',
+      center: 'md:block hidden',
     }"
   >
     <template #title>
@@ -41,13 +44,13 @@ const profileItems = ref<DropdownMenuItem[]>([
     </template>
 
     <!-- Desktop navigation -->
-    <div class="hidden lg:block">
+    <div class="hidden md:block">
       <HeaderNavigationMenuDesktop />
     </div>
 
     <template #right>
       <!-- Desktop auth actions -->
-      <div class="hidden lg:block">
+      <div class="hidden md:block">
         <HeaderAuthActionsDesktop v-if="!isAuthenticated" />
         <UDropdownMenu
           v-else

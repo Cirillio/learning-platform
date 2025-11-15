@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "NEXT_STEPS.md",
+                "file": "README.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "NEXT_STEPS"
+              "title": "README"
             }
           }
         ]
@@ -171,6 +171,25 @@
   },
   "active": "8b07d619e93b5dbb",
   "lastOpenFiles": [
-    "PERMISSIONS_GUIDE.md"
+    "server/db.sqlite3-journal",
+    "client/app/plugins/auth.ts",
+    "client/server/middleware/auth.ts",
+    "client/server/middleware",
+    "client/server",
+    "client/app/pages/profile.vue",
+    "client/app/pages/dashboard.vue",
+    "client/app/plugins/auth.client.ts",
+    "client/app/plugins/00.auth.client.ts",
+    "client/app/utils/auth.ts",
+    "client/app/utils",
+    "client/AUTH_SYSTEM.md",
+    "JWT+Cookies.md",
+    "client/public/hello-pic.png",
+    "client/app/components/skeletons/README.md",
+    "client/app/components/README.md",
+    "MOBILE.md",
+    "PERMISSIONS_GUIDE.md",
+    "client/README.md",
+    "NEXT_STEPS.md"
   ]
 }

@@ -14,7 +14,7 @@ const props = defineProps<{
 const state = reactive({
   username: "",
   password: "",
-  remember: false,
+  remember_me: false,
 } as LoginForm);
 
 // Handle form submission with validation
@@ -69,14 +69,14 @@ const onSubmit = async (event: FormSubmitEvent<LoginForm>): Promise<void> => {
     </UFormField>
 
     <UFormField
-      name="remember"
+      name="remember_me"
       :ui="{
         label: 'text-lg font-medium',
       }"
     >
       <UCheckbox
         size="lg"
-        v-model="state.remember"
+        v-model="state.remember_me"
         label="Оставаться в системе (30 дней)"
         class="*:text-base items-center"
         :ui="{

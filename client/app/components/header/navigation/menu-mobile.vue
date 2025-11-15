@@ -5,14 +5,20 @@ const route = useRoute();
 
 const navigationItems = computed<NavigationMenuItem[]>(() => [
   {
+    label: "Личный кабинет",
+    icon: "i-heroicons-user-circle",
+    to: "/profile",
+    active: route.path.startsWith("/profile"),
+  },
+  {
     label: "Курсы",
     icon: "i-heroicons-academic-cap",
     to: "/courses",
     active: route.path.startsWith("/courses"),
   },
   {
-    label: "Личный кабинет",
-    icon: "i-heroicons-user-circle",
+    label: "Мои курсы",
+    icon: "i-heroicons-code-bracket-square",
     to: "/dashboard",
     active: route.path.startsWith("/dashboard"),
   },
@@ -24,16 +30,19 @@ const navigationItems = computed<NavigationMenuItem[]>(() => [
     <h3 class="text-sm font-semibold text-muted uppercase tracking-wider mb-3">
       Навигация
     </h3>
-    <UNavigationMenu
-      :items="navigationItems"
-      orientation="vertical"
-      class="-mx-2.5"
-      :ui="{
-        list: 'space-y-2',
-        link: 'text-lg justify-center py-3',
-        linkLeadingIcon: 'size-6',
-      }"
-      variant="pill"
-    />
+    <div class="flex flex-col gap-2">
+      <UButton
+        v-for="link in navigationItems"
+        :key="link.label"
+        :to="link.to"
+        :label="link.label"
+        :leading-icon="link.icon"
+        :variant="link.active ? 'solid' : 'subtle'"
+        :color="link.active ? 'primary' : 'neutral'"
+        class="text-lg"
+      />
+    </div>
+
+    <UButton label="Выйти" color="error" class="text-lg mt-4" block />
   </div>
 </template>

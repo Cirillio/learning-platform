@@ -17,6 +17,7 @@ from .models import UserProfile
 User = get_user_model()
 
 
+
 class RefreshTokenView(TokenRefreshView):
     """
     Обновление access токена с использованием refresh токена из куки.

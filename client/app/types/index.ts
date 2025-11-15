@@ -11,6 +11,8 @@ export interface User {
   first_name: string;
   last_name: string;
   role: "teacher" | "student";
+  is_active: boolean;
+  date_joined: string;
   profile?: UserProfile;
 }
 

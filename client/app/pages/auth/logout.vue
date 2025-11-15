@@ -42,16 +42,11 @@ useHead({
     >
       <template #header>
         <div class="flex flex-col gap-2 items-center">
-          <UIcon
-            name="i-heroicons-arrow-right-on-rectangle"
-            class="size-8 text-error"
-          />
+          <UIcon name="i-heroicons-arrow-right-on-rectangle" class="size-8 text-error" />
           <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
             Выход из системы
           </h1>
-          <p class="text-gray-600 dark:text-gray-300">
-            Подтверждение выхода из системы
-          </p>
+          <p class="text-gray-600 dark:text-gray-300">Подтверждение выхода из системы</p>
         </div>
       </template>
       <template #body>
@@ -89,7 +84,7 @@ useHead({
         <!-- Action Buttons -->
         <div class="space-y-3">
           <UButton
-            variant="outline"
+            color="secondary"
             size="lg"
             class="text-base"
             block
@@ -109,10 +104,7 @@ useHead({
             @click="handleLogout"
           >
             <template #leading>
-              <UIcon
-                class="size-5"
-                name="i-heroicons-arrow-right-on-rectangle"
-              />
+              <UIcon class="size-5" name="i-heroicons-arrow-right-on-rectangle" />
             </template>
             Выйти из системы
           </UButton>

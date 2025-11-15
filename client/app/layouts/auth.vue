@@ -28,7 +28,7 @@ onMounted(() => {
 
         <!-- Auth Form -->
         <div
-          class="flex-3/7 w-full bg-muted flex flex-col px-32 py-24 items-start justify-between"
+          class="flex-3/7 w-full bg-muted flex flex-col px-16 py-24 items-start justify-between"
         >
           <slot />
         </div></div
