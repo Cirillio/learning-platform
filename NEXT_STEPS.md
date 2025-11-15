@@ -1,4 +1,4 @@
- # Следующие шаги реализации
+# Следующие шаги реализации
 
 ## ✅ Выполнено
 
@@ -162,10 +162,10 @@
 
 ### 15. Frontend - Middleware
 
-- [ ] `auth.ts` (проверка авторизации)
-- [ ] `teacher-only.ts`
-- [ ] `student-only.ts`
-- [ ] `owner.ts`
+- [x] `auth.ts` (проверка авторизации)
+- [x] `teacher-only.ts`
+- [x] `student-only.ts`
+- [x] `owner.ts`
 
 ### 16. Frontend - UI Components
 
@@ -208,12 +208,12 @@
 - [ ] `courses/create.vue`
 - [ ] `lessons/[id].vue`
 - [ ] `assignments/[id].vue`
-- [ ] `profile/index.vue`
+- [x] `profile/index.vue`
 - [ ] `feedback.vue`
 
 ### 18. Интеграция и тестирование
 
-- [ ] Проверка работы регистрации/авторизации
+- [x] Проверка работы регистрации/авторизации
 - [ ] Проверка CRUD операций для курсов
 - [ ] Проверка отправки заданий студентами
 - [ ] Проверка выставления оценок преподавателями
