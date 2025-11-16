@@ -7,6 +7,7 @@
 
 from rest_framework import serializers
 from .models import Notification
+from users.serializers import BasicUserSerializer
 
 
 class NotificationSerializer(serializers.ModelSerializer):
@@ -21,6 +22,8 @@ class NotificationSerializer(serializers.ModelSerializer):
     - Автоматически устанавливает получателя
     - Отслеживает статус прочтения и отправки email
     """
+    recipient = BasicUserSerializer(read_only=True)
+
     class Meta:
         model = Notification
         fields = [
@@ -29,5 +32,5 @@ class NotificationSerializer(serializers.ModelSerializer):
             'created_at', 'email_sent', 'email_sent_at'
         ]
         read_only_fields = [
-            'recipient', 'read_at', 'created_at', 'email_sent', 'email_sent_at'
+            'read_at', 'created_at', 'email_sent', 'email_sent_at'
         ]
