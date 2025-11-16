@@ -15,6 +15,7 @@ from .models import (
     Category, Course, CourseEnrollment, Lesson, LessonMaterial,
     Assignment, AssignmentFile, Submission, SubmissionFile, Grade
 )
+from users.serializers import BasicUserSerializer
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -71,6 +72,8 @@ class CourseDetailSerializer(CourseSerializer):
     - is_enrolled: записан ли текущий пользователь на курс
     - progress: процент прогресса текущего пользователя (если записан)
     """
+    teacher = BasicUserSerializer(read_only=True)
+    category = CategorySerializer(read_only=True)
     lessons_count = serializers.SerializerMethodField()
     assignments_count = serializers.SerializerMethodField()
     is_enrolled = serializers.SerializerMethodField()
