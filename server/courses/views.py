@@ -5,6 +5,8 @@ from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from django.db.models import Q, Count, Avg
 from django.utils import timezone
+from rest_framework.views import APIView
+from django.urls import reverse # Added this import
 
 from .models import (
     Category, Course, CourseEnrollment, Lesson, LessonMaterial,
@@ -395,5 +397,52 @@ class GradeViewSet(viewsets.ModelViewSet):
         grade = serializer.save(graded_by=self.request.user)
         # Отправляем уведомление студенту о новой оценке
         send_grade_notification.delay(grade.id)
+
+class CourseFilterOptionsView(APIView):
+    """
+    Предоставляет возможные значения для фильтров курсов.
+    """
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def get(self, request, *args, **kwargs):
+        difficulty_choices = [{'value': choice[0], 'label': choice[1]} for choice in Course.DIFFICULTY_CHOICES]
+        status_choices = [{'value': choice[0], 'label': choice[1]} for choice in Course.STATUS_CHOICES]
+        
+        ordering_options = [
+            {'value': 'created_at', 'label': 'По дате создания (сначала старые)'},
+            {'value': '-created_at', 'label': 'По дате создания (сначала новые)'},
+            {'value': 'title', 'label': 'По названию (А-Я)'},
+            {'value': '-title', 'label': 'По названию (Я-А)'},
+            {'value': 'difficulty', 'label': 'По сложности (от простого к сложному)'},
+            {'value': '-difficulty', 'label': 'По сложности (от сложного к простому)'},
+        ]
+
+        categories = Category.objects.all()
+        category_choices = [{'value': cat.slug, 'label': cat.name} for cat in categories]
+
+        return Response({
+            'filters': [
+                {
+                    'value': 'difficulty',
+                    'label': 'Сложность',
+                    'values': difficulty_choices
+                },
+                {
+                    'value': 'status',
+                    'label': 'Статус',
+                    'values': status_choices
+                },
+                {
+                    'value': 'ordering',
+                    'label': 'Сортировка',
+                    'values': ordering_options
+                },
+                {
+                    'value': 'category',
+                    'label': 'Категория',
+                    'values': category_choices
+                }
+            ],
+        })
 
 

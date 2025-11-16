@@ -10,6 +10,7 @@ from .views import (
     AssignmentViewSet,
     SubmissionViewSet,
     GradeViewSet,
+    CourseFilterOptionsView, # Import the new view
 )
 
 # Создаем роутер для ViewSets
@@ -24,5 +25,6 @@ router.register(r'grades', GradeViewSet, basename='grade')
 app_name = 'courses'
 
 urlpatterns = [
+    path('courses/filters/', CourseFilterOptionsView.as_view(), name='course-filters'), # Add the new URL pattern first
     path('', include(router.urls)),
 ]
