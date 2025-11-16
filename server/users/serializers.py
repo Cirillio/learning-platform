@@ -27,6 +27,15 @@ class UserSerializer(serializers.ModelSerializer):
         read_only_fields = ['id', 'date_joined']
 
 
+class BasicUserSerializer(serializers.ModelSerializer):
+    """
+    Базовый сериализатор для пользователя, используемый для вложенных объектов.
+    """
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'first_name', 'last_name']
+
+
 class UserRegistrationSerializer(serializers.ModelSerializer):
     """
     Сериализатор для регистрации нового пользователя.

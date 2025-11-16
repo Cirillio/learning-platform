@@ -14,7 +14,7 @@ class NotificationSerializerTest(TestCase):
         self.user = User.objects.create_user(
             username='testuser', email='test@example.com', password='password')
         self.notification_data = {
-            'recipient': self.user.id,
+            'recipient': self.user,
             'notification_type': 'system',
             'title': 'Test Notification',
             'message': 'This is a test message.',
