@@ -49,7 +49,7 @@ onMounted(() => {
 
 <template>
   <section class="py-16 lg:py-24">
-    <div class="container mx-auto px-4">
+    <div class="container mx-auto">
       <!-- Заголовок секции -->
       <div class="text-center mb-16">
         <h2
@@ -68,8 +68,7 @@ onMounted(() => {
             isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8',
           ]"
         >
-          Реальные отзывы от студентов, которые уже прошли обучение на нашей
-          платформе
+          Реальные отзывы от студентов, которые уже прошли обучение на нашей платформе
         </p>
       </div>
 
@@ -102,11 +101,7 @@ onMounted(() => {
 
           <!-- Автор -->
           <div class="flex items-center gap-4">
-            <UAvatar
-              :src="testimonial.avatar"
-              :alt="testimonial.name"
-              size="lg"
-            />
+            <UAvatar :src="testimonial.avatar" :alt="testimonial.name" size="lg" />
 
             <div>
               <div class="font-semibold text-highlighted">
@@ -132,10 +127,7 @@ onMounted(() => {
         ]"
       >
         <div class="inline-flex items-center gap-2 px-6 py-3">
-          <UIcon
-            name="i-heroicons-chat-bubble-left-right"
-            class="size-5 text-primary"
-          />
+          <UIcon name="i-heroicons-chat-bubble-left-right" class="size-5 text-primary" />
           <span class="text-sm font-medium text-primary">
             Более 2,000 положительных отзывов на платформе
           </span>

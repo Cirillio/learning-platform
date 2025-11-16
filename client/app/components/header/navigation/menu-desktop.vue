@@ -26,16 +26,18 @@ const navigationItems = computed<NavigationMenuItem[]>(() => [
 </script>
 
 <template>
-  <div class="flex">
+  <div
+    class="flex hover:border-secondary/50 transition-all duration-150 bg-default p-1 gap-2 border border-muted rounded-sm"
+  >
     <NuxtLink
       v-for="item in navigationItems"
       :key="item.label"
       :to="item.to"
       :class="{
-        'text-primary border-primary': item.active,
-        'hover:text-primary border-transparent': !item.active,
+        'text-inverted bg-primary': item.active,
+        'hover:text-primary border-transparent hover:bg-inverted/5': !item.active,
       }"
-      class="px-3 flex border-b-2 items-center justify-center font-semibold py-1.5 transition-all duration-150"
+      class="px-4 flex items-center rounded-xs justify-center font-semibold py-2.5 transition-all duration-150"
     >
       {{ item.label }}
     </NuxtLink>

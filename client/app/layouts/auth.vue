@@ -12,23 +12,30 @@ onMounted(() => {
 <template>
   <UApp>
     <UMain class="h-dvh">
-      <div class="w-full min-h-full flex">
+      <div
+        class="w-full min-h-full max-lg:py-12 max-lg:gap-16 flex max-lg:flex-col max-lg:bg-muted"
+      >
         <!-- Logo/Brand -->
         <div
-          class="text-center flex items-start flex-col justify-center flex-4/7 w-full p-24"
+          class="lg:text-start text-center flex items-center lg:items-start flex-col justify-between lg:flex-4/7 w-full lg:p-24"
         >
-          <Icon name="heroicons:command-line" class="size-24 text-primary" />
-          <h1 class="text-5xl mt-4 font-bold text-gray-900 dark:text-white">
-            Учебный портал
-          </h1>
-          <p class="text-lg text-gray-600 dark:text-gray-400">
-            Образовательная платформа для студентов и преподавателей
-          </p>
+          <Icon
+            name="heroicons:command-line"
+            class="lg:size-32 size-16 text-primary animate-pulse"
+          />
+          <div>
+            <h1 class="lg:text-5xl text-3xl my-2 font-bold text-gray-900 dark:text-white">
+              Учебный портал
+            </h1>
+            <p class="text-sm text-gray-600 dark:text-gray-400">
+              Образовательная платформа для студентов и преподавателей
+            </p>
+          </div>
         </div>
 
         <!-- Auth Form -->
         <div
-          class="flex-3/7 w-full bg-muted flex flex-col px-16 py-24 items-start justify-between"
+          class="lg:flex-3/7 w-full flex flex-col max-lg:max-w-2xl lg:bg-muted px-2 sm:px-12 lg:py-24 items-start mx-auto justify-between"
         >
           <slot />
         </div></div

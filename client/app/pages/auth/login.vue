@@ -26,7 +26,7 @@ useHead({
 </script>
 
 <template>
-  <div class="flex gap-4">
+  <div class="flex gap-4 max-lg:hidden">
     <UButton
       leading-icon="heroicons:arrow-left"
       variant="ghost"

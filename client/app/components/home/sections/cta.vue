@@ -24,7 +24,7 @@ const handleRegister = () => {
 
 <template>
   <section class="py-16 lg:py-24">
-    <div class="container mx-auto px-4">
+    <div class="container mx-auto">
       <!-- Статистика -->
       <div
         class="grid grid-cols-3 gap-8 mb-16"

@@ -153,7 +153,7 @@ const onSubmit = async (event: FormSubmitEvent<RegisterForm>): Promise<void> => 
       block
       :loading="props.isLoading"
       size="lg"
-      class="text-base mt-2"
+      class="text-lg py-3 mt-2"
     />
   </UForm>
 </template>

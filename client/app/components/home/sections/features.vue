@@ -42,7 +42,7 @@ onMounted(() => {
 
 <template>
   <section class="py-16 lg:py-24" aria-labelledby="features-title">
-    <div class="container mx-auto px-4">
+    <div class="container mx-auto">
       <!-- Заголовок секции -->
       <div class="text-center mb-16">
         <h2

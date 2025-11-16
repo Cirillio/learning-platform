@@ -1,94 +1,41 @@
 <script setup lang="ts">
-import type { DropdownMenuItem } from "@nuxt/ui";
+import { watch } from "vue";
 
 const authStore = useAuthStore();
 const { isAuthenticated, user } = storeToRefs(authStore);
 
-const profileItems = ref<DropdownMenuItem[]>([
-  {
-    label: "Профиль",
-    icon: "heroicons:user-circle",
-    href: "/profile",
-    color: "primary",
-  },
-  {
-    label: "Мои курсы",
-    icon: "heroicons:code-bracket-square",
-    href: "/dashboard",
-    color: "info",
-  },
-  {
-    label: "Выйти",
-    icon: "heroicons:arrow-uturn-right",
-    href: "/auth/logout",
-    color: "error",
-  },
-]);
+const isMobileMenuOpen = ref(false);
+
+// Блокировка прокрутки при открытом мобильном меню
+watch(isMobileMenuOpen, (newVal) => {
+  if (newVal) {
+    document.body.classList.add("!overflow-hidden");
+  } else {
+    document.body.classList.remove("!overflow-hidden");
+  }
+});
 </script>
 
 <template>
-  <UHeader
-    mode="slideover"
-    :toggle="{
-      color: 'primary',
-      variant: 'ghost',
-      class: 'rounded-md md:hidden',
-    }"
-    :ui="{
-      root: 'border-0 ring-0 backdrop-blur-md bg-muted/80',
-      center: 'md:block hidden',
-    }"
+  <header
+    class="sticky top-0 z-50 bg-background/80 backdrop-blur-sm border-b border-muted"
   >
-    <template #title>
-      <AppLogo />
-    </template>
+    <UContainer class="py-2">
+      <div class="flex items-center justify-between">
+        <!-- Logo -->
+        <AppLogo />
 
-    <!-- Desktop navigation -->
-    <div class="hidden md:block">
-      <HeaderNavigationMenuDesktop />
-    </div>
+        <!-- Desktop Actions -->
+        <HeaderDesktop />
 
-    <template #right>
-      <!-- Desktop auth actions -->
-      <div class="hidden md:block">
-        <HeaderAuthActionsDesktop v-if="!isAuthenticated" />
-        <UDropdownMenu
-          v-else
-          :items="profileItems"
-          :content="{
-            align: 'center',
-            side: 'bottom',
-            sideOffset: 8,
-          }"
-          :ui="{
-            content: 'w-fit rounded-sm ring-0 bg-inverted/5',
-            viewport: '!overflow-visible',
-          }"
-        >
-          <div
-            class="flex cursor-pointer hover:border-secondary/50 gap-2 border rounded-full items-center px-4 py-1.5 bg-muted transition-all duration-200 ease-in-out"
-            :class="[
-              $route.path === '/dashboard' ? 'border-secondary' : 'border-transparent',
-            ]"
-          >
-            <span class="font-semibold text-base">
-              {{ user?.first_name }} {{ user?.last_name }}
-            </span>
-            <UIcon class="text-secondary size-5" name="heroicons-user" />
-          </div>
-        </UDropdownMenu>
+        <!-- Mobile Menu Toggle -->
+        <div class="md:hidden">
+          <HeaderMobileToggle @toggle="isMobileMenuOpen = !isMobileMenuOpen" />
+        </div>
       </div>
 
-      <!-- Mobile menu toggle is automatically added by UHeader -->
-    </template>
-
-    <!-- Mobile menu content -->
-    <template #body>
-      <div class="space-y-6">
-        <HeaderNavigationMenuMobile />
-        <HeaderAuthActionsMobile v-if="!isAuthenticated" />
-        <HeaderThemeToggle />
-      </div>
-    </template>
-  </UHeader>
+      <!-- Mobile Menu -->
+      <HeaderMobileMenu :is-visible="isMobileMenuOpen" :is-authenticated="isAuthenticated" />
+    </UContainer>
+  </header>
 </template>

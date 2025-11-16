@@ -37,12 +37,15 @@ const navigationItems = computed<NavigationMenuItem[]>(() => [
         :to="link.to"
         :label="link.label"
         :leading-icon="link.icon"
-        :variant="link.active ? 'solid' : 'subtle'"
-        :color="link.active ? 'primary' : 'neutral'"
-        class="text-lg"
+        :variant="link.active ? 'subtle' : 'outline'"
+        :color="link.active ? 'secondary' : 'neutral'"
+        class="text-xl py-3 px-4 hover:ring-secondary/50 hover:bg-transparent transition-all duration-150"
+        :ui="{
+          leadingIcon: 'size-6',
+        }"
       />
     </div>
 
-    <UButton label="Выйти" color="error" class="text-lg mt-4" block />
+    <UButton label="Выйти" color="error" class="text-xl mt-4" block />
   </div>
 </template>

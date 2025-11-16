@@ -82,11 +82,14 @@ useHead({
         </UCard>
 
         <!-- Action Buttons -->
-        <div class="space-y-3">
+        <div
+          class="space-y-1 p-1 border border-muted rounded-sm hover:border-secondary/50 transition-all duration-150"
+        >
           <UButton
-            color="secondary"
+            variant="outline"
+            color="neutral"
             size="lg"
-            class="text-base"
+            class="text-base py-3 hover:ring-primary/50 hover:text-primary"
             block
             @click="handleCancel"
           >
@@ -97,9 +100,9 @@ useHead({
           </UButton>
           <UButton
             color="error"
-            variant="soft"
+            variant="subtle"
             size="lg"
-            class="text-base"
+            class="text-base py-3"
             block
             @click="handleLogout"
           >

@@ -3,13 +3,18 @@ export default defineAppConfig({
   version: "1.0.0",
   ui: {
     colors: {
-      primary: "blue",
-      secondary: "emerald",
+      primary: "lime",
+      secondary: "cyan",
       neutral: "zinc",
     },
     button: {
       slots: {
         base: "cursor-pointer !transition-all !duration-200 !ease-in-out",
+      },
+      variants: {
+        variant: {
+          outline: "bg-transparent hover:bg-inverted border-muted ",
+        },
       },
     },
     card: {
@@ -20,7 +25,7 @@ export default defineAppConfig({
     },
     input: {
       slots: {
-        base: "!transition-all !duration-200 !ease-in-out",
+        base: "!transition-all !duration-200 !ease-in-out !bg-default rounded-sm !py-3.5 !px-6",
       },
     },
   },

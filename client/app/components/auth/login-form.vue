@@ -76,6 +76,7 @@ const onSubmit = async (event: FormSubmitEvent<LoginForm>): Promise<void> => {
     >
       <UCheckbox
         size="lg"
+        color="secondary"
         v-model="state.remember_me"
         label="Оставаться в системе (30 дней)"
         class="*:text-base items-center"
@@ -91,7 +92,7 @@ const onSubmit = async (event: FormSubmitEvent<LoginForm>): Promise<void> => {
       block
       :loading="props.isLoading"
       size="lg"
-      class="text-base"
+      class="text-lg py-3"
     />
   </UForm>
 </template>
