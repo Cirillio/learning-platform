@@ -7,6 +7,7 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.utils import timezone
+from rest_framework_simplejwt.token_blacklist.models import BlacklistedToken
 
 logger = logging.getLogger(__name__)
 
@@ -63,3 +64,12 @@ def send_login_notification_email(user_id, ip_address, user_agent):
     except Exception as e:
         logger.error(f'Error sending login notification: {str(e)}')
         return f'Error sending login notification: {str(e)}'
+
+@shared_task
+def clear_blacklisted_tokens():
+    """
+    Deletes all blacklisted tokens from the database.
+    """
+    count = BlacklistedToken.objects.all().count()
+    BlacklistedToken.objects.all().delete()
+    logger.info(f'Successfully deleted {count} blacklisted tokens.')

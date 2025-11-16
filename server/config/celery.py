@@ -27,6 +27,10 @@ app.conf.beat_schedule = {
         'task': 'notifications.tasks.send_pending_email_notifications',
         'schedule': crontab(minute='*/15'),  # Каждые 15 минут
     },
+    'clear-blacklisted-tokens': {
+        'task': 'users.tasks.clear_blacklisted_tokens',
+        'schedule': crontab(hour=0, minute=0),  # Каждый день в полночь
+    },
 }
 
 @app.task(bind=True)
