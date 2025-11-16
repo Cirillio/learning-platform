@@ -13,6 +13,7 @@ from .serializers import (
     UserProfileSerializer,
 )
 from .models import UserProfile
+from .tasks import send_login_notification_email
 
 User = get_user_model()
 
@@ -100,6 +101,24 @@ class LoginView(generics.GenericAPIView):
         user = authenticate(username=username, password=password)
         if user is None:
             return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        # Отправляем уведомление о входе
+        try:
+            ip_address = request.META.get('REMOTE_ADDR')
+            user_agent = request.META.get('HTTP_USER_AGENT')
+            print(f"SENDING EMAIL TASK for user {user.id} to {user.email}")  # Debug
+            with open('/tmp/django_debug.log', 'a') as f:
+                f.write(f"SENDING EMAIL TASK for user {user.id} to {user.email}\n")
+            send_login_notification_email.delay(user.id, ip_address, user_agent)
+            print("TASK SENT")  # Debug
+            with open('/tmp/django_debug.log', 'a') as f:
+                f.write("TASK SENT\n")
+        except Exception as e:
+            print(f"ERROR sending task: {e}")  # Debug
+            with open('/tmp/django_debug.log', 'a') as f:
+                f.write(f"ERROR: {e}\n")
+            # Не блокируем логин, если отправка задачи не удалась
+            pass
 
         refresh = RefreshToken.for_user(user)
         refresh_max_age = 30 * 24 * 60 * 60 if remember_me else 7 * 24 * 60 * 60

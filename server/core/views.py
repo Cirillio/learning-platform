@@ -6,6 +6,7 @@ from django.contrib.contenttypes.models import ContentType
 
 from .models import Comment, Feedback
 from .serializers import CommentSerializer, FeedbackSerializer
+from .tasks import send_comment_notification
 
 
 class CommentViewSet(viewsets.ModelViewSet):
@@ -46,7 +47,9 @@ class CommentViewSet(viewsets.ModelViewSet):
         return queryset.select_related('author', 'parent').prefetch_related('replies')
     
     def perform_create(self, serializer):
-        serializer.save(author=self.request.user)
+        comment = serializer.save(author=self.request.user)
+        # Отправляем уведомление о новом комментарии
+        send_comment_notification.delay(comment.id)
     
     def perform_update(self, serializer):
         serializer.save(is_edited=True)

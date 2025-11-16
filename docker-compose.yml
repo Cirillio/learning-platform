@@ -1,19 +1,13 @@
-version: '3.8'
+version: "3.8"
 
 services:
-  # Redis for Celery
-  redis:
-    image: redis:7-alpine
-    container_name: university_redis
+  # Mailhog for email testing
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: university_mailhog
     ports:
-      - "6379:6379"
-    volumes:
-      - redis_data:/data
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      - "1025:1025" # SMTP server
+      - "8025:8025" # Web interface
     networks:
       - university_network
 

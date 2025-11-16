@@ -18,6 +18,7 @@ from .serializers import (
     GradeSerializer
 )
 from .permissions import IsTeacher, IsStudent, IsCourseOwner, IsTeacherOrReadOnly
+from .tasks import send_grade_notification, send_new_assignment_notification
 
 
 class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
@@ -290,6 +291,11 @@ class AssignmentViewSet(viewsets.ModelViewSet):
             return [IsAuthenticated(), IsTeacher()]
         return super().get_permissions()
 
+    def perform_create(self, serializer):
+        assignment = serializer.save()
+        # Отправляем уведомление о новом задании
+        send_new_assignment_notification.delay(assignment.id)
+
 
 class SubmissionViewSet(viewsets.ModelViewSet):
     """
@@ -386,6 +392,8 @@ class GradeViewSet(viewsets.ModelViewSet):
         submission.status = 'graded'
         submission.save()
         
-        serializer.save(graded_by=self.request.user)
+        grade = serializer.save(graded_by=self.request.user)
+        # Отправляем уведомление студенту о новой оценке
+        send_grade_notification.delay(grade.id)
 
 
