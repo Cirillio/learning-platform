@@ -114,10 +114,10 @@
 
 ### 10. Backend - Тесты
 
-- [ ] Тесты моделей
-- [ ] Тесты API endpoints
-- [ ] Тесты permissions
-- [ ] Тесты сериализаторов
+- [x] Тесты моделей
+- [x] Тесты API endpoints
+- [x] Тесты permissions
+- [x] Тесты сериализаторов
 
 ### 11. Frontend - Базовая настройка
 
@@ -169,9 +169,9 @@
 
 ### 16. Frontend - UI Components
 
-- [ ] Button, Input, Textarea (базовые)
+- [x] Button, Input, Textarea (базовые)
 - [ ] FileUpload (с drag&drop)
-- [ ] Modal, Card, Badge
+- [x] Modal, Card, Badge
 - [ ] Forms:
   - [x] RegisterForm
   - [x] LoginForm
