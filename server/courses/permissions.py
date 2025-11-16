@@ -104,8 +104,11 @@ class IsCourseOwner(BasePermission):
         )
 
     def has_object_permission(self, request, view, obj):
+        from .models import Course
         # Определяем курс из объекта
-        if hasattr(obj, 'course'):
+        if isinstance(obj, Course):
+            course = obj
+        elif hasattr(obj, 'course'):
             course = obj.course
         elif hasattr(obj, 'lesson') and hasattr(obj.lesson, 'course'):
             course = obj.lesson.course
