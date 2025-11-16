@@ -92,7 +92,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
             'specialization', 'experience_years', 'student_id', 'enrollment_year',
             'created_at', 'updated_at'
         ]
-        read_only_fields = ['user', 'created_at', 'updated_at']
+        read_only_fields = ['user', 'student_id', 'created_at', 'updated_at']
 
     def update(self, instance, validated_data):
         # Обновляем поля пользователя
