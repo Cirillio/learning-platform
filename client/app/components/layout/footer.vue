@@ -25,7 +25,7 @@ const footerLinks: NavigationMenuItem[] = [
   >
     <template #left>
       <div class="flex flex-col gap-3 max-lg:items-center">
-        <AppLogo />
+        <AppLogo :label="'Учебный портал'" />
         <p class="text-sm text-muted">
           © {{ new Date().getFullYear() }} Учебный портал. Все права защищены.
         </p>

@@ -7,7 +7,7 @@ export default defineAppConfig({
     },
     button: {
       slots: {
-        base: "cursor-pointer !transition-all !duration-200 !ease-in-out",
+        base: "cursor-pointer rounded-sm !transition-all !duration-200 !ease-in-out",
       },
       variants: {
         variant: {
@@ -17,13 +17,14 @@ export default defineAppConfig({
     },
     card: {
       slots: {
-        root: "!dark:bg-muted/50 !bg-elevated/50 !ring-0",
+        root: "!bg-transparent !p-1  !ring-primary rounded-xs backdrop-blur-sm hover:!ring-secondary/50 transition-all duration-200 ease-in-out",
         header: "border-0",
+        body: "!px-3 !py-2 bg-muted h-full rounded-xs",
       },
     },
     input: {
       slots: {
-        base: "!transition-all !duration-200 !ease-in-out !bg-default rounded-sm !py-3.5 !px-6",
+        base: "!transition-all !duration-200 !ease-in-out !bg-default rounded-xs !py-3.5 !px-6",
       },
     },
   },

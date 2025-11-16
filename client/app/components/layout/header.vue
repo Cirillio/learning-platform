@@ -18,7 +18,8 @@ watch(isMobileMenuOpen, (newVal) => {
 
 <template>
   <header
-    class="sticky top-0 z-50 bg-background/80 backdrop-blur-sm border-b border-muted"
+    class="top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-sm border-b border-muted"
+    :class="[$route.path === '/' ? 'fixed' : 'sticky']"
   >
     <UContainer class="py-2">
       <div class="flex items-center justify-between">
@@ -35,7 +36,10 @@ watch(isMobileMenuOpen, (newVal) => {
       </div>
 
       <!-- Mobile Menu -->
-      <HeaderMobileMenu :is-visible="isMobileMenuOpen" :is-authenticated="isAuthenticated" />
+      <HeaderMobileMenu
+        :is-visible="isMobileMenuOpen"
+        :is-authenticated="isAuthenticated"
+      />
     </UContainer>
   </header>
 </template>

@@ -35,7 +35,7 @@ onMounted(() => {
 
         <!-- Auth Form -->
         <div
-          class="lg:flex-3/7 w-full flex flex-col max-lg:max-w-2xl lg:bg-muted px-2 sm:px-12 lg:py-24 items-start mx-auto justify-between"
+          class="lg:flex-3/7 lg:border-l border-secondary w-full flex flex-col max-lg:max-w-2xl lg:bg-muted px-2 sm:px-12 lg:py-24 items-start mx-auto justify-between"
         >
           <slot />
         </div></div

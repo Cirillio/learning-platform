@@ -10,7 +10,6 @@ const testimonials = [
       "Отличная платформа! Курсы очень качественные, преподаватели - профессионалы. За 6 месяцев прошел 3 курса и нашел работу мечты.",
     rating: 5,
     course: "React & Vue.js",
-    delay: 0,
   },
   {
     name: "Михаил Иванов",
@@ -21,7 +20,6 @@ const testimonials = [
       "Практические задания на уровне реальных проектов. Получил не только знания, но и портфолио для трудоустройства.",
     rating: 5,
     course: "Python для Data Science",
-    delay: 200,
   },
   {
     name: "Елена Смирнова",
@@ -32,19 +30,8 @@ const testimonials = [
       "Курсы по дизайну превзошли все ожидания. Преподаватели делятся реальным опытом из индустрии.",
     rating: 5,
     course: "UX/UI Design",
-    delay: 400,
   },
 ];
-
-// Анимационное состояние
-const isVisible = ref(false);
-
-// Инициализация анимации
-onMounted(() => {
-  nextTick(() => {
-    isVisible.value = true;
-  });
-});
 </script>
 
 <template>
@@ -52,22 +39,10 @@ onMounted(() => {
     <div class="container mx-auto">
       <!-- Заголовок секции -->
       <div class="text-center mb-16">
-        <h2
-          class="text-3xl lg:text-4xl font-bold mb-4 text-highlighted"
-          :class="[
-            'transition-all duration-700 ease-out',
-            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8',
-          ]"
-        >
+        <h2 class="text-3xl lg:text-4xl font-bold mb-4 text-highlighted">
           Что говорят наши студенты
         </h2>
-        <p
-          class="text-lg text-muted max-w-2xl mx-auto"
-          :class="[
-            'transition-all duration-700 ease-out delay-200',
-            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8',
-          ]"
-        >
+        <p class="text-lg text-muted max-w-2xl mx-auto">
           Реальные отзывы от студентов, которые уже прошли обучение на нашей платформе
         </p>
       </div>
@@ -78,11 +53,6 @@ onMounted(() => {
           v-for="(testimonial, index) in testimonials"
           :key="testimonial.name"
           class="h-full"
-          :class="[
-            'transition-all duration-700 ease-out',
-            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8',
-          ]"
-          :style="{ transitionDelay: `${testimonial.delay}ms` }"
         >
           <!-- Рейтинг -->
           <div class="flex items-center gap-1 mb-4">
@@ -119,13 +89,7 @@ onMounted(() => {
       </div>
 
       <!-- CTA для отзывов -->
-      <div
-        class="mt-16 text-center"
-        :class="[
-          'transition-all duration-700 ease-out delay-600',
-          isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8',
-        ]"
-      >
+      <div class="mt-16 text-center">
         <div class="inline-flex items-center gap-2 px-6 py-3">
           <UIcon name="i-heroicons-chat-bubble-left-right" class="size-5 text-primary" />
           <span class="text-sm font-medium text-primary">

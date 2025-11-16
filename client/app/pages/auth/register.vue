@@ -38,7 +38,11 @@ useHead({
     <h2 class="text-2xl font-semibold">Добро пожаловать!</h2>
   </div>
   <div class="w-full">
-    <h2 class="text-3xl font-bold text-gray-900 dark:text-white">Регистрация</h2>
+    <h2
+      class="text-3xl font-bold border-b-2 border-primary pb-2 w-fit text-gray-900 dark:text-white"
+    >
+      Регистрация
+    </h2>
 
     <AuthRegisterForm :is-loading="authStore.isLoading" @submit="handleRegister" />
   </div>
