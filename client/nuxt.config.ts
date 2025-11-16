@@ -5,6 +5,20 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   modules: ["@nuxt/image", "@nuxt/ui", "@pinia/nuxt", "@nuxtjs/google-fonts"],
   vite: { plugins: [tailwindcss()] },
+  ui: {
+    theme: {
+      colors: [
+        "primary",
+        "secondary",
+        "accent",
+        "neutral",
+        "info",
+        "success",
+        "warning",
+        "error",
+      ],
+    },
+  },
   css: ["./app/assets/css/main.css"],
 
   googleFonts: {

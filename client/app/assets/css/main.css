@@ -29,6 +29,11 @@
 
 :root {
   --ui-radius: 0.25rem;
+  --ui-primary: #fcee0a;
+  --ui-secondary: #00f0ff;
+  --ui-error: #ff6208;
+  --ui-warning: #ffb800;
+  --ui-accent: #eb152a;
 }
 
 body {
