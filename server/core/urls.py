@@ -3,7 +3,7 @@ URL configuration for core app.
 """
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import CommentViewSet, FeedbackViewSet
+from .views import CommentViewSet, FeedbackViewSet, StatisticsView
 
 # Создаем роутер для ViewSets
 router = DefaultRouter()
@@ -14,4 +14,5 @@ app_name = 'core'
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('statistics/', StatisticsView.as_view(), name='statistics'),
 ]

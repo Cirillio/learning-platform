@@ -3,10 +3,14 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 from django.contrib.contenttypes.models import ContentType
+from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from .models import Comment, Feedback
 from .serializers import CommentSerializer, FeedbackSerializer
 from .tasks import send_comment_notification
+from courses.models import Course, Lesson
+from users.models import User
 
 
 class CommentViewSet(viewsets.ModelViewSet):
@@ -141,4 +145,24 @@ class FeedbackViewSet(viewsets.ModelViewSet):
         
         serializer = self.get_serializer(feedback)
         return Response(serializer.data)
+
+
+class StatisticsView(APIView):
+    """
+    Предоставляет краткую статистику платформы.
+    """
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def get(self, request, *args, **kwargs):
+        total_courses = Course.objects.count()
+        total_lessons = Lesson.objects.count()
+        total_students = User.objects.filter(role='student').count()
+        total_teachers = User.objects.filter(role='teacher').count()
+
+        return Response({
+            'total_courses': total_courses,
+            'total_lessons': total_lessons,
+            'total_students': total_students,
+            'total_teachers': total_teachers,
+        })
 
