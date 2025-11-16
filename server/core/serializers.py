@@ -1,13 +1,7 @@
-"""
-Сериализаторы для приложения core.
-
-Содержит сериализаторы для общих моделей:
-- Комментарии (CommentSerializer)
-- Обратная связь от пользователей (FeedbackSerializer)
-"""
-
 from rest_framework import serializers
-from .models import Comment, Feedback
+from .models import Comment, Feedback, ActivityLog
+from users.serializers import BasicUserSerializer
+from django.contrib.contenttypes.models import ContentType
 
 
 class CommentSerializer(serializers.ModelSerializer):
@@ -22,6 +16,7 @@ class CommentSerializer(serializers.ModelSerializer):
     - replies_count: количество ответов на комментарий
     - is_author: является ли текущий пользователь автором
     """
+    author = BasicUserSerializer(read_only=True)
     author_name = serializers.CharField(source='author.get_full_name', read_only=True)
     author_avatar = serializers.ImageField(source='author.profile.avatar', read_only=True)
     replies_count = serializers.SerializerMethodField()
@@ -34,7 +29,7 @@ class CommentSerializer(serializers.ModelSerializer):
             'text', 'parent', 'replies_count', 'is_author',
             'created_at', 'updated_at', 'is_edited'
         ]
-        read_only_fields = ['author', 'created_at', 'updated_at', 'is_edited']
+        read_only_fields = ['created_at', 'updated_at']
 
     def get_replies_count(self, obj):
         return obj.replies.count()
@@ -73,3 +68,18 @@ class FeedbackSerializer(serializers.ModelSerializer):
         # Автоматически устанавливаем пользователя из запроса
         validated_data['user'] = self.context['request'].user
         return super().create(validated_data)
+
+
+class ActivityLogSerializer(serializers.ModelSerializer):
+    """
+    Сериализатор для журнала активности пользователей.
+    """
+    user = BasicUserSerializer(read_only=True)
+
+    class Meta:
+        model = ActivityLog
+        fields = [
+            'id', 'user', 'action', 'description', 'ip_address', 'user_agent',
+            'content_type', 'object_id', 'created_at'
+        ]
+        read_only_fields = ['created_at']

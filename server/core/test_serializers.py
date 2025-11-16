@@ -5,6 +5,7 @@ from core.models import Comment, Feedback, ActivityLog
 from core.serializers import CommentSerializer, FeedbackSerializer, ActivityLogSerializer
 from courses.models import Lesson, Course
 from users.serializers import BasicUserSerializer
+from django.contrib.contenttypes.models import ContentType
 
 User = get_user_model()
 
@@ -21,14 +22,15 @@ class CommentSerializerTest(TestCase):
         self.lesson = Lesson.objects.create(
             course=self.course, title='Test Lesson', slug='test-lesson', content='content')
         self.comment_data = {
-            'content_type': 'lesson',
+            'content_type': ContentType.objects.get_for_model(self.lesson).id,
             'object_id': self.lesson.id,
-            'author': self.user.id,
             'text': 'This is a test comment.',
         }
 
     def test_valid_data(self):
         serializer = CommentSerializer(data=self.comment_data)
+        if not serializer.is_valid():
+            print("CommentSerializer errors:", serializer.errors)
         self.assertTrue(serializer.is_valid())
 
     def test_read_only_fields(self):
