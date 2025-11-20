@@ -12,13 +12,15 @@ useSeoMeta({
     <!-- Hero Section -->
     <HomeSectionsHero />
 
-    <!-- Features Section -->
-    <HomeSectionsFeatures />
+    <UContainer>
+      <!-- Features Section -->
+      <HomeSectionsFeatures />
 
-    <!-- Testimonials Section -->
-    <HomeSectionsTestimonials />
+      <!-- Testimonials Section -->
+      <HomeSectionsTestimonials />
 
-    <!-- CTA Section -->
-    <HomeSectionsCta />
+      <!-- CTA Section -->
+      <HomeSectionsCta
+    /></UContainer>
   </div>
 </template>

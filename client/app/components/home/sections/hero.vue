@@ -71,7 +71,10 @@ const stats = ref([
         class="w-full h-full object-cover object-center"
       />
     </picture>
-    <u-container class="absolute z-10 left-0 right-0 top-0 bottom-0 py-24">
+    <div
+      class="absolute top-0 left-0 right-0 bottom-0 z-10 bg-linear-to-t from-default to-default/15"
+    ></div>
+    <u-container class="absolute z-20 left-0 right-0 top-0 bottom-0 py-24">
       <div class="flex flex-col gap-6 items-start h-full justify-between">
         <div
           class="flex max-xl:gap-6 justify-end max-xl:flex-col w-full h-full xl:items-end xl:justify-between"

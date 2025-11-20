@@ -29,12 +29,21 @@ export const useApi = () => {
   const config = useRuntimeConfig();
   const baseURL = config.public.apiBase;
 
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+  };
+
+  if (import.meta.server) {
+    const requestHeaders = useRequestHeaders(["cookie"]);
+    if (requestHeaders.cookie) {
+      headers["Cookie"] = requestHeaders.cookie;
+    }
+  }
+
   const api = $fetch.create({
     baseURL,
     credentials: "include", // Для отправки httpOnly cookies
-    headers: {
-      "Content-Type": "application/json",
-    },
+    headers,
 
     async onResponseError({ request, options, response }) {
       console.log(
@@ -54,25 +63,34 @@ export const useApi = () => {
       // Запускаем обновление только если статус 401 и запрос не в списке исключений
       if (
         response.status === 401 &&
-        !excludedEndpoints.some(endpoint => requestUrl.includes(endpoint))
+        !excludedEndpoints.some((endpoint) => requestUrl.includes(endpoint))
       ) {
         console.log("🔄 [API] 401 detected, attempting auto-refresh...");
         // Защита от параллельных refresh
         if (!refreshingPromise) {
-          console.log("🚀 [API] This request is the FIRST to trigger the refresh.");
+          console.log(
+            "🚀 [API] This request is the FIRST to trigger the refresh."
+          );
           refreshingPromise = $fetch("/auth/refresh/", {
             method: "POST",
             baseURL,
             credentials: "include",
           })
             .then(() => {
-              console.log("✅ [API] Auto-refresh successful. Waiting requests can now proceed.");
+              console.log(
+                "✅ [API] Auto-refresh successful. Waiting requests can now proceed."
+              );
               refreshingPromise = null;
             })
             .catch((err) => {
-              console.error("❌ [API] Auto-refresh failed. This is the error that caused the logout.");
+              console.error(
+                "❌ [API] Auto-refresh failed. This is the error that caused the logout."
+              );
               // Логируем всю ошибку, чтобы увидеть статус и тело ответа от /auth/refresh/
-              console.error("❌ [API] ДЕТАЛИ ОШИБКИ ОБНОВЛЕНИЯ:", JSON.stringify(err, null, 2));
+              console.error(
+                "❌ [API] ДЕТАЛИ ОШИБКИ ОБНОВЛЕНИЯ:",
+                JSON.stringify(err, null, 2)
+              );
 
               refreshingPromise = null;
               // Refresh провалился — разлогиниваем
@@ -82,14 +100,18 @@ export const useApi = () => {
               throw err;
             });
         } else {
-          console.log("⏳ [API] Another request is already refreshing the token. Waiting...");
+          console.log(
+            "⏳ [API] Another request is already refreshing the token. Waiting..."
+          );
         }
 
         // Ждём завершения refresh
         await refreshingPromise;
 
         // Повторяем исходный запрос с обновлённым токеном
-        console.log(`🔄 [API] Retrying original request: ${request.toString()}`);
+        console.log(
+          `🔄 [API] Retrying original request: ${request.toString()}`
+        );
         return $fetch(request, options as any);
       }
     },
@@ -157,6 +179,7 @@ export const useApi = () => {
   };
 
   return {
+    api,
     login,
     register,
     refreshToken,

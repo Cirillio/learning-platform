@@ -54,7 +54,7 @@ useHead({
         <UCard class="mt-8 mb-8">
           <div class="flex items-center gap-4">
             <UAvatar
-              :src="user?.profile?.avatar"
+              :src="user?.profile?.avatar ?? undefined"
               :alt="`${user?.first_name} ${user?.last_name}`"
               size="xl"
               class="text-primary"

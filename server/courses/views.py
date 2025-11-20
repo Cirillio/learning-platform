@@ -6,7 +6,9 @@ from django.shortcuts import get_object_or_404
 from django.db.models import Q, Count, Avg
 from django.utils import timezone
 from rest_framework.views import APIView
-from django.urls import reverse # Added this import
+from django.urls import reverse
+
+from courses.pagination import CoursePagination # Added this import
 
 from .models import (
     Category, Course, CourseEnrollment, Lesson, LessonMaterial,
@@ -51,6 +53,7 @@ class CourseViewSet(viewsets.ModelViewSet):
     - students: список студентов курса (только для преподавателя курса)
     """
     queryset = Course.objects.all()
+    pagination_class = CoursePagination  # <-- добавь это
     permission_classes = [IsAuthenticatedOrReadOnly]
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ['title', 'description', 'short_description']

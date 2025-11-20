@@ -4,21 +4,17 @@
     "type": "split",
     "children": [
       {
-        "id": "80dca09273094768",
+        "id": "6c94678d20c815ad",
         "type": "tabs",
         "children": [
           {
-            "id": "8b07d619e93b5dbb",
+            "id": "737d28eac81a1e0f",
             "type": "leaf",
             "state": {
-              "type": "markdown",
-              "state": {
-                "file": "NEXT_STEPS.md",
-                "mode": "source",
-                "source": false
-              },
+              "type": "empty",
+              "state": {},
               "icon": "lucide-file",
-              "title": "NEXT_STEPS"
+              "title": "New tab"
             }
           }
         ]
@@ -94,7 +90,6 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "NEXT_STEPS.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -104,7 +99,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "Backlinks for NEXT_STEPS"
+              "title": "Backlinks"
             }
           },
           {
@@ -151,7 +146,8 @@
               "title": "Outline of NEXT_STEPS"
             }
           }
-        ]
+        ],
+        "currentTab": 3
       }
     ],
     "direction": "horizontal",
@@ -169,19 +165,20 @@
       "bases:Create new base": false
     }
   },
-  "active": "8b07d619e93b5dbb",
+  "active": "737d28eac81a1e0f",
   "lastOpenFiles": [
+    "Untitled.base",
+    "NEXT_STEPS.md",
     "server/db.sqlite3-journal",
+    "client/app/pages/courses/index.vue",
+    "client/app/middleware/courses-redirect.ts",
+    "client/app/pages/courses/all.vue",
+    "client/app/pages/courses/categories.vue",
+    "client/app/pages/courses",
+    "client/app/layouts/courses-catalog.vue",
     "client/public/hero_img.jpg",
     "server/core/management/commands/__pycache__/seed_db.cpython-312.pyc",
     "server/core/management/commands/seed_db.py",
-    "server/seed_db.py",
-    "server/users/test_serializers.py",
-    "server/notifications/test_serializers.py",
-    "server/db_dump.json",
-    "server/courses/test_serializers.py",
-    "server/core/test_serializers.py",
-    "server/core/management/commands/dumpdata_to_json.py",
     "client/AUTH_SYSTEM.md",
     "JWT+Cookies.md",
     "README.md",
@@ -190,7 +187,6 @@
     "client/app/components/README.md",
     "MOBILE.md",
     "PERMISSIONS_GUIDE.md",
-    "client/README.md",
-    "NEXT_STEPS.md"
+    "client/README.md"
   ]
 }

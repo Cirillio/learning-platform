@@ -46,8 +46,6 @@ const footerLinks: NavigationMenuItem[] = [
     </div>
 
     <template #right>
-      <UColorModeButton :variant="'subtle'" color="primary" size="lg" />
-
       <UButton
         icon="i-simple-icons-github"
         color="neutral"

@@ -13,7 +13,7 @@ const navigationItems = computed<NavigationMenuItem[]>(() => [
   {
     label: "Курсы",
     icon: "i-heroicons-academic-cap",
-    to: "/courses",
+    to: route.path === "/courses" ? route.fullPath : "/courses",
     active: route.path.startsWith("/courses"),
   },
   {

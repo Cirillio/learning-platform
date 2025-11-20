@@ -64,6 +64,5 @@ useHead({
         Зарегистрироваться
       </UButton>
     </p>
-    <UColorModeButton variant="subtle" class="size-8 *:size-5 grid place-items-center" />
   </div>
 </template>
