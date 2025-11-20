@@ -140,8 +140,25 @@ class CourseViewSet(viewsets.ModelViewSet):
             enrollment.is_active = True
             enrollment.save()
         
+        # Обновляем количество студентов
+        current_enrollments = course.enrollments.filter(is_active=True).count()
+        
         return Response(
-            {'detail': 'Вы успешно записались на курс.'},
+            {
+                'detail': 'Вы успешно записались на курс.',
+                'enrollment': {
+                    'id': enrollment.id,
+                    'course_id': course.id,
+                    'course_slug': course.slug,
+                    'enrolled_at': enrollment.enrolled_at,
+                    'is_active': enrollment.is_active,
+                    'progress': enrollment.progress,
+                },
+                'course': {
+                    'enrollments_count': current_enrollments,
+                    'spots_left': course.max_students - current_enrollments if course.max_students else None,
+                }
+            },
             status=status.HTTP_201_CREATED
         )
     
@@ -162,8 +179,24 @@ class CourseViewSet(viewsets.ModelViewSet):
             enrollment.is_active = False
             enrollment.save()
             
+            # Обновляем количество студентов
+            current_enrollments = course.enrollments.filter(is_active=True).count()
+            
             return Response(
-                {'detail': 'Вы отменили запись на курс.'},
+                {
+                    'detail': 'Вы отменили запись на курс.',
+                    'enrollment': {
+                        'id': enrollment.id,
+                        'course_id': course.id,
+                        'course_slug': course.slug,
+                        'is_active': enrollment.is_active,
+                        'unenrolled_at': timezone.now(),
+                    },
+                    'course': {
+                        'enrollments_count': current_enrollments,
+                        'spots_left': course.max_students - current_enrollments if course.max_students else None,
+                    }
+                },
                 status=status.HTTP_200_OK
             )
         except CourseEnrollment.DoesNotExist:
