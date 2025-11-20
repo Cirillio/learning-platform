@@ -9,6 +9,8 @@ import type {
   CourseFilters,
   CoursesResponse,
   CategoriesResponse,
+  EnrollResponse,
+  UnenrollResponse,
 } from "~/types";
 
 export const useCourses = () => {
@@ -29,13 +31,11 @@ export const useCourses = () => {
       }-${p.category || ""}-${p.difficulty || ""}-${p.ordering || ""}`;
       return key;
     });
-    return useAsyncData<CoursesResponse>(
-      cacheKey,
-      () =>
-        api("/courses", {
-          method: "GET",
-          params: unref(params),
-        })
+    return useAsyncData<CoursesResponse>(cacheKey, () =>
+      api("/courses", {
+        method: "GET",
+        params: unref(params),
+      })
     );
   };
 
@@ -86,9 +86,13 @@ export const useCourses = () => {
    * Запись на курс.
    * @param slug - Слаг курса.
    */
-  const enrollToCourse = async (slug: string) => {
+  const enrollToCourse = async (
+    slug: string
+  ): Promise<
+    { success: true; data: EnrollResponse } | { success: false; error: any }
+  > => {
     try {
-      const response = await api(`/courses/${slug}/enroll/`, {
+      const response = await api<EnrollResponse>(`/courses/${slug}/enroll/`, {
         method: "POST",
       });
       // После успешной записи можно, например, обновить данные о курсе
@@ -105,11 +109,18 @@ export const useCourses = () => {
    * Отмена записи на курс.
    * @param slug - Слаг курса.
    */
-  const unenrollFromCourse = async (slug: string) => {
+  const unenrollFromCourse = async (
+    slug: string
+  ): Promise<
+    { success: true; data: UnenrollResponse } | { success: false; error: any }
+  > => {
     try {
-      const response = await api(`/courses/${slug}/unenroll/`, {
-        method: "POST",
-      });
+      const response = await api<UnenrollResponse>(
+        `/courses/${slug}/unenroll/`,
+        {
+          method: "POST",
+        }
+      );
       // refreshNuxtData(`course-${slug}`); // Обновит данные
       return { success: true, data: response };
     } catch (error) {

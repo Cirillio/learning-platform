@@ -111,3 +111,31 @@ export interface CategoriesResponse {
   previous: string | null;
   results: Category[];
 }
+
+// Типы для записи/отзаписи на курс
+export interface CourseEnrollment {
+  id: number;
+  course_id: number;
+  course_slug: string;
+  enrolled_at: string;
+  is_active: boolean;
+  progress: number;
+  unenrolled_at?: string; // Только для unenroll ответа
+}
+
+export interface CourseEnrollmentResponse {
+  enrollments_count: number;
+  spots_left: number | null;
+}
+
+export interface EnrollResponse {
+  detail: string;
+  enrollment: CourseEnrollment;
+  course: CourseEnrollmentResponse;
+}
+
+export interface UnenrollResponse {
+  detail: string;
+  enrollment: Omit<CourseEnrollment, "enrolled_at"> & { unenrolled_at: string };
+  course: CourseEnrollmentResponse;
+}
