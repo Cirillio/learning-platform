@@ -1,11 +1,6 @@
 // ~/types/index.ts
 
 // Тип для профиля пользователя
-export interface UserProfile {
-  avatar?: string | null;
-  bio?: string;
-  // добавьте другие поля профиля по необходимости
-}
 
 // Тип для пользователя, который приходит с API
 export interface User {
@@ -17,7 +12,8 @@ export interface User {
   role: "student" | "teacher";
   date_joined: string;
   is_active?: boolean;
-  profile?: UserProfile | null;
+  avatar?: string | null;
+  bio?: string;
 }
 
 // Тип для ответа от эндпоинта /auth/login/

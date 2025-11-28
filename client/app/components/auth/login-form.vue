@@ -25,7 +25,7 @@ const onSubmit = async (event: FormSubmitEvent<LoginForm>): Promise<void> => {
 
 <template>
   <UForm
-    class="flex flex-col mt-8 gap-8 w-full"
+    class="flex flex-col mt-8 gap-4 lg:gap-8 w-full"
     :schema="loginSchema"
     :state="state"
     @submit="onSubmit"
@@ -35,7 +35,7 @@ const onSubmit = async (event: FormSubmitEvent<LoginForm>): Promise<void> => {
       label="Логин"
       name="username"
       :ui="{
-        label: 'text-lg font-semibold',
+        label: 'text-base lg:text-lg font-semibold',
       }"
     >
       <UInput
@@ -45,7 +45,7 @@ const onSubmit = async (event: FormSubmitEvent<LoginForm>): Promise<void> => {
         placeholder="Логин или почта"
         class="w-full"
         :ui="{
-          base: 'text-xl py-2 px-4',
+          base: 'text-base lg:text-xl py-2 px-4',
         }"
       />
     </UFormField>
@@ -54,7 +54,7 @@ const onSubmit = async (event: FormSubmitEvent<LoginForm>): Promise<void> => {
       label="Пароль"
       name="password"
       :ui="{
-        label: 'text-lg font-semibold',
+        label: 'text-base lg:text-lg font-semibold',
       }"
     >
       <UInput
@@ -63,7 +63,7 @@ const onSubmit = async (event: FormSubmitEvent<LoginForm>): Promise<void> => {
         placeholder="********"
         class="w-full"
         :ui="{
-          base: 'text-xl py-2 px-4',
+          base: 'text-base lg:text-xl py-2 px-4',
         }"
       />
     </UFormField>
@@ -71,15 +71,15 @@ const onSubmit = async (event: FormSubmitEvent<LoginForm>): Promise<void> => {
     <UFormField
       name="remember_me"
       :ui="{
-        label: 'text-lg font-medium',
+        label: 'text-base lg:text-lg font-medium w-fit',
       }"
     >
       <UCheckbox
         size="lg"
         color="secondary"
         v-model="state.remember_me"
-        label="Оставаться в системе (30 дней)"
-        class="*:text-base items-center"
+        label="Оставаться в системе"
+        class="*:text-base items-center w-fit"
         :ui="{
           label: 'cursor-pointer',
         }"
@@ -89,10 +89,8 @@ const onSubmit = async (event: FormSubmitEvent<LoginForm>): Promise<void> => {
     <UButton
       type="submit"
       label="Войти"
-      block
+      class="w-full md:w-fit justify-center md:text-lg"
       :loading="props.isLoading"
-      size="lg"
-      class="text-lg py-3"
     />
   </UForm>
 </template>

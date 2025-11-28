@@ -22,7 +22,9 @@ const state = reactive({
 } as RegisterForm);
 
 // Handle form submission with validation
-const onSubmit = async (event: FormSubmitEvent<RegisterForm>): Promise<void> => {
+const onSubmit = async (
+  event: FormSubmitEvent<RegisterForm>
+): Promise<void> => {
   emit("submit", event.data);
 };
 </script>
@@ -40,7 +42,7 @@ const onSubmit = async (event: FormSubmitEvent<RegisterForm>): Promise<void> => 
         label="Имя"
         name="first_name"
         :ui="{
-          label: 'text-base font-medium',
+          label: 'text-base lg:text-lg font-semibold',
         }"
       >
         <UInput
@@ -50,7 +52,7 @@ const onSubmit = async (event: FormSubmitEvent<RegisterForm>): Promise<void> => 
           placeholder="Ваше имя"
           class="w-full"
           :ui="{
-            base: 'text-lg py-2 px-3',
+            base: 'text-base lg:text-xl py-2 px-4',
           }"
         />
       </UFormField>
@@ -59,7 +61,7 @@ const onSubmit = async (event: FormSubmitEvent<RegisterForm>): Promise<void> => 
         label="Фамилия"
         name="last_name"
         :ui="{
-          label: 'text-base font-medium',
+          label: 'text-base lg:text-lg font-semibold',
         }"
       >
         <UInput
@@ -68,7 +70,7 @@ const onSubmit = async (event: FormSubmitEvent<RegisterForm>): Promise<void> => 
           placeholder="Ваша фамилия"
           class="w-full"
           :ui="{
-            base: 'text-lg py-2 px-3',
+            base: 'text-base lg:text-xl py-2 px-4',
           }"
         />
       </UFormField>
@@ -78,7 +80,7 @@ const onSubmit = async (event: FormSubmitEvent<RegisterForm>): Promise<void> => 
       label="Имя пользователя"
       name="username"
       :ui="{
-        label: 'text-base font-medium',
+        label: 'text-base lg:text-lg font-semibold',
       }"
     >
       <UInput
@@ -88,7 +90,7 @@ const onSubmit = async (event: FormSubmitEvent<RegisterForm>): Promise<void> => 
         placeholder="Придумайте логин"
         class="w-full"
         :ui="{
-          base: 'text-lg py-2 px-3',
+          base: 'text-base lg:text-xl py-2 px-4',
         }"
       />
     </UFormField>
@@ -97,7 +99,7 @@ const onSubmit = async (event: FormSubmitEvent<RegisterForm>): Promise<void> => 
       label="Email"
       name="email"
       :ui="{
-        label: 'text-base font-medium',
+        label: 'text-base lg:text-lg font-semibold',
       }"
     >
       <UInput
@@ -106,7 +108,7 @@ const onSubmit = async (event: FormSubmitEvent<RegisterForm>): Promise<void> => 
         placeholder="your.email@example.com"
         class="w-full"
         :ui="{
-          base: 'text-lg py-2 px-3',
+          base: 'text-base lg:text-xl py-2 px-4',
         }"
       />
     </UFormField>
@@ -115,7 +117,7 @@ const onSubmit = async (event: FormSubmitEvent<RegisterForm>): Promise<void> => 
       label="Пароль"
       name="password"
       :ui="{
-        label: 'text-base font-medium',
+        label: 'text-base lg:text-lg font-semibold',
       }"
     >
       <UInput
@@ -124,7 +126,7 @@ const onSubmit = async (event: FormSubmitEvent<RegisterForm>): Promise<void> => 
         placeholder="********"
         class="w-full"
         :ui="{
-          base: 'text-lg py-2 px-3',
+          base: 'text-base lg:text-xl py-2 px-4',
         }"
       />
     </UFormField>
@@ -133,7 +135,7 @@ const onSubmit = async (event: FormSubmitEvent<RegisterForm>): Promise<void> => 
       label="Подтверждение пароля"
       name="password_confirm"
       :ui="{
-        label: 'text-base font-medium',
+        label: 'text-base lg:text-lg font-semibold',
       }"
     >
       <UInput
@@ -142,7 +144,7 @@ const onSubmit = async (event: FormSubmitEvent<RegisterForm>): Promise<void> => 
         placeholder="********"
         class="w-full"
         :ui="{
-          base: 'text-lg py-2 px-3',
+          base: 'text-base lg:text-xl py-2 px-4',
         }"
       />
     </UFormField>
@@ -152,8 +154,7 @@ const onSubmit = async (event: FormSubmitEvent<RegisterForm>): Promise<void> => 
       label="Зарегистрироваться"
       block
       :loading="props.isLoading"
-      size="lg"
-      class="text-lg py-3 mt-2"
+      class="w-full md:w-fit justify-center md:text-lg"
     />
   </UForm>
 </template>

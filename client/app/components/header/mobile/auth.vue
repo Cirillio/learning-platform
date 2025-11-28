@@ -1,0 +1,21 @@
+<template>
+  <div class="space-y-1">
+    <UButton
+      block
+      to="/auth/login"
+      variant="subtle"
+      color="secondary"
+      icon="i-heroicons-arrow-right-end-on-rectangle"
+      label="Войти"
+      class="justify-start"
+    />
+    <UButton
+      block
+      to="/auth/register"
+      color="primary"
+      icon="i-heroicons-user-plus"
+      label="Регистрация"
+      class="justify-start"
+    />
+  </div>
+</template>

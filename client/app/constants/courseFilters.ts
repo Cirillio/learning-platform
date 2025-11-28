@@ -13,7 +13,7 @@ export const COURSE_PAGE_SIZE_DEFAULT = 6;
  * Default ordering for courses
  * Courses are ordered by creation date descending by default
  */
-export const COURSE_ORDERING_DEFAULT = "-created_at";
+export const COURSE_ORDERING_DEFAULT = undefined;
 
 /**
  * Minimum page size for courses pagination

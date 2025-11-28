@@ -18,11 +18,9 @@ const footerLinks: NavigationMenuItem[] = [
 </script>
 
 <template>
-  <UFooter
-    :ui="{
-      root: 'border-t border-primary/50',
-    }"
-  >
+  <UFooter :ui="{
+    root: 'border-t border-primary/50',
+  }">
     <template #left>
       <div class="flex flex-col gap-3 max-lg:items-center">
         <AppLogo :label="'Учебный портал'" />
@@ -33,27 +31,16 @@ const footerLinks: NavigationMenuItem[] = [
     </template>
 
     <div class="flex gap-1">
-      <UButton
-        v-for="link in footerLinks"
-        :key="link.label"
-        :to="link.to"
-        variant="link"
-        color="neutral"
-        class="hover:text-primary transition-all duration-150"
-      >
+      <UButton v-for="link in footerLinks" :key="link.label" :to="link.to" variant="link" color="neutral"
+        class="hover:text-primary transition-all duration-150">
         {{ link.label }}
       </UButton>
     </div>
 
     <template #right>
-      <UButton
-        icon="i-simple-icons-github"
-        color="neutral"
-        variant="ghost"
-        to="https://github.com"
-        target="_blank"
-        aria-label="GitHub"
-      />
+      <UButton icon="i-simple-icons-github" color="neutral" variant="ghost" to="https://github.com" target="_blank"
+        aria-label="GitHub" />
+      <UColorModeButton />
     </template>
   </UFooter>
 </template>

@@ -37,9 +37,9 @@ useHead({
 
     <h2 class="text-2xl font-semibold">С возвращением!</h2>
   </div>
-  <div class="w-full">
+  <div class="w-full flex flex-col max-md:items-center">
     <h2
-      class="text-3xl font-bold border-b-2 border-primary pb-2 w-fit text-gray-900 dark:text-white"
+      class="text-2xl lg:text-3xl font-bold border-b-2 border-primary pb-2 w-fit text-gray-900 dark:text-white"
     >
       Авторизация
     </h2>
@@ -52,7 +52,7 @@ useHead({
     <UAlert :title="authStore.error" color="error" variant="soft" />
   </div>
 
-  <div class="flex w-full justify-between items-center">
+  <div class="flex w-fit max-md:mx-auto justify-between items-center mt-4">
     <p class="text-sm text-gray-600 dark:text-gray-400">
       Нет аккаунта?
       <UButton
@@ -65,4 +65,13 @@ useHead({
       </UButton>
     </p>
   </div>
+
+  <UButton
+    label="На главную"
+    class="md:hidden mt-24 mx-auto"
+    variant="ghost"
+    color="neutral"
+    leading-icon="heroicons:arrow-left-16-solid"
+    to="/"
+  />
 </template>

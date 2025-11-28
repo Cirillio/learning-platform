@@ -9,7 +9,7 @@ export default defineNuxtPlugin(async () => {
   const ssrUser = useState<User | null>("ssr-user", () => null);
 
   // На сервере читаем из context и сохраняем в useState
-  if (process.server) {
+  if (import.meta.server) {
     const event = useRequestEvent();
     console.log("🔍 [SSR] Event context user:", event?.context.user);
     if (event?.context.user) {
@@ -23,7 +23,7 @@ export default defineNuxtPlugin(async () => {
   }
 
   // На клиенте используем данные из useState (гидратация из SSR)
-  if (process.client) {
+  if (import.meta.client) {
     console.log("🔍 [Client] SSR user:", ssrUser.value);
 
     if (ssrUser.value) {

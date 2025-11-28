@@ -9,7 +9,9 @@ const handleRegister = async (userData: RegisterForm): Promise<void> => {
   try {
     await register(userData);
   } catch (error: any) {
-    authStore.setError(error.data?.message || error.message || "Ошибка регистрации");
+    authStore.setError(
+      error.data?.message || error.message || "Ошибка регистрации"
+    );
   }
 };
 
@@ -37,14 +39,17 @@ useHead({
 
     <h2 class="text-2xl font-semibold">Добро пожаловать!</h2>
   </div>
-  <div class="w-full">
+  <div class="w-full flex flex-col max-md:items-center">
     <h2
-      class="text-3xl font-bold border-b-2 border-primary pb-2 w-fit text-gray-900 dark:text-white"
+      class="text-2xl lg:text-3xl font-bold border-b-2 border-primary pb-2 w-fit text-gray-900 dark:text-white"
     >
       Регистрация
     </h2>
 
-    <AuthRegisterForm :is-loading="authStore.isLoading" @submit="handleRegister" />
+    <AuthRegisterForm
+      :is-loading="authStore.isLoading"
+      @submit="handleRegister"
+    />
   </div>
 
   <!-- Error message -->
@@ -52,7 +57,7 @@ useHead({
     <UAlert :title="authStore.error" color="error" variant="soft" />
   </div>
 
-  <div class="flex w-full justify-between items-center">
+  <div class="flex w-fit max-md:mx-auto justify-between items-center mt-4">
     <p class="text-sm text-gray-600 dark:text-gray-400">
       Уже есть аккаунт?
       <UButton
@@ -65,4 +70,13 @@ useHead({
       </UButton>
     </p>
   </div>
+
+  <UButton
+    label="На главную"
+    class="md:hidden mt-24 mx-auto"
+    variant="ghost"
+    color="neutral"
+    leading-icon="heroicons:arrow-left-16-solid"
+    to="/"
+  />
 </template>

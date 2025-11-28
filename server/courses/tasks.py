@@ -1,9 +1,10 @@
+
 """
 Celery tasks для courses приложения.
 """
 from celery import shared_task
 from django.utils import timezone
-from django.core.mail import send_mail
+from django.core.mail import send_mail, get_connection
 from django.conf import settings
 from datetime import timedelta
 
@@ -45,26 +46,32 @@ def send_assignment_deadline_reminder(assignment_id):
                 
                 # Отправляем email
                 if student.email:
-                    send_mail(
-                        subject=f'Напоминание о дедлайне: {assignment.title}',
-                        message=f'''
-                        Здравствуйте, {student.get_full_name() or student.username}!
-                        
-                        Напоминаем, что приближается дедлайн сдачи задания "{assignment.title}".
-                        Курс: {assignment.lesson.course.title}
-                        Урок: {assignment.lesson.title}
-                        Срок сдачи: {assignment.due_date.strftime("%d.%m.%Y %H:%M")}
-                        
-                        Пожалуйста, не забудьте сдать задание вовремя!
-                        ''',
-                        from_email=settings.DEFAULT_FROM_EMAIL,
-                        recipient_list=[student.email],
-                        fail_silently=True,
-                    )
+                    clean_email = student.email.strip().replace('\n', '').replace('\r', '')
+                    with get_connection() as connection:
+                        send_mail(
+                            subject=f'Напоминание о дедлайне: {assignment.title}',
+                            message=f'''
+                            Здравствуйте, {student.get_full_name() or student.username}!
+                            
+                            Напоминаем, что приближается дедлайн сдачи задания "{assignment.title}".
+                            Курс: {assignment.lesson.course.title}
+                            Урок: {assignment.lesson.title}
+                            Срок сдачи: {assignment.due_date.strftime("%d.%m.%Y %H:%M")}
+                            
+                            Пожалуйста, не забудьте сдать задание вовремя!
+                            ''',
+                            from_email=settings.DEFAULT_FROM_EMAIL,
+                            recipient_list=[clean_email],
+                            fail_silently=False,
+                            connection=connection
+                        )
         
         return f'Reminder sent for assignment {assignment_id}'
     except Assignment.DoesNotExist:
         return f'Assignment {assignment_id} not found'
+    except Exception as e:
+        print(f"Error in send_assignment_deadline_reminder for assignment {assignment_id}: {e}")
+        raise
 
 
 @shared_task
@@ -119,28 +126,32 @@ def send_grade_notification(grade_id):
         
         # Отправляем email
         if student.email:
-            send_mail(
-                subject=f'Задание оценено: {assignment.title}',
-                message=f'''
-                Здравствуйте, {student.get_full_name() or student.username}!
-                
-                Ваше задание "{assignment.title}" было проверено.
-                
-                Курс: {assignment.lesson.course.title}
-                Урок: {assignment.lesson.title}
-                Баллы: {grade.score}/{assignment.max_score}
-                Преподаватель: {grade.graded_by.get_full_name() or grade.graded_by.username}
-                
-                {f"Комментарий: {grade.feedback}" if grade.feedback else ""}
-                ''',
-                from_email=settings.DEFAULT_FROM_EMAIL,
-                recipient_list=[student.email],
-                fail_silently=True,
-            )
+            clean_email = student.email.strip().replace('\n', '').replace('\r', '')
+            with get_connection() as connection:
+                send_mail(
+                    subject=f'Задание оценено: {assignment.title}',
+                    message=f'''
+                    Здравствуйте, {student.get_full_name() or student.username}!
+                    
+                    Ваше задание "{assignment.title}" было проверено.
+                    
+                    Курс: {assignment.lesson.course.title}
+                    Урок: {assignment.lesson.title}
+                    Баллы: {grade.score}/{assignment.max_score}
+                    Преподаватель: {grade.graded_by.get_full_name() or grade.graded_by.username}
+                    
+                    {f"Комментарий: {grade.feedback}" if grade.feedback else ""}
+                    ''',
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    recipient_list=[clean_email],
+                    fail_silently=False,
+                    connection=connection
+                )
         
         return f'Grade notification sent for grade {grade_id}'
     except Exception as e:
-        return f'Error sending grade notification: {str(e)}'
+        print(f"Error in send_grade_notification for grade {grade_id}: {e}")
+        raise
 
 
 @shared_task
@@ -172,25 +183,32 @@ def send_new_assignment_notification(assignment_id):
             
             # Отправляем email
             if student.email:
-                send_mail(
-                    subject=f'Новое задание: {assignment.title}',
-                    message=f'''
-                    Здравствуйте, {student.get_full_name() or student.username}!
-                    
-                    В курсе "{assignment.lesson.course.title}" добавлено новое задание.
-                    
-                    Урок: {assignment.lesson.title}
-                    Задание: {assignment.title}
-                    {f"Срок сдачи: {assignment.due_date.strftime('%d.%m.%Y %H:%M')}" if assignment.due_date else ""}
-                    
-                    Описание:
-                    {assignment.description}
-                    ''',
-                    from_email=settings.DEFAULT_FROM_EMAIL,
-                    recipient_list=[student.email],
-                    fail_silently=True,
-                )
+                clean_email = student.email.strip().replace('\n', '').replace('\r', '')
+                with get_connection() as connection:
+                    send_mail(
+                        subject=f'Новое задание: {assignment.title}',
+                        message=f'''
+                        Здравствуйте, {student.get_full_name() or student.username}!
+                        
+                        В курсе "{assignment.lesson.course.title}" добавлено новое задание.
+                        
+                        Урок: {assignment.lesson.title}
+                        Задание: {assignment.title}
+                        {f"Срок сдачи: {assignment.due_date.strftime('%d.%m.%Y %H:%M')}" if assignment.due_date else ""}
+                        
+                        Описание:
+                        {assignment.description}
+                        ''',
+                        from_email=settings.DEFAULT_FROM_EMAIL,
+                        recipient_list=[clean_email],
+                        fail_silently=False,
+                        connection=connection
+                    )
         
         return f'New assignment notification sent for {assignment_id}'
     except Assignment.DoesNotExist:
         return f'Assignment {assignment_id} not found'
+    except Exception as e:
+        print(f"Error in send_new_assignment_notification for assignment {assignment_id}: {e}")
+        raise
+

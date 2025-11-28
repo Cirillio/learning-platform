@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 defineEmits<{
   toggle: [];
 }>();
@@ -9,8 +9,8 @@ defineEmits<{
     @click="$emit('toggle')"
     variant="outline"
     color="neutral"
-    size="xl"
+    size="md"
+    label="Меню"
     icon="heroicons:bars-3"
-    class="p-3.5 rounded-sm"
   />
 </template>

@@ -6,23 +6,14 @@
           <h1 class="text-3xl font-bold text-gray-900 dark:text-white">
             Dashboard
           </h1>
-          <UButton
-            color="error"
-            variant="outline"
-            @click="handleLogout"
-            :loading="isLoading"
-          >
+          <UButton color="error" variant="outline" @click="handleLogout" :loading="isLoading">
             Выйти
           </UButton>
         </div>
 
         <div v-if="user" class="space-y-4">
           <div class="flex items-center space-x-4">
-            <UAvatar
-              :text="userInitials"
-              size="xl"
-              class="bg-primary-500"
-            />
+            <UAvatar size="xl" :src="user.avatar || undefined" />
             <div>
               <h2 class="text-2xl font-semibold text-gray-900 dark:text-white">
                 {{ user.first_name }} {{ user.last_name }}
@@ -57,11 +48,7 @@
 
             <div class="bg-gray-50 dark:bg-gray-900 rounded-lg p-4">
               <p class="text-sm text-gray-600 dark:text-gray-400">Статус</p>
-              <UBadge
-                :color="user.is_active ? 'success' : 'error'"
-                variant="subtle"
-                size="lg"
-              >
+              <UBadge :color="user.is_active ? 'success' : 'error'" variant="subtle" size="lg">
                 {{ user.is_active ? 'Активен' : 'Неактивен' }}
               </UBadge>
             </div>

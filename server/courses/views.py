@@ -54,7 +54,7 @@ class CourseViewSet(viewsets.ModelViewSet):
     """
     queryset = Course.objects.all()
     pagination_class = CoursePagination  # <-- добавь это
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = []
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ['title', 'description', 'short_description']
     ordering_fields = ['created_at', 'title', 'difficulty']
@@ -83,14 +83,18 @@ class CourseViewSet(viewsets.ModelViewSet):
         if status_filter:
             queryset = queryset.filter(status=status_filter)
         
-        # Студенты видят только опубликованные курсы (кроме тех, на которые записаны)
-        if self.request.user.is_authenticated and self.request.user.role == 'student':
+        # Неавторизованные пользователи и студенты видят только опубликованные курсы
+        # (студенты также видят курсы, на которые записаны)
+        if not self.request.user.is_authenticated:
+            queryset = queryset.filter(status='published')
+        elif self.request.user.role == 'student':
             enrolled_courses = self.request.user.course_enrollments.filter(
                 is_active=True
             ).values_list('course_id', flat=True)
             queryset = queryset.filter(
                 Q(status='published') | Q(id__in=enrolled_courses)
             )
+        # Преподаватели видят все курсы
         
         return queryset.select_related('teacher', 'category').annotate(
             enrollments_count=Count('enrollments', filter=Q(enrollments__is_active=True))
@@ -283,8 +287,9 @@ class LessonViewSet(viewsets.ModelViewSet):
         if course_slug:
             queryset = queryset.filter(course__slug=course_slug)
         
-        # Студенты видят только опубликованные уроки
-        if self.request.user.is_authenticated and self.request.user.role == 'student':
+        # Неавторизованные пользователи и студенты видят только опубликованные уроки
+        # Преподаватели видят все уроки
+        if not self.request.user.is_authenticated or self.request.user.role == 'student':
             queryset = queryset.filter(is_published=True)
         
         return queryset.select_related('course').prefetch_related('materials', 'assignments')
@@ -312,10 +317,14 @@ class AssignmentViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = super().get_queryset()
         
-        # Фильтрация по уроку
-        lesson_id = self.request.query_params.get('lesson', None)
-        if lesson_id:
-            queryset = queryset.filter(lesson_id=lesson_id)
+        # Фильтрация по уроку (поддержка как ID, так и slug)
+        lesson_param = self.request.query_params.get('lesson', None)
+        if lesson_param:
+            # Попробуем сначала как slug, затем как ID
+            if lesson_param.isdigit():
+                queryset = queryset.filter(lesson_id=lesson_param)
+            else:
+                queryset = queryset.filter(lesson__slug=lesson_param)
         
         # Фильтрация по курсу
         course_slug = self.request.query_params.get('course', None)

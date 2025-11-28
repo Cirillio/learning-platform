@@ -8,7 +8,7 @@ const handleLogout = async (): Promise<void> => {
 
 // Handle cancel - go back
 const handleCancel = (): void => {
-  if (process.client) {
+  if (import.meta.client) {
     window.history.back();
   } else {
     navigateTo("/");
@@ -42,11 +42,16 @@ useHead({
     >
       <template #header>
         <div class="flex flex-col gap-2 items-center">
-          <UIcon name="i-heroicons-arrow-right-on-rectangle" class="size-8 text-error" />
+          <UIcon
+            name="i-heroicons-arrow-right-on-rectangle"
+            class="size-8 text-error"
+          />
           <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
             Выход из системы
           </h1>
-          <p class="text-gray-600 dark:text-gray-300">Подтверждение выхода из системы</p>
+          <p class="text-gray-600 dark:text-gray-300">
+            Подтверждение выхода из системы
+          </p>
         </div>
       </template>
       <template #body>
@@ -54,7 +59,7 @@ useHead({
         <UCard class="mt-8 mb-8">
           <div class="flex items-center gap-4">
             <UAvatar
-              :src="user?.profile?.avatar ?? undefined"
+              :src="user?.avatar ?? undefined"
               :alt="`${user?.first_name} ${user?.last_name}`"
               size="xl"
               class="text-primary"
@@ -107,7 +112,10 @@ useHead({
             @click="handleLogout"
           >
             <template #leading>
-              <UIcon class="size-5" name="i-heroicons-arrow-right-on-rectangle" />
+              <UIcon
+                class="size-5"
+                name="i-heroicons-arrow-right-on-rectangle"
+              />
             </template>
             Выйти из системы
           </UButton>

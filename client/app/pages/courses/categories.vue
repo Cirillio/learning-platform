@@ -1,7 +1,5 @@
 <script lang="ts" setup>
-definePageMeta({
-  layout: "courses-catalog",
-});
+
 
 const { getCategories } = useCourses();
 const { data: categoriesResponse, pending, error } = await getCategories();
@@ -22,15 +20,9 @@ onUnmounted(() => {
 <template>
   {{ error }}
   <UContainer>
-    <UPageHeader
-      title="Категории курсов"
-      description="Выберите направление, которое вам интересно, и начните обучение."
-    />
+    <UPageHeader title="Категории курсов"
+      description="Выберите направление, которое вам интересно, и начните обучение." />
 
-    <CoursesCategoryList
-      :categories="categoriesResponse?.results"
-      :loading="pending"
-      :error="error ?? null"
-    />
+    <CoursesCategoryList :categories="categoriesResponse?.results" :loading="pending" :error="error ?? null" />
   </UContainer>
 </template>

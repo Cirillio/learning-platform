@@ -6,17 +6,14 @@
       to="/auth/login"
       variant="outline"
       color="secondary"
-      size="lg"
       icon="heroicons:user-circle"
-      class="hidden text-lg *:size-7 py-3 px-4 sm:inline-flex"
+      label="Войти"
     />
-
     <UButton
-      size="lg"
       to="/auth/register"
       color="primary"
       icon="heroicons:user-plus"
-      class="text-lg py-3 px-4 *:size-7"
+      label="Регистрация"
     />
   </div>
 </template>

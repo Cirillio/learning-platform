@@ -134,12 +134,17 @@ class LessonSerializer(serializers.ModelSerializer):
     Дополнительные поля:
     - materials_count: количество прикрепленных материалов
     """
+    course = serializers.SlugRelatedField(
+        slug_field='slug',
+        queryset=Course.objects.all(),
+        required=True
+    )
     materials_count = serializers.SerializerMethodField()
 
     class Meta:
         model = Lesson
         fields = [
-            'id', 'title', 'slug', 'description', 'order', 'duration_minutes',
+            'id', 'course', 'title', 'slug', 'description', 'order', 'duration_minutes',
             'is_published', 'video_url', 'materials_count', 'created_at', 'updated_at'
         ]
 
@@ -157,7 +162,9 @@ class LessonDetailSerializer(LessonSerializer):
     - content: полный текст урока
     - materials: список всех материалов урока
     - assignments_count: количество заданий в уроке
+    - course: вложенный сериализатор курса
     """
+    course = CourseSerializer(read_only=True)
     materials = LessonMaterialSerializer(many=True, read_only=True)
     assignments_count = serializers.SerializerMethodField()
 
@@ -197,6 +204,11 @@ class AssignmentSerializer(serializers.ModelSerializer):
     - submissions_count: количество отправленных решений
     - is_submitted: отправил ли текущий студент решение
     """
+    lesson = serializers.SlugRelatedField(
+        slug_field='slug',
+        queryset=Lesson.objects.all(),
+        required=True
+    )
     files = AssignmentFileSerializer(many=True, read_only=True)
     submissions_count = serializers.SerializerMethodField()
     is_submitted = serializers.SerializerMethodField()
@@ -204,7 +216,7 @@ class AssignmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Assignment
         fields = [
-            'id', 'title', 'description', 'instructions', 'max_score',
+            'id', 'lesson', 'title', 'description', 'instructions', 'max_score',
             'due_date', 'is_required', 'allow_late_submission',
             'files', 'submissions_count', 'is_submitted',
             'created_at', 'updated_at'
