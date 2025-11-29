@@ -62,13 +62,6 @@ const imageLoaded = ref(false);
 const onImageLoad = () => {
   imageLoaded.value = true;
 };
-
-const stats = ref([
-  { label: "Категорий", value: 8 },
-  { label: "Курсов", value: 120 },
-  { label: "Студентов", value: 3500 },
-  { label: "Преподавателей", value: 85 },
-]);
 </script>
 
 <template>

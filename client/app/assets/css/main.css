@@ -1,9 +1,15 @@
 @import "tailwindcss";
 @import "@nuxt/ui";
 
+@layer utilities {
+  .main-container {
+    @apply sm:px-8 px-2 lg:px-24 xl:px-32 2xl:px-40;
+  }
+}
+
 @layer theme {
   :root {
-    --ui-radius: 0.125rem;
+    --ui-radius: 0.25rem;
     --font-sans: "Mulish", ui-sans-serif, system-ui, -apple-system,
       BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial,
       sans-serif;

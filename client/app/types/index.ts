@@ -38,6 +38,7 @@ export interface Course {
   id: number;
   title: string;
   slug: string;
+  abbr: string;
   short_description: string;
   teacher: number; // ID преподавателя
   teacher_name: string;

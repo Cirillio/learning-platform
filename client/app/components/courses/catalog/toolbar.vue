@@ -91,10 +91,12 @@ const hasActiveFilters = computed(() => {
     <UTooltip text="Сбросить фильтры">
       <UButton
         icon="i-heroicons-x-mark"
-        color="neutral"
-        variant="ghost"
+        :color="isLoading ? 'neutral' : !hasActiveFilters ? 'neutral' : 'error'"
+        variant="outline"
         :disabled="isLoading || !hasActiveFilters"
         @click="$emit('reset')"
+        size="lg"
+        class="shadow-xs"
       />
     </UTooltip>
 
@@ -105,6 +107,8 @@ const hasActiveFilters = computed(() => {
       :items="categoryOptionsWithDefault"
       :disabled="isLoading"
       class="flex-1"
+      color="secondary"
+      size="lg"
     />
 
     <!-- Difficulty -->
@@ -114,6 +118,8 @@ const hasActiveFilters = computed(() => {
       :items="difficultyOptionsWithDefault"
       :disabled="isLoading"
       class="flex-1"
+      color="secondary"
+      size="lg"
     />
 
     <!-- Ordering -->
@@ -123,6 +129,8 @@ const hasActiveFilters = computed(() => {
       :items="orderingOptionsWithDefault"
       :disabled="isLoading"
       class="flex-1"
+      color="secondary"
+      size="lg"
     />
   </div>
 </template>

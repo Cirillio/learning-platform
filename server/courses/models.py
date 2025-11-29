@@ -17,6 +17,7 @@ class Category(models.Model):
         unique=True,
         verbose_name='Слаг'
     )
+
     description = models.TextField(
         blank=True,
         verbose_name='Описание'
@@ -65,6 +66,13 @@ class Course(models.Model):
         unique=True,
         verbose_name='Слаг'
     )
+
+    abbr = models.TextField(
+        max_length=10,
+        blank=True,
+        verbose_name='Аббревиатура'
+    )
+
     description = models.TextField(
         verbose_name='Описание'
     )

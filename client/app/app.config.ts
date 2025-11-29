@@ -23,5 +23,21 @@ export default defineAppConfig({
         base: "cursor-pointer transition duration-150 ease-in-out",
       },
     },
+
+    select: {
+      slots: {
+        base: "!cursor-pointer transition duration-150 ease-in-out shadow-xs",
+        item: "cursor-pointer hover:bg-primary/10 transition duration-150 ease-in-out",
+        label: "!text-primary",
+        value: "font-semibold",
+        content: "!bg-default/90 !backdrop-blur-sm shadow-md",
+      },
+    },
+
+    input: {
+      slots: {
+        base: "transition duration-150 ease-in-out",
+      },
+    },
   },
 });

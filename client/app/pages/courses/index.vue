@@ -88,6 +88,7 @@ useIntersectionObserver(
   (entries) => {
     const entry = entries[0];
     console.log("intersecting");
+    console.log({ ...entry });
     // TypeScript требует гарантии, что entry существует
     if (!entry) return;
 
@@ -98,68 +99,86 @@ useIntersectionObserver(
 </script>
 
 <template>
-  <div class="flex flex-col gap-4 py-16">
-    <LayoutContainer>
-      <div class="flex flex-1 flex-col">
-        <!-- Header -->
-        <UPageCard
-          title="Каталог курсов"
-          description="Изучайте новые навыки с нашими профессиональными курсами."
-          icon="heroicons:academic-cap"
-          orientation="horizontal"
-          spotlight
-          spotlight-color="primary"
-          :ui="{
-            root: 'p-6',
-            leadingIcon: 'size-8',
-            container: ' !items-start flex-col !flex',
-            title: 'text-5xl font-bold text-gray-900 dark:text-white',
-            description: 'text-gray-500 text-xl dark:text-gray-400',
-          }"
-        >
-          <!-- Search -->
-          <div class="flex w-full max-w-md mt-8 gap-4 items-center">
-            <UInput
-              v-model="localSearch"
-              leading-icon="i-heroicons-magnifying-glass-20-solid"
-              :trailing="false"
-              placeholder="Поиск курсов..."
-              :disabled="coursesPending"
-              class="w-full"
-              size="lg"
-              @keyup.enter="onSearch"
-            >
-              <template #trailing>
+  <div class="">
+    <section
+      class="relative shadow-sm z-20 flex border-b border-muted"
+      aria-labelledby="hero-title"
+    >
+      <NuxtImg
+        :src="'/courses_page_hero.png'"
+        class="object-cover object-center w-full h-[386px] lg:h-[576px]"
+      />
+      <div
+        class="absolute top-2/5 md:top-2/5 left-0 right-0 bottom-0 z-10 bg-linear-to-t from-black to-black/0"
+      ></div>
+      <LayoutContainer
+        class="absolute z-20 left-0 right-0 top-0 bottom-0 py-8 md:py-16"
+      >
+        <div class="flex flex-col gap-6 items-start size-full justify-between">
+          <div class="flex max-xl:gap-2 flex-col justify-end h-full w-full">
+            <div class="flex w-full flex-col gap-4">
+              <div
+                class="flex max-w-5xl flex-col text-white justify-between h-full gap-1 md:gap-2"
+              >
+                <h1
+                  id="hero-title"
+                  class="text-3xl md:text-5xl lg:text-7xl text-balance max-md:font-bold font-medium text-shadow-md"
+                >
+                  Каталог курсов
+                </h1>
+                <h2
+                  class="text-base md:text-xl max-md:font-normal font-extralight text-pretty text-shadow-md"
+                >
+                  Изучайте новые навыки с нашими профессиональными курсами.
+                </h2>
+              </div>
+              <!-- Search -->
+              <div class="flex w-full max-w-lg gap-4 items-center">
+                <UInput
+                  v-model="localSearch"
+                  leading-icon="i-heroicons-magnifying-glass-20-solid"
+                  :trailing="false"
+                  placeholder="Поиск курсов..."
+                  :disabled="coursesPending"
+                  class="w-full shadow-md"
+                  size="xl"
+                  variant="subtle"
+                  @keyup.enter="onSearch"
+                >
+                  <template #trailing>
+                    <UButton
+                      v-if="localSearch !== ''"
+                      color="neutral"
+                      variant="link"
+                      icon="i-heroicons-x-mark-20-solid"
+                      :padded="false"
+                      @click="clearSearch"
+                    />
+                  </template>
+                </UInput>
                 <UButton
-                  v-if="localSearch !== ''"
-                  color="neutral"
-                  variant="link"
-                  icon="i-heroicons-x-mark-20-solid"
-                  :padded="false"
-                  @click="clearSearch"
+                  label="Найти"
+                  color="primary"
+                  size="xl"
+                  class="shadow-md"
+                  :disabled="coursesPending"
+                  @click="onSearch"
                 />
-              </template>
-            </UInput>
-            <UButton
-              label="Поиск"
-              color="primary"
-              size="lg"
-              :disabled="coursesPending"
-              @click="onSearch"
-            />
+              </div>
+            </div>
           </div>
-        </UPageCard>
-      </div>
-    </LayoutContainer>
+        </div>
+      </LayoutContainer>
+    </section>
 
     <!-- Toolbar -->
     <LayoutContainer
-      class="relative sticky-toolbar border-b border-muted bg-default/90 backdrop-blur-xl transition-all duration-50"
-      :class="[isStuck ? 'py-2' : 'py-4']"
+      class="relative z-10! sticky-toolbar shadow-xs border-b border-muted bg-default/90 backdrop-blur-xl transition-all duration-300 ease-in-out"
+      :class="[isStuck ? 'py-2' : 'py-6']"
     >
       <div
         ref="sentinelRef"
-        class="filters-sentinel absolute left-0 invisible max-w-md z-60 h-px"
+        class="filters-sentinel invisible absolute -top-2 left-0 right-0 bg-primary z-60 h-px"
       ></div>
       <CoursesCatalogToolbar
         :category="selectedCategory?.value"
@@ -185,10 +204,10 @@ useIntersectionObserver(
       />
     </LayoutContainer>
 
-    <LayoutContainer>
+    <LayoutContainer class="mt-8">
       <!-- Курсы -->
-      <CoursesItemGrid v-if="courses.length > 0" :courses="courses">
-        <CoursesItemCard
+      <CoursesCatalogCardGrid v-if="courses.length > 0" :courses="courses">
+        <CoursesCatalogCard
           v-for="course in courses"
           :key="course.id"
           :course="course"
@@ -197,7 +216,7 @@ useIntersectionObserver(
           :pending="!isHydrated"
           v-on:enroll="() => enrollToCourse(course.slug)"
         />
-      </CoursesItemGrid>
+      </CoursesCatalogCardGrid>
 
       <!-- TODO: Courses card skeletons -->
 
@@ -223,11 +242,12 @@ useIntersectionObserver(
         <UPagination
           variant="outline"
           color="neutral"
+          :active-color="'secondary'"
+          active-variant="subtle"
           :page="currentPage"
           :total="totalItems"
           :items-per-page="PAGE_SIZE"
           @update:page="updatePage"
-          :show-controls="false"
           :ui="{
             item: 'cursor-pointer',
           }"
@@ -244,10 +264,10 @@ useIntersectionObserver(
 .sticky-toolbar {
   position: sticky;
   top: calc((var(--header-el-height, 49px) - 0px));
-  z-index: 30;
+  z-index: 80;
 }
 
 .filters-sentinel {
-  transform: translateY(calc((var(--header-el-height, 49px) + 18px) * -1));
+  transform: translateY(calc((var(--header-el-height, 49px)) * -1));
 }
 </style>

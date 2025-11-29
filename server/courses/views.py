@@ -8,7 +8,7 @@ from django.utils import timezone
 from rest_framework.views import APIView
 from django.urls import reverse
 
-from courses.pagination import CoursePagination # Added this import
+from courses.pagination import CoursePagination, CategoryPagination # Added this import
 
 from .models import (
     Category, Course, CourseEnrollment, Lesson, LessonMaterial,
@@ -33,6 +33,10 @@ class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
+    pagination_class = CategoryPagination
+    filter_backends = [filters.OrderingFilter]
+    ordering_fields = ['created_at', 'name']
+    ordering = ['-created_at']  # По умолчанию сначала новые
     lookup_field = 'slug'
 
 
