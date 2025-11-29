@@ -10,7 +10,15 @@ export default defineNuxtConfig({
     "@nuxtjs/google-fonts",
     "@vueuse/nuxt",
   ],
-  vite: { plugins: [tailwindcss()] },
+  vite: {
+    plugins: [tailwindcss()],
+    server: {
+      hmr: {
+        clientPort: 3001,
+      },
+    },
+  },
+
   ui: {
     theme: {
       colors: [
@@ -25,6 +33,7 @@ export default defineNuxtConfig({
       ],
     },
   },
+
   css: ["./app/assets/css/main.css"],
 
   googleFonts: {
@@ -38,6 +47,7 @@ export default defineNuxtConfig({
 
   devServer: {
     port: 3001,
+    host: "0.0.0.0",
   },
   // Runtime config для API URL
   runtimeConfig: {

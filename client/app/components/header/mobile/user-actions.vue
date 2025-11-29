@@ -17,6 +17,7 @@ const avatarProps = computed<AvatarProps | undefined>(() => {
 <template>
   <UButton
     to="/my/profile"
+    icon="heroicons:user"
     :label="user?.first_name"
     variant="outline"
     color="neutral"
@@ -24,10 +25,32 @@ const avatarProps = computed<AvatarProps | undefined>(() => {
     class="justify-start"
   />
 
+  <USeparator />
+
   <UButton
-    label="Мои курсы"
+    icon="heroicons:academic-cap"
+    label="Мои доска"
     class="justify-start"
     block
-    to="/my/dashboard/courses"
+    variant="subtle"
+    to="/my/dashboard"
+  />
+
+  <UButton
+    label="Корзина"
+    variant="subtle"
+    icon="heroicons:shopping-bag"
+    color="secondary"
+    block
+    class="justify-start"
+  />
+
+  <UButton
+    label="Уведомления"
+    variant="subtle"
+    icon="heroicons:bell"
+    color="info"
+    block
+    class="justify-start"
   />
 </template>
