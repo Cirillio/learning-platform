@@ -99,7 +99,7 @@ useIntersectionObserver(
 </script>
 
 <template>
-  <div class="">
+  <div class="bg-default">
     <section
       class="relative shadow-sm z-20 flex border-b border-muted"
       aria-labelledby="hero-title"
@@ -173,8 +173,8 @@ useIntersectionObserver(
 
     <!-- Toolbar -->
     <LayoutContainer
-      class="relative z-10! sticky-toolbar shadow-xs border-b border-muted bg-default/90 backdrop-blur-xl transition-all duration-300 ease-in-out"
-      :class="[isStuck ? 'py-2' : 'py-6']"
+      class="relative z-10! sticky-toolbar shadow-xs border-b border-muted bg-default backdrop-blur-xl transition-all duration-300 ease-in-out"
+      :class="[isStuck ? 'py-2 bg-default/90' : 'py-6']"
     >
       <div
         ref="sentinelRef"
@@ -220,7 +220,10 @@ useIntersectionObserver(
 
       <!-- TODO: Courses card skeletons -->
 
-      <div v-else-if="!coursesPending" class="text-center py-12 text-gray-500">
+      <div
+        v-else-if="!coursesPending"
+        class="text-center py-12 text-neutral-500"
+      >
         Курсы не найдены
       </div>
 

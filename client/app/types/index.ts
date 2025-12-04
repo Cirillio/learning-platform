@@ -85,14 +85,17 @@ export interface CourseFiltersResponse {
 }
 
 // Типы для параметров запросов
-export interface CourseFilters {
+export interface PaginationParams {
+  page?: number;
+  page_size?: number;
+}
+
+export interface CourseFilters extends PaginationParams {
   category?: string;
   difficulty?: string;
   status?: string;
   search?: string;
   ordering?: string;
-  page?: number;
-  page_size?: number;
 }
 
 export interface CoursesResponse {
@@ -135,4 +138,14 @@ export interface UnenrollResponse {
   detail: string;
   enrollment: Omit<CourseEnrollment, "enrolled_at"> & { unenrolled_at: string };
   course: CourseEnrollmentResponse;
+}
+
+export interface Lesson {
+  id: number;
+  title: string;
+  description: string;
+  duration_minutes: number | null;
+  order: number;
+  is_published: boolean;
+  video_url?: string;
 }

@@ -8,19 +8,17 @@ useSeoMeta({
 </script>
 
 <template>
-  <div>
+  <div class="space-y-2">
     <!-- Hero Section -->
     <HomeSectionsHero />
 
-    <UContainer>
-      <!-- Features Section -->
-      <HomeSectionsFeatures />
+    <!-- Features Section -->
+    <HomeSectionsFeaturedCategories />
 
-      <!-- Testimonials Section -->
-      <HomeSectionsTestimonials />
+    <!-- Testimonials Section -->
+    <HomeSectionsTestimonials />
 
-      <!-- CTA Section -->
-      <HomeSectionsCta
-    /></UContainer>
+    <!-- CTA Section -->
+    <HomeSectionsCta />
   </div>
 </template>

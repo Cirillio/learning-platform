@@ -107,7 +107,7 @@ const difficultyBadge = computed(() => {
         />
       </NuxtLink>
       <p
-        class="text-xs text-balance md:text-base text-gray-500 dark:text-gray-400 line-clamp-2 overflow-hidden"
+        class="text-xs text-balance md:text-base text-neutral-500 dark:text-neutral-400 line-clamp-2 overflow-hidden"
       >
         {{ course.short_description }}
       </p>
@@ -115,7 +115,7 @@ const difficultyBadge = computed(() => {
       <USeparator class="sm:hidden mt-auto" />
 
       <div class="flex justify-between mt-auto gap-2">
-        <ul class="flex gap-2 text-sm text-muted">
+        <ul class="flex gap-2 text-sm text-neutral-500 dark:text-neutral-400">
           <li>
             <span class="font-extrabold">·</span>
             {{ course.duration_weeks }} нед.
@@ -125,7 +125,7 @@ const difficultyBadge = computed(() => {
             {{ course.enrolled_count }} чел.
           </li>
         </ul>
-        <div class="flex gap-1 text-sm text-muted">
+        <div class="flex gap-1 text-sm text-neutral-500 dark:text-neutral-400">
           <span class="font-extrabold">·</span>
           <span :class="['text-' + difficultyBadge.color]">
             {{ difficultyBadge.label }}

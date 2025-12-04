@@ -40,7 +40,9 @@ defineProps<{
         <h3 class="text-lg font-bold">{{ category.name }}</h3>
       </div>
 
-      <p class="text-gray-500 dark:text-gray-400">{{ category.description }}</p>
+      <p class="text-neutral-500 dark:text-neutral-400">
+        {{ category.description }}
+      </p>
 
       <template #footer>
         <UButton

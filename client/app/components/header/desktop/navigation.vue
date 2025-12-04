@@ -40,7 +40,9 @@ const mainActions = computed<NavigationMenuItem[]>(() => [
 </script>
 
 <template>
-  <LayoutContainer class="flex justify-between border-b border-muted py-1">
+  <LayoutContainer
+    class="flex justify-between bg-default border-b border-muted py-1"
+  >
     <div class="flex items-center gap-4">
       <NuxtLink v-for="item in infoActions" :key="item.label" :to="item.to">
         <UButton

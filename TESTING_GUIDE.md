@@ -15,8 +15,8 @@
 
 ### 1.1. Регистрация пользователя (Student)
 
-**Метод:** `POST`  
-**URL:** `/auth/register/`  
+**Метод:** `POST`
+**URL:** `/auth/register/`
 **Headers:**
 
 ```
@@ -61,8 +61,8 @@ Content-Type: application/json
 
 ### 1.1.2. Регистрация пользователя (Teacher)
 
-**Метод:** `POST`  
-**URL:** `/auth/register/`  
+**Метод:** `POST`
+**URL:** `/auth/register/`
 **Headers:**
 
 ```
@@ -105,8 +105,8 @@ Content-Type: application/json
 
 ### 1.2. Авторизация (Login)
 
-**Метод:** `POST`  
-**URL:** `/auth/login/`  
+**Метод:** `POST`
+**URL:** `/auth/login/`
 **Headers:**
 
 ```
@@ -147,8 +147,8 @@ Content-Type: application/json
 
 ### 1.3. Обновление токена
 
-**Метод:** `POST`  
-**URL:** `/auth/refresh/`  
+**Метод:** `POST`
+**URL:** `/auth/refresh/`
 **Headers:**
 
 ```
@@ -175,8 +175,8 @@ Content-Type: application/json
 
 ### 1.4. Выход (Logout)
 
-**Метод:** `POST`  
-**URL:** `/auth/logout/`  
+**Метод:** `POST`
+**URL:** `/auth/logout/`
 **Headers:**
 
 ```
@@ -199,8 +199,8 @@ Content-Type: application/json
 
 ### 1.5. Просмотр профиля
 
-**Метод:** `GET`  
-**URL:** `/auth/profile/`  
+**Метод:** `GET`
+**URL:** `/auth/profile/`
 **Authorization:** Требуется (cookies)
 
 **Пример ответа (200 OK):**
@@ -236,8 +236,8 @@ Content-Type: application/json
 
 ### 1.6. Редактирование профиля
 
-**Метод:** `PATCH`  
-**URL:** `/auth/profile/`  
+**Метод:** `PATCH`
+**URL:** `/auth/profile/`
 **Headers:**
 
 ```
@@ -293,8 +293,8 @@ Content-Type: application/json
 
 ### 2.1. Создание курса (только для преподавателей)
 
-**Метод:** `POST`  
-**URL:** `/courses/`  
+**Метод:** `POST`
+**URL:** `/courses/`
 **Headers:**
 
 ```
@@ -356,9 +356,7 @@ Content-Type: application/json
 
 ### 2.2. Просмотр всех курсов (с фильтрацией и сортировкой)
 
-**Метод:** `GET`  
-**URL:** `/courses/`  
-**Query Parameters (опционально):**
+**Метод:** `GET`**URL:** `/courses/`**Query Parameters (опционально):**
 
 - `category=<category_slug>` - фильтр по категории (используй **slug**, не ID)
 - `difficulty=<beginner|intermediate|advanced>` - фильтр по сложности
@@ -413,8 +411,8 @@ Content-Type: application/json
 
 ### 2.3. Просмотр деталей курса
 
-**Метод:** `GET`  
-**URL:** `/courses/<slug>/`  
+**Метод:** `GET`
+**URL:** `/courses/<slug>/`
 **Пример:** `/courses/osnovy-python/`
 
 **Пример ответа (200 OK):**
@@ -457,9 +455,9 @@ Content-Type: application/json
 
 ### 2.4. Записаться на курс (для студентов)
 
-**Метод:** `POST`  
-**URL:** `/courses/<slug>/enroll/`  
-**Пример:** `/courses/osnovy-python/enroll/`  
+**Метод:** `POST`
+**URL:** `/courses/<slug>/enroll/`
+**Пример:** `/courses/osnovy-python/enroll/`
 **Authorization:** Требуется (cookies, роль: student)
 
 **Body:** Не требуется
@@ -493,8 +491,8 @@ Content-Type: application/json
 
 ### 2.5. Отписаться от курса
 
-**Метод:** `POST`  
-**URL:** `/courses/<slug>/unenroll/`  
+**Метод:** `POST`
+**URL:** `/courses/<slug>/unenroll/`
 **Authorization:** Требуется (cookies, роль: student)
 
 **Пример ответа (200 OK):**
@@ -524,7 +522,7 @@ Content-Type: application/json
 
 ### 2.6. Получить опции фильтров
 
-**Метод:** `GET`  
+**Метод:** `GET`
 **URL:** `/courses/filters/`
 
 **Пример ответа (200 OK):**
@@ -588,8 +586,8 @@ Content-Type: application/json
 
 ### 3.1. Создание урока (только для преподавателей)
 
-**Метод:** `POST`  
-**URL:** `/lessons/`  
+**Метод:** `POST`
+**URL:** `/lessons/`
 **Headers:**
 
 ```
@@ -644,8 +642,8 @@ Content-Type: application/json
 
 ### 3.2. Просмотр всех уроков курса
 
-**Метод:** `GET`  
-**URL:** `/lessons/?course=<course_slug>`  
+**Метод:** `GET`
+**URL:** `/lessons/?course=<course_slug>`
 **Пример:** `/lessons/?course=osnovy-python`
 
 **Пример ответа (200 OK):**
@@ -694,8 +692,8 @@ Content-Type: application/json
 
 ### 3.3. Просмотр деталей урока
 
-**Метод:** `GET`  
-**URL:** `/lessons/<lesson_slug>/`  
+**Метод:** `GET`
+**URL:** `/lessons/<lesson_slug>/`
 **Пример:** `/lessons/vvedenie-v-python/`
 
 **Пример ответа (200 OK):**
@@ -759,8 +757,8 @@ Content-Type: application/json
 
 ### 4.1. Создание задания (только для преподавателей)
 
-**Метод:** `POST`  
-**URL:** `/assignments/`  
+**Метод:** `POST`
+**URL:** `/assignments/`
 **Headers:**
 
 ```
@@ -817,11 +815,11 @@ Content-Type: application/json
 
 ### 4.2. Просмотр всех заданий урока
 
-**Метод:** `GET`  
-**URL:** `/assignments/?lesson=<lesson_slug>`  
+**Метод:** `GET`
+**URL:** `/assignments/?lesson=<lesson_slug>`
 **Пример:** `/assignments/?lesson=vvedenie-v-python`
 
-**Альтернативно, можно фильтровать по курсу:**  
+**Альтернативно, можно фильтровать по курсу:**
 `/assignments/?course=<course_slug>`
 
 **Пример ответа (200 OK):**
@@ -858,8 +856,8 @@ Content-Type: application/json
 
 ### 4.3. Просмотр деталей задания
 
-**Метод:** `GET`  
-**URL:** `/assignments/<assignment_id>/`  
+**Метод:** `GET`
+**URL:** `/assignments/<assignment_id>/`
 **Пример:** `/assignments/1/`
 
 **Пример ответа (200 OK):**
@@ -900,8 +898,8 @@ Content-Type: application/json
 
 ### 5.1. Отправка ответа на задание (студент)
 
-**Метод:** `POST`  
-**URL:** `/submissions/`  
+**Метод:** `POST`
+**URL:** `/submissions/`
 **Headers:**
 
 ```
@@ -956,8 +954,8 @@ content: "Мой ответ на задание:\n\nprint('Hello, World!')"
 
 ### 5.2. Просмотр своих ответов (студент)
 
-**Метод:** `GET`  
-**URL:** `/submissions/`  
+**Метод:** `GET`
+**URL:** `/submissions/`
 **Authorization:** Требуется (cookies, роль: student)
 
 **Query Parameters (опционально):**
@@ -995,9 +993,9 @@ content: "Мой ответ на задание:\n\nprint('Hello, World!')"
 
 ### 5.3. Просмотр всех ответов студентов (преподаватель)
 
-**Метод:** `GET`  
-**URL:** `/submissions/?assignment=<assignment_id>`  
-**Пример:** `/submissions/?assignment=1`  
+**Метод:** `GET`
+**URL:** `/submissions/?assignment=<assignment_id>`
+**Пример:** `/submissions/?assignment=1`
 **Authorization:** Требуется (cookies, роль: teacher)
 
 **Пример ответа (200 OK):**
@@ -1044,8 +1042,8 @@ content: "Мой ответ на задание:\n\nprint('Hello, World!')"
 
 ### 5.4. Выставление оценки (преподаватель)
 
-**Метод:** `POST`  
-**URL:** `/grades/`  
+**Метод:** `POST`
+**URL:** `/grades/`
 **Headers:**
 
 ```
@@ -1094,8 +1092,8 @@ Content-Type: application/json
 
 ### 5.5. Просмотр оценок (студент)
 
-**Метод:** `GET`  
-**URL:** `/grades/`  
+**Метод:** `GET`
+**URL:** `/grades/`
 **Authorization:** Требуется (cookies, роль: student)
 
 **Query Parameters (опционально):**
@@ -1135,7 +1133,7 @@ Content-Type: application/json
 
 ### 6.1. Просмотр всех категорий
 
-**Метод:** `GET`  
+**Метод:** `GET`
 **URL:** `/categories/`
 
 **Пример ответа (200 OK):**
@@ -1172,8 +1170,8 @@ Content-Type: application/json
 
 ### 6.2. Создание категории (только admin/teacher)
 
-**Метод:** `POST`  
-**URL:** `/categories/`  
+**Метод:** `POST`
+**URL:** `/categories/`
 **Headers:**
 
 ```
@@ -1217,8 +1215,8 @@ Content-Type: application/json
 
 ### 7.1. Просмотр своих уведомлений
 
-**Метод:** `GET`  
-**URL:** `/notifications/`  
+**Метод:** `GET`
+**URL:** `/notifications/`
 **Authorization:** Требуется (cookies)
 
 **Query Parameters (опционально):**
@@ -1264,7 +1262,7 @@ Content-Type: application/json
 
 **Дополнительный эндпоинт для подсчета непрочитанных:**
 
-**Метод:** `GET`  
+**Метод:** `GET`
 **URL:** `/notifications/unread_count/`
 
 **Пример ответа (200 OK):**
@@ -1279,9 +1277,9 @@ Content-Type: application/json
 
 ### 7.2. Отметить уведомление как прочитанное
 
-**Метод:** `POST`  
-**URL:** `/notifications/<notification_id>/mark_as_read/`  
-**Пример:** `/notifications/1/mark_as_read/`  
+**Метод:** `POST`
+**URL:** `/notifications/<notification_id>/mark_as_read/`
+**Пример:** `/notifications/1/mark_as_read/`
 **Authorization:** Требуется (cookies)
 
 **Body:** Не требуется
@@ -1306,8 +1304,8 @@ Content-Type: application/json
 
 ### 7.3. Отметить все уведомления как прочитанные
 
-**Метод:** `POST`  
-**URL:** `/notifications/mark_all_as_read/`  
+**Метод:** `POST`
+**URL:** `/notifications/mark_all_as_read/`
 **Authorization:** Требуется (cookies)
 
 **Body:** Не требуется
@@ -1328,8 +1326,8 @@ Content-Type: application/json
 
 ### 8.1. Получение списка своих курсов (студент)
 
-**Метод:** `GET`  
-**URL:** `/courses/my_courses/`  
+**Метод:** `GET`
+**URL:** `/courses/my_courses/`
 **Authorization:** Требуется (cookies, роль: student)
 
 **Пример ответа (200 OK):**
@@ -1373,9 +1371,9 @@ Content-Type: application/json
 
 ### 8.2. Список студентов курса (преподаватель)
 
-**Метод:** `GET`  
-**URL:** `/courses/<course_slug>/students/`  
-**Пример:** `/courses/osnovy-python/students/`  
+**Метод:** `GET`
+**URL:** `/courses/<course_slug>/students/`
+**Пример:** `/courses/osnovy-python/students/`
 **Authorization:** Требуется (cookies, роль: teacher, владелец курса)
 
 **Пример ответа (200 OK):**

@@ -11,6 +11,7 @@ import type {
   CategoriesResponse,
   EnrollResponse,
   UnenrollResponse,
+  PaginationParams,
 } from "~/types";
 
 export const useCourses = () => {
@@ -72,10 +73,24 @@ export const useCourses = () => {
   /**
    * Получение списка категорий курсов с поддержкой SSR.
    */
-  const getCategories = () => {
+  const getCategories = (options: { ordering?: string } & PaginationParams) => {
     return useAsyncData<CategoriesResponse>("categories", () =>
       api("/categories/", {
         method: "GET",
+        query: options,
+      })
+    );
+  };
+
+  /**
+   * Получение списка уроков для конкретного курса.
+   * @param slug - Слаг курса.
+   */
+  const getCourseLessons = (slug: string) => {
+    return useAsyncData<any>(`course-${slug}-lessons`, () =>
+      api(`/lessons/`, {
+        method: "GET",
+        params: { course: slug },
       })
     );
   };
@@ -134,6 +149,7 @@ export const useCourses = () => {
     getCourse,
     getMyCourses,
     getCategories,
+    getCourseLessons,
     enrollToCourse,
     unenrollFromCourse,
   };

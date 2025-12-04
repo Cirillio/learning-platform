@@ -25,7 +25,7 @@ onUnmounted(() => {
 <template>
   <header
     ref="headerRef"
-    class="sticky top-0 left-0 right-0 z-80 bg-default/90 backdrop-blur-xl border-b border-muted"
+    class="sticky top-0 left-0 right-0 z-80 bg-default/90 backdrop-blur-sm border-b border-muted"
   >
     <LayoutContainer class="py-2">
       <div class="flex items-center justify-between">

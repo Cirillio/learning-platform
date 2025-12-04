@@ -35,68 +35,78 @@ const testimonials = [
 </script>
 
 <template>
-  <section class="py-16 lg:py-24">
-    <div class="container mx-auto">
+  <section
+    class="pt-12 pb-10 bg-default shadow-sm"
+    aria-labelledby="testimonials-title"
+  >
+    <LayoutContainer class="w-full">
       <!-- Заголовок секции -->
-      <div class="text-center mb-16">
-        <h2 class="text-3xl lg:text-4xl font-bold mb-4 text-highlighted">
-          Что говорят наши студенты
-        </h2>
-        <p class="text-lg text-muted max-w-2xl mx-auto">
-          Реальные отзывы от студентов, которые уже прошли обучение на нашей платформе
-        </p>
-      </div>
-
+      <h2 class="text-3xl font-bold">Что говорят наши студенты</h2>
+      <p class="text-muted">
+        Реальные отзывы от студентов, которые уже прошли обучение на нашей
+        платформе
+      </p>
+    </LayoutContainer>
+    <USeparator class="my-2" />
+    <LayoutContainer class="w-full pb-2 pt-10">
       <!-- Сетка отзывов -->
-      <div class="grid lg:grid-cols-3 gap-8">
+      <div class="grid lg:grid-cols-3 gap-4">
         <UCard
           v-for="(testimonial, index) in testimonials"
           :key="testimonial.name"
           class="h-full"
+          :ui="{
+            body: '!p-4 flex flex-col gap-3',
+            root: 'bg-muted/75 dark:bg-muted/25 hover:bg-muted/25 dark:hover:bg-muted/35 transition-all duration-200 ease-in-out shadow-sm',
+          }"
         >
-          <!-- Рейтинг -->
-          <div class="flex items-center gap-1 mb-4">
-            <UIcon
-              v-for="star in testimonial.rating"
-              :key="star"
-              name="i-heroicons-star"
-              class="size-5 text-yellow-400 fill-current"
-            />
-          </div>
-
-          <!-- Отзыв -->
-          <blockquote class="text-muted mb-6 leading-relaxed italic">
-            "{{ testimonial.content }}"
-          </blockquote>
-
           <!-- Автор -->
           <div class="flex items-center gap-4">
-            <UAvatar :src="testimonial.avatar" :alt="testimonial.name" size="lg" />
+            <UAvatar
+              :src="testimonial.avatar"
+              :alt="testimonial.name"
+              size="lg"
+            />
 
             <div>
               <div class="font-semibold text-highlighted">
                 {{ testimonial.name }}
               </div>
-              <div class="text-sm text-muted">
-                {{ testimonial.role }}
-              </div>
-              <div class="text-xs text-primary font-medium mt-1">
-                Курс: {{ testimonial.course }}
-              </div>
             </div>
           </div>
+          <!-- Рейтинг -->
+          <div class="flex items-center gap-1">
+            <UIcon
+              v-for="star in testimonial.rating"
+              :key="star"
+              name="i-heroicons-star-solid"
+              class="size-5 text-yellow-400 fill-current"
+            />
+          </div>
+
+          <div class="text-sm text-primary font-semibold">
+            Курс: {{ testimonial.course }}
+          </div>
+
+          <!-- Отзыв -->
+          <blockquote class="text-default/90 leading-relaxed">
+            "{{ testimonial.content }}"
+          </blockquote>
         </UCard>
       </div>
 
       <!-- CTA для отзывов -->
-      <div class="mt-16 text-center">
+      <div class="mt-4 text-center">
         <div class="inline-flex items-center gap-2 px-6 py-3">
-          <UIcon name="i-heroicons-chat-bubble-left-right" class="size-5 text-primary" />
+          <UIcon
+            name="i-heroicons-chat-bubble-left-right"
+            class="size-5 text-primary"
+          />
           <span class="text-sm font-medium text-primary">
             Более 2,000 положительных отзывов на платформе
           </span>
         </div>
       </div>
-    </div>
+    </LayoutContainer>
   </section>
 </template>

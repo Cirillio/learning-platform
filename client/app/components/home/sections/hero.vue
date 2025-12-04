@@ -95,13 +95,13 @@ const onImageLoad = () => {
                 id="hero-title"
                 class="text-3xl md:text-5xl lg:text-7xl text-balance max-md:font-bold font-medium text-shadow-md"
               >
-                Образовательный портал
+                Платформа онлайн-курсов на Nuxt 4 и Tailwind 4
               </h1>
               <h2
                 class="text-base md:text-xl max-md:font-normal font-extralight text-pretty text-shadow-md"
               >
-                Современная платформа для обучения и взаимодействия студентов и
-                преподавателей
+                Пет-проект с реализацией каталога, фильтрации, корзины и SSR
+                рендеринга.
               </h2>
             </div>
 
