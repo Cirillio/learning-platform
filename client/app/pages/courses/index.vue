@@ -76,19 +76,10 @@ function clearSearch() {
 const sentinelRef = ref<HTMLElement | null>(null);
 const isStuck = ref(false);
 
-watch(
-  () => isStuck.value,
-  (newValue) => {
-    console.log(newValue);
-  }
-);
-
 useIntersectionObserver(
   sentinelRef,
   (entries) => {
     const entry = entries[0];
-    console.log("intersecting");
-    console.log({ ...entry });
     // TypeScript требует гарантии, что entry существует
     if (!entry) return;
 
@@ -100,76 +91,44 @@ useIntersectionObserver(
 
 <template>
   <div class="bg-default">
-    <section
-      class="relative shadow-sm z-20 flex border-b border-muted"
-      aria-labelledby="hero-title"
+    <CoursesHero
+      title="Каталог курсов"
+      description="Изучайте новые навыки с нашими профессиональными курсами."
     >
-      <NuxtImg
-        :src="'/courses_page_hero.png'"
-        class="object-cover object-center w-full h-[386px] lg:h-[576px]"
-      />
-      <div
-        class="absolute top-2/5 md:top-2/5 left-0 right-0 bottom-0 z-10 bg-linear-to-t from-black to-black/0"
-      ></div>
-      <LayoutContainer
-        class="absolute z-20 left-0 right-0 top-0 bottom-0 py-8 md:py-16"
-      >
-        <div class="flex flex-col gap-6 items-start size-full justify-between">
-          <div class="flex max-xl:gap-2 flex-col justify-end h-full w-full">
-            <div class="flex w-full flex-col gap-4">
-              <div
-                class="flex max-w-5xl flex-col text-white justify-between h-full gap-1 md:gap-2"
-              >
-                <h1
-                  id="hero-title"
-                  class="text-3xl md:text-5xl lg:text-7xl text-balance max-md:font-bold font-medium text-shadow-md"
-                >
-                  Каталог курсов
-                </h1>
-                <h2
-                  class="text-base md:text-xl max-md:font-normal font-extralight text-pretty text-shadow-md"
-                >
-                  Изучайте новые навыки с нашими профессиональными курсами.
-                </h2>
-              </div>
-              <!-- Search -->
-              <div class="flex w-full max-w-lg gap-4 items-center">
-                <UInput
-                  v-model="localSearch"
-                  leading-icon="i-heroicons-magnifying-glass-20-solid"
-                  :trailing="false"
-                  placeholder="Поиск курсов..."
-                  :disabled="coursesPending"
-                  class="w-full shadow-md"
-                  size="xl"
-                  variant="subtle"
-                  @keyup.enter="onSearch"
-                >
-                  <template #trailing>
-                    <UButton
-                      v-if="localSearch !== ''"
-                      color="neutral"
-                      variant="link"
-                      icon="i-heroicons-x-mark-20-solid"
-                      :padded="false"
-                      @click="clearSearch"
-                    />
-                  </template>
-                </UInput>
-                <UButton
-                  label="Найти"
-                  color="primary"
-                  size="xl"
-                  class="shadow-md"
-                  :disabled="coursesPending"
-                  @click="onSearch"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </LayoutContainer>
-    </section>
+      <!-- Search -->
+      <div class="flex w-full max-w-lg gap-4 items-center">
+        <UInput
+          v-model="localSearch"
+          leading-icon="i-heroicons-magnifying-glass-20-solid"
+          :trailing="false"
+          placeholder="Поиск курсов..."
+          :disabled="coursesPending"
+          class="w-full shadow-md"
+          size="xl"
+          variant="subtle"
+          @keyup.enter="onSearch"
+        >
+          <template #trailing>
+            <UButton
+              v-if="localSearch !== ''"
+              color="neutral"
+              variant="link"
+              icon="i-heroicons-x-mark-20-solid"
+              :padded="false"
+              @click="clearSearch"
+            />
+          </template>
+        </UInput>
+        <UButton
+          label="Найти"
+          color="primary"
+          size="xl"
+          class="shadow-md"
+          :disabled="coursesPending"
+          @click="onSearch"
+        />
+      </div>
+    </CoursesHero>
 
     <!-- Toolbar -->
     <LayoutContainer

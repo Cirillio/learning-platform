@@ -31,26 +31,56 @@ defineProps<{
     />
   </div>
 
-  <div v-else-if="categories" class="grid grid-cols-4 gap-8 mt-8">
-    <UCard v-for="category in categories" :key="category.id">
+  <div
+    v-else-if="categories"
+    class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 mt-8"
+  >
+    <UCard
+      v-for="category in categories"
+      :key="category.id"
+      class="flex flex-col h-full hover:ring hover:ring-primary-500 transition-all duration-200"
+      :ui="{
+        header: '!p-0',
+        body: 'py-2! px-4! h-full border-0',
+        footer: 'px-4! mt-auto',
+      }"
+    >
       <template #header>
-        <NuxtImg :src="category.icon" class="" />
+        <div
+          class="flex items-center justify-center h-60 bg-gray-50 dark:bg-gray-800 overflow-hidden"
+        >
+          <NuxtImg
+            v-if="category.icon"
+            :src="category.icon"
+            class="object-cover object-top h-full w-full"
+          />
+          <UIcon
+            v-else
+            name="i-heroicons-academic-cap"
+            class="h-24 w-24 text-gray-300"
+          />
+        </div>
       </template>
-      <div class="flex items-center gap-4">
-        <h3 class="text-lg font-bold">{{ category.name }}</h3>
-      </div>
 
-      <p class="text-neutral-500 dark:text-neutral-400">
-        {{ category.description }}
-      </p>
+      <div class="flex flex-col gap-1">
+        <h3 class="text-2xl font-bold text-gray-900 dark:text-white">
+          {{ category.name }}
+        </h3>
+        <p class="text-sm text-gray-500 dark:text-gray-400 line-clamp-3">
+          {{ category.description }}
+        </p>
+      </div>
 
       <template #footer>
         <UButton
-          :to="`/courses/all?category=${category.slug}`"
+          :to="`/courses/category/${category.slug}`"
           label="Смотреть курсы"
           color="primary"
-          variant="solid"
+          variant="ghost"
           block
+          size="lg"
+          icon="i-heroicons-arrow-right-20-solid"
+          trailing
         />
       </template>
     </UCard>

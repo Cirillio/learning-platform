@@ -59,20 +59,19 @@ const features = [
           variant="subtle"
           color="neutral"
           class="shadow-xs"
+          to="/courses/categories"
         />
       </div>
     </layout-container>
     <u-separator class="my-2" />
 
-    <layout-container
-      class="flex overflow-y-scroll hide-scrollbar pb-2 pt-10 gap-4"
-    >
+    <layout-container class="flex hide-scrollbar pb-2 pt-10 gap-4">
       <u-card
         v-for="category in categoriesResponse?.results"
         :key="category.slug"
         :ui="{
           header: '!p-0',
-          root: 'max-w-lg w-full flex-shrink-0 shadow-sm bg-muted/75 dark:bg-muted/25 hover:bg-muted/50 dark:hover:bg-muted/35 transition-colors duration-200 ease-in-out',
+          root: 'shadow-sm bg-muted/75 dark:bg-muted/25 hover:bg-muted/50 dark:hover:bg-muted/35 transition-colors duration-200 ease-in-out',
         }"
       >
         <template #header>

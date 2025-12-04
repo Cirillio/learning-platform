@@ -9,6 +9,7 @@ interface Props {
   difficultyOptions: FilterOption[];
   orderingOptions: FilterOption[];
   isLoading?: boolean;
+  hideCategory?: boolean;
 }
 
 interface Emits {
@@ -20,6 +21,7 @@ interface Emits {
 
 const props = withDefaults(defineProps<Props>(), {
   isLoading: false,
+  hideCategory: false,
 });
 
 const emit = defineEmits<Emits>();
@@ -102,6 +104,7 @@ const hasActiveFilters = computed(() => {
 
     <!-- Category -->
     <USelect
+      v-if="!hideCategory"
       placeholder="Категория"
       v-model="localCategory"
       :items="categoryOptionsWithDefault"

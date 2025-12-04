@@ -53,6 +53,18 @@ export const useCourses = () => {
   };
 
   /**
+   * Получение детальной информации о категории.
+   * @param slug - Слаг категории.
+   */
+  const getCategory = (slug: string) => {
+    return useAsyncData<Category>(`category-${slug}`, () =>
+      api(`/categories/${slug}/`, {
+        method: "GET",
+      })
+    );
+  };
+
+  /**
    * Получение списка курсов текущего пользователя (мои курсы).
    * КЛИЕНТСКИЙ запрос (без SSR) — данные персональные, требуют авторизации.
    * Запрос будет автоматически отменен при размонтировании компонента.
@@ -74,11 +86,15 @@ export const useCourses = () => {
    * Получение списка категорий курсов с поддержкой SSR.
    */
   const getCategories = (options: { ordering?: string } & PaginationParams) => {
-    return useAsyncData<CategoriesResponse>("categories", () =>
-      api("/categories/", {
-        method: "GET",
-        query: options,
-      })
+    return useAsyncData<CategoriesResponse>(
+      `categories-${options.page || 1}-${options.page_size || 10}-${
+        options.ordering || ""
+      }`,
+      () =>
+        api("/categories/", {
+          method: "GET",
+          query: options,
+        })
     );
   };
 
@@ -147,6 +163,7 @@ export const useCourses = () => {
   return {
     getCourses,
     getCourse,
+    getCategory,
     getMyCourses,
     getCategories,
     getCourseLessons,
