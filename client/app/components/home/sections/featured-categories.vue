@@ -71,7 +71,8 @@ const features = [
         :key="category.slug"
         :ui="{
           header: '!p-0',
-          root: 'shadow-sm bg-muted/75 dark:bg-muted/25 hover:bg-muted/50 dark:hover:bg-muted/35 transition-colors duration-200 ease-in-out',
+          body: 'p-3!',
+          root: 'flex-1 shadow-sm bg-muted/75 dark:bg-muted/25 hover:bg-muted/50 dark:hover:bg-muted/35 transition-colors duration-200 ease-in-out',
         }"
       >
         <template #header>
@@ -96,11 +97,11 @@ const features = [
           :to="'/courses/categories/' + category.slug"
           class="flex items-center justify-between w-full text-default hover:text-primary transition-colors duration-200 group/title"
         >
-          <h3 class="text-3xl font-bold">{{ category.name }}</h3>
+          <h3 class="text-2xl font-bold">{{ category.name }}</h3>
 
           <UIcon
             name="heroicons:arrow-right"
-            class="size-6 opacity-25 group-hover/title:opacity-100 transition-opacity duration-200"
+            class="size-5 opacity-25 group-hover/title:opacity-100 transition-opacity duration-200"
           />
         </nuxt-link>
         <p class="text-muted line-clamp-2 truncate">

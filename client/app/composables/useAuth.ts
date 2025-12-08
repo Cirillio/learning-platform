@@ -47,7 +47,7 @@ export const useAuth = () => {
       await login({
         username: userData.username,
         password: userData.password,
-        remember_me: userData.remember_me,
+        remember_me: true,
       });
     } catch (error: any) {
       authStore.setError(error.data?.error || "Registration failed");

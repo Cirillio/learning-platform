@@ -20,7 +20,7 @@ const footerLinks: NavigationMenuItem[] = [
 <template>
   <UFooter
     :ui="{
-      root: 'border-t-px! border-muted py-2 bg-muted/75 dark:bg-muted/25 ',
+      root: 'border-t border-muted py-2 bg-muted/75 dark:bg-muted/25 ',
       container:
         '!items-stretch max-lg:flex max-lg:flex-col-reverse max-w-full main-container',
       left: 'max-lg:items-center',

@@ -1,6 +1,6 @@
 from rest_framework import viewsets, status, filters, serializers
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly, IsAdminUser
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from django.db.models import Q, Count, Avg
@@ -25,10 +25,11 @@ from .permissions import IsTeacher, IsStudent, IsCourseOwner, IsTeacherOrReadOnl
 from .tasks import send_grade_notification, send_new_assignment_notification
 
 
-class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
+class CategoryViewSet(viewsets.ModelViewSet):
     """
     ViewSet для категорий курсов.
-    Только для чтения (list, retrieve).
+    - list, retrieve: доступно всем (IsAuthenticatedOrReadOnly)
+    - create, update, destroy: только преподавателям и администраторам
     """
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
@@ -38,6 +39,11 @@ class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
     ordering_fields = ['created_at', 'name']
     ordering = ['-created_at']  # По умолчанию сначала новые
     lookup_field = 'slug'
+
+    def get_permissions(self):
+        if self.action in ['create', 'update', 'partial_update', 'destroy']:
+            return [IsAuthenticated(), (IsTeacher | IsAdminUser)()]
+        return super().get_permissions()
 
 
 class CourseViewSet(viewsets.ModelViewSet):
@@ -57,7 +63,7 @@ class CourseViewSet(viewsets.ModelViewSet):
     - students: список студентов курса (только для преподавателя курса)
     """
     queryset = Course.objects.all()
-    pagination_class = CoursePagination  # <-- добавь это
+    pagination_class = CoursePagination 
     permission_classes = []
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ['title', 'description', 'short_description']

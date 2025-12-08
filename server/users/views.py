@@ -44,7 +44,9 @@ class RefreshTokenView(TokenRefreshView):
 
             # Определяем, нужно ли "помнить" пользователя, на основе cookie
             remember_me = request.COOKIES.get('auth_remember_me') == 'True'
-            refresh_max_age = 30 * 24 * 60 * 60 if remember_me else 7 * 24 * 60 * 60
+            
+            # Если remember_me=True, ставим 30 дней. Иначе None (сессионная кука)
+            refresh_max_age = 30 * 24 * 60 * 60 if remember_me else None
 
             if new_access_token:
                 response.set_cookie(
@@ -121,10 +123,12 @@ class LoginView(generics.GenericAPIView):
             pass
 
         refresh = RefreshToken.for_user(user)
-        refresh_max_age = 30 * 24 * 60 * 60 if remember_me else 7 * 24 * 60 * 60
         
         if remember_me:
+            refresh_max_age = 30 * 24 * 60 * 60
             refresh.set_exp(lifetime=timedelta(days=30))
+        else:
+            refresh_max_age = None # Session cookie
 
         response = Response({'user': UserSerializer(user).data}, status=status.HTTP_200_OK)
 
@@ -161,10 +165,12 @@ class RegisterView(generics.CreateAPIView):
         user = serializer.save()
         
         refresh = RefreshToken.for_user(user)
-        refresh_max_age = 30 * 24 * 60 * 60 if remember_me else 7 * 24 * 60 * 60
-
+        
         if remember_me:
+            refresh_max_age = 30 * 24 * 60 * 60
             refresh.set_exp(lifetime=timedelta(days=30))
+        else:
+            refresh_max_age = None # Session cookie
         
         response = Response({'user': UserSerializer(user).data}, status=status.HTTP_201_CREATED)
 

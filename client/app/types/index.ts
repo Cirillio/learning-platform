@@ -14,6 +14,17 @@ export interface User {
   is_active?: boolean;
   avatar?: string | null;
   bio?: string;
+  phone?: string;
+  birth_date: string | null;
+  address?: string;
+  city?: string;
+  country?: string;
+  specialization?: string;
+  experience_years?: number | null;
+  student_id?: string;
+  enrollment_year?: number | null;
+  created_at: string;
+  updated_at: string;
 }
 
 // Тип для ответа от эндпоинта /auth/login/
@@ -149,3 +160,5 @@ export interface Lesson {
   is_published: boolean;
   video_url?: string;
 }
+
+export * from "./profile";

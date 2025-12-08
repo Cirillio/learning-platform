@@ -3,7 +3,8 @@
 // Мы принимаем стандартный v-model (boolean) от родителя и связываем его с open.
 const open = defineModel<boolean>({ default: false });
 
-const { logout, user } = useAuth();
+const { user } = storeToRefs(useAuthStore());
+const { logout } = useAuth();
 const isLoading = ref(false);
 
 const handleLogout = async () => {

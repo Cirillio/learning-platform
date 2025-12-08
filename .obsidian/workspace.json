@@ -11,14 +11,12 @@
             "id": "737d28eac81a1e0f",
             "type": "leaf",
             "state": {
-              "type": "markdown",
+              "type": "pdf",
               "state": {
-                "file": "TESTING_GUIDE.md",
-                "mode": "source",
-                "source": false
+                "file": "Вариант 1.pdf"
               },
-              "icon": "lucide-file",
-              "title": "TESTING_GUIDE"
+              "icon": "lucide-file-text",
+              "title": "Вариант 1"
             }
           }
         ]
@@ -172,18 +170,20 @@
   },
   "active": "737d28eac81a1e0f",
   "lastOpenFiles": [
-    "Untitled.base",
-    "NEXT_STEPS.md",
     "server/db.sqlite3-journal",
-    "client/app/pages/courses/index.vue",
-    "client/app/middleware/courses-redirect.ts",
-    "client/app/pages/courses/all.vue",
-    "client/app/pages/courses/categories.vue",
-    "client/app/pages/courses",
-    "client/app/layouts/courses-catalog.vue",
+    "TESTING_GUIDE.md",
+    "client/--force/node_modules",
+    "client/--force",
+    "client/app/components/profile/courses-list.vue",
+    "client/app/components/profile/academic-card.vue",
+    "client/app/components/profile/info-card.vue",
+    "client/app/components/profile/edit-form.vue",
+    "client/app/components/profile/header.vue",
+    "client/app/components/profile/CoursesList.vue",
+    "client/app/components/profile/AcademicCard.vue",
+    "profile_page.png",
+    "NEXT_STEPS.md",
     "client/public/hero_img.jpg",
-    "server/core/management/commands/__pycache__/seed_db.cpython-312.pyc",
-    "server/core/management/commands/seed_db.py",
     "client/AUTH_SYSTEM.md",
     "JWT+Cookies.md",
     "README.md",

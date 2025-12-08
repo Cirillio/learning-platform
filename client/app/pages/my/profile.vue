@@ -1,93 +1,76 @@
+<script setup lang="ts">
+import type { Profile, User } from "~/types";
+
+definePageMeta({
+  middleware: ["auth"],
+});
+
+const { api } = useApi();
+const { logout } = useAuth();
+const { setUser } = useAuthStore();
+const { getMyCourses } = useCourses();
+
+// --- Data Fetching ---
+const {
+  data: profile,
+  pending: profilePending,
+  refresh: refreshProfile,
+} = await useAsyncData<User>("user-profile", () =>
+  api("/auth/profile/", { method: "GET" })
+);
+
+const { data: coursesResponse, pending: coursesPending } = await useAsyncData(
+  "my-courses",
+  () => getMyCourses()
+);
+
+const myCourses = computed(() => coursesResponse.value?.results || []);
+
+// --- Edit Modal ---
+const isModalOpen = ref(false);
+
+const handleUpdateSuccess = async () => {
+  await refreshProfile();
+  setUser(profile.value || null);
+  isModalOpen.value = false;
+};
+</script>
+
 <template>
-  <div class="container mx-auto px-4 py-8">
-    <div class="max-w-4xl mx-auto">
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-        <div class="flex items-center justify-between mb-6">
-          <h1 class="text-3xl font-bold text-gray-900 dark:text-white">
-            Dashboard
-          </h1>
-          <UButton color="error" variant="outline" @click="handleLogout" :loading="isLoading">
-            Выйти
-          </UButton>
-        </div>
+  <div class="min-h-screen bg-muted py-2">
+    <LayoutContainer>
+      <div v-if="profilePending" class="flex justify-center">
+        <UIcon
+          name="i-heroicons-arrow-path"
+          class="animate-spin size-10 text-primary-500"
+        />
+      </div>
 
-        <div v-if="user" class="space-y-4">
-          <div class="flex items-center space-x-4">
-            <UAvatar size="xl" :src="user.avatar || undefined" />
-            <div>
-              <h2 class="text-2xl font-semibold text-gray-900 dark:text-white">
-                {{ user.first_name }} {{ user.last_name }}
-              </h2>
-              <p class="text-gray-600 dark:text-gray-400">@{{ user.username }}</p>
-            </div>
-          </div>
+      <div v-else-if="profile" class="mx-auto flex-col flex gap-2">
+        <div class="flex gap-2">
+          <!-- Header -->
+          <ProfileHeader
+            :profile="profile"
+            @edit-success="handleUpdateSuccess"
+            @logout="logout"
+          />
 
-          <UDivider />
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="bg-gray-50 dark:bg-gray-900 rounded-lg p-4">
-              <p class="text-sm text-gray-600 dark:text-gray-400">Email</p>
-              <p class="text-lg font-medium text-gray-900 dark:text-white">
-                {{ user.email }}
-              </p>
-            </div>
-
-            <div class="bg-gray-50 dark:bg-gray-900 rounded-lg p-4">
-              <p class="text-sm text-gray-600 dark:text-gray-400">Роль</p>
-              <p class="text-lg font-medium text-gray-900 dark:text-white capitalize">
-                {{ user.role }}
-              </p>
-            </div>
-
-            <div class="bg-gray-50 dark:bg-gray-900 rounded-lg p-4">
-              <p class="text-sm text-gray-600 dark:text-gray-400">Дата регистрации</p>
-              <p class="text-lg font-medium text-gray-900 dark:text-white">
-                {{ formatDate(user.date_joined) }}
-              </p>
-            </div>
-
-            <div class="bg-gray-50 dark:bg-gray-900 rounded-lg p-4">
-              <p class="text-sm text-gray-600 dark:text-gray-400">Статус</p>
-              <UBadge :color="user.is_active ? 'success' : 'error'" variant="subtle" size="lg">
-                {{ user.is_active ? 'Активен' : 'Неактивен' }}
-              </UBadge>
-            </div>
+          <!-- Details Grid (Read Only) -->
+          <div class="flex gap-2 w-full flex-1">
+            <!-- Left Column: Personal Info & Courses -->
+            <ProfileInfoCard :profile="profile" class="flex-2/3" />
+            <!-- Right Column: Academic Info -->
+            <ProfileAcademicCard :profile="profile" class="flex-1/3" />
           </div>
         </div>
-
-        <div v-else class="text-center py-8">
-          <p class="text-gray-600 dark:text-gray-400">Загрузка профиля...</p>
+        <div class="flex w-full">
+          <ProfileCoursesList
+            class="w-2/3"
+            :courses="myCourses"
+            :pending="coursesPending"
+          />
         </div>
       </div>
-    </div>
+    </LayoutContainer>
   </div>
 </template>
-
-<script setup lang="ts">
-definePageMeta({
-  middleware: ['auth'],
-  layout: 'default',
-});
-
-const { user, logout, isLoading } = useAuth();
-
-const userInitials = computed(() => {
-  if (!user) return '';
-  const first = user.first_name?.[0] || '';
-  const last = user.last_name?.[0] || '';
-  return `${first}${last}`.toUpperCase();
-});
-
-function formatDate(dateString: string): string {
-  const date = new Date(dateString);
-  return date.toLocaleDateString('ru-RU', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  });
-}
-
-async function handleLogout(): Promise<void> {
-  await logout();
-}
-</script>

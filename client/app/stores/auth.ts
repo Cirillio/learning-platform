@@ -1,4 +1,4 @@
-import type { User } from "~/types";
+import { type Profile, type User } from "~/types";
 import { defineStore } from "pinia";
 
 /**

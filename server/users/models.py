@@ -49,8 +49,8 @@ class UserProfile(models.Model):
         related_name='profile',
         verbose_name='Пользователь'
     )
-    avatar = models.ImageField(
-        upload_to='avatars/',
+    avatar = models.URLField(
+        max_length=500,
         null=True,
         blank=True,
         verbose_name='Аватар'
