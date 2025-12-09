@@ -15,7 +15,7 @@ const avatarProps = computed<AvatarProps | undefined>(() => {
 </script>
 
 <template>
-  <UButton label="Моя доска" to="/my/dashboard" />
+  <UButton label="Моя доска" to="/dashboard" />
   <USeparator orientation="vertical" color="neutral" class="h-6" />
   <UButton
     to="/my/profile"

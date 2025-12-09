@@ -1,8 +1,9 @@
 <template>
   <Header />
-  <LayoutMain>
-    <slot />
-  </LayoutMain>
 
-  <LayoutFooter />
+  <UMain>
+    <slot />
+  </UMain>
+
+  <Footer />
 </template>

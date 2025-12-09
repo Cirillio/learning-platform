@@ -27,66 +27,80 @@ const isModalOpen = ref(false);
 </script>
 
 <template>
-  <UCard class="max-w-xs w-full">
-    <div class="flex flex-col items-center gap-6">
+  <UCard class="w-full">
+    <div class="flex flex-col gap-6">
       <UAvatar
         :src="profile.avatar || undefined"
         :alt="fullName"
         class="ring-2 ring-success dark:ring-success shadow-sm size-36 p-1 max-sm:size-24"
       />
-      <div class="w-full">
-        <div class="flex flex-col gap-6 items-center justify-between">
-          <div class="w-full flex flex-col text-center">
-            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
-              {{ fullName }}
-            </h1>
-            <p class="text-gray-500 dark:text-gray-400 font-medium">
-              {{ profile.role === "teacher" ? "Преподаватель" : "Студент" }}
-            </p>
-            <p class="text-sm text-gray-400 mt-1">
-              На сайте с {{ formatDate(profile.date_joined) }}
-            </p>
-          </div>
-          <div class="flex items-center w-full flex-col gap-2">
-            <!-- Edit Modal -->
-            <UModal
-              :open="isModalOpen"
-              :ui="{
-                content: 'max-w-3xl',
-              }"
-            >
-              <UButton
-                icon="i-heroicons-pencil-square"
-                color="neutral"
-                variant="subtle"
-                size="lg"
-                class="justify-center"
-                @click="isModalOpen = true"
-              >
-                Редактировать
-              </UButton>
-              <template #content>
-                <ProfileEditForm
-                  v-if="profile"
-                  :profile="profile"
-                  @cancel="() => (isModalOpen = false)"
-                  @success="onEditSuccess"
-                />
-              </template>
-            </UModal>
-            <UButton
-              trailing-icon="i-heroicons-arrow-right"
-              color="error"
-              variant="subtle"
-              size="lg"
-              class="justify-center"
-              @click="emit('logout')"
-            >
-              Выйти
-            </UButton>
-          </div>
+      <div class="w-full flex flex-col">
+        <div class="flex justify-between items-center">
+          <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
+            {{ fullName }}
+          </h1>
+          <UButton
+            icon="i-heroicons-pencil-square"
+            color="neutral"
+            variant="link"
+            class="justify-center mt-2"
+            size="sm"
+            to="/settings/edit-profile"
+          >
+            Редактировать
+          </UButton>
         </div>
+        <ul class="flex font-medium text-muted w-full gap-6">
+          <li class="">
+            {{ profile.role === "teacher" ? "Преподаватель" : "Студент" }}
+          </li>
+          <li v-if="profile.student_id" class="list-disc">
+            {{ profile.student_id }}
+          </li>
+          <li v-if="profile.specialization" class="list-disc">
+            {{ profile.specialization }}
+          </li>
+          <li v-if="profile.enrollment_year" class="list-disc">
+            {{ profile.enrollment_year }}
+          </li>
+          <li v-if="profile.experience_years" class="list-disc">
+            {{ profile.experience_years }}
+          </li>
+        </ul>
+        <p class="text-sm text-gray-400 mt-1">
+          На сайте с {{ formatDate(profile.date_joined) }}
+        </p>
+
+        <UCollapsible>
+          <button
+            class="text-secondary font-semilight text-sm hover:text-secondary/50 cursor-pointer transition-colors"
+          >
+            Подробнее
+          </button>
+
+          <template #content>
+            <ProfileInfoDetails :profile="profile" class="mt-2" />
+          </template>
+        </UCollapsible>
+      </div>
+
+      <USeparator />
+      <div class="flex items-center justify-between w-full gap-2">
+        <UButton
+          icon="i-heroicons-pencil-square"
+          color="primary"
+          size="xl"
+          class="justify-center"
+        >
+          Моя доска обучения
+        </UButton>
       </div>
     </div>
+
+    <USeparator class="my-6" />
+    <h3 class="text-3xl font-bold">О себе</h3>
+    <p>
+      {{ profile.bio }}
+    </p>
   </UCard>
 </template>

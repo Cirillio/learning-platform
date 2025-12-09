@@ -47,29 +47,17 @@ const handleUpdateSuccess = async () => {
       </div>
 
       <div v-else-if="profile" class="mx-auto flex-col flex gap-2">
-        <div class="flex gap-2">
+        <div class="flex flex-col gap-2">
           <!-- Header -->
           <ProfileHeader
             :profile="profile"
             @edit-success="handleUpdateSuccess"
             @logout="logout"
           />
-
-          <!-- Details Grid (Read Only) -->
-          <div class="flex gap-2 w-full flex-1">
-            <!-- Left Column: Personal Info & Courses -->
-            <ProfileInfoCard :profile="profile" class="flex-2/3" />
-            <!-- Right Column: Academic Info -->
-            <ProfileAcademicCard :profile="profile" class="flex-1/3" />
-          </div>
         </div>
-        <div class="flex w-full">
-          <ProfileCoursesList
-            class="w-2/3"
-            :courses="myCourses"
-            :pending="coursesPending"
-          />
-        </div>
+        <UCard>
+          <ProfileCoursesList :courses="myCourses" :pending="coursesPending" />
+        </UCard>
       </div>
     </LayoutContainer>
   </div>
