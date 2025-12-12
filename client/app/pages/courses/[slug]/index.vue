@@ -62,7 +62,6 @@ const handleEnroll = async () => {
       title: "Вы успешно записались на курс!",
       color: "success",
     });
-    // Show toast/notification (TODO)
   } catch (e) {
     console.error(e);
   }
@@ -81,7 +80,6 @@ const handleUnenroll = async () => {
     await unenrollFromCourse(slug);
     // Refresh data to update UI state
     refreshNuxtData(`course-${slug}`);
-    // Show toast/notification (TODO)
     toast.add({
       title: "Вы успешно отписались от курса.",
       color: "info",
@@ -96,22 +94,23 @@ const handleUnenroll = async () => {
 <template>
   <div
     v-if="course"
-    class="min-h-screen bg-neutral-50 dark:bg-neutral-950 pb-20 border-b border-neutral-200 dark:border-neutral-800"
+    class="min-h-screen bg-default pb-20 border-b border-default"
   >
     <!-- Header Section -->
     <CoursesDetailsHeader :course="course" :breadcrumbs="breadcrumbLinks" />
 
     <!-- Main Content & Sidebar Layout -->
-    <UContainer class="-mt-16 relative z-20">
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <UContainer class="-mt-20 relative z-20">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-2">
         <!-- Left Column: Content -->
-        <div class="lg:col-span-2 space-y-8">
+        <div class="lg:col-span-2 space-y-12">
           <!-- Description & Trusted By -->
           <CoursesDetailsDescription :description="course.description" />
 
           <!-- Course Guide (Syllabus) -->
           <CoursesDetailsSyllabus
             :lessons="lessons"
+            :course-slug="slug"
             :duration-weeks="course.duration_weeks"
           />
 
@@ -124,9 +123,9 @@ const handleUnenroll = async () => {
           :course="course"
           :is-user-enrolled="isUserEnrolled"
           :lessons-count="lessons.length"
+          :pending="enrollPending"
           @enroll="handleEnroll"
           @unenroll="handleUnenroll"
-          :pending="enrollPending"
         />
       </div>
     </UContainer>
@@ -137,10 +136,7 @@ const handleUnenroll = async () => {
     v-else-if="coursePending"
     class="min-h-screen flex items-center justify-center"
   >
-    <UIcon
-      name="i-heroicons-arrow-path"
-      class="w-10 h-10 animate-spin text-primary-500"
-    />
+    <UIcon name="i-lucide-loader-2" class="size-10 animate-spin text-primary" />
   </div>
 
   <!-- Error State -->
@@ -148,11 +144,7 @@ const handleUnenroll = async () => {
     v-else
     class="min-h-screen flex flex-col items-center justify-center gap-4"
   >
-    <h1 class="text-2xl font-bold">Курс не найден</h1>
+    <h1 class="text-2xl font-bold text-default">Курс не найден</h1>
     <UButton to="/courses" label="Вернуться в каталог" />
   </div>
 </template>
-
-<style scoped>
-/* Custom styles if needed, but mostly using Tailwind */
-</style>

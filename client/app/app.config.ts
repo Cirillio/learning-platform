@@ -39,5 +39,11 @@ export default defineAppConfig({
         base: "transition duration-150 ease-in-out",
       },
     },
+    card: {
+      slots: {
+        root: "shadow-xs dark:bg-muted/25! bg-muted/75!",
+        body: "p-3!",
+      },
+    },
   },
 });

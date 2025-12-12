@@ -40,48 +40,39 @@ const upcomingDate = new Date().toLocaleDateString("ru-RU", {
           </UBadge>
 
           <!-- Title -->
-          <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight">
+          <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
             {{ course.title }}
           </h1>
 
           <!-- Metadata Row -->
           <div
-            class="flex flex-wrap items-center gap-6 text-sm text-neutral-300"
+            class="flex flex-wrap items-center gap-6 text-lg text-neutral-300"
           >
             <div class="flex items-center gap-2">
-              <UIcon name="i-heroicons-users" class="w-5 h-5" />
+              <UIcon name="i-heroicons-users" class="size-8" />
               <span>{{ course.enrolled_count }} студентов</span>
             </div>
             <div class="flex items-center gap-2">
-              <UIcon name="i-heroicons-language" class="w-5 h-5" />
+              <UIcon name="i-heroicons-language" class="size-8" />
               <span>Русский</span>
             </div>
             <div class="flex items-center gap-2">
-              <UIcon name="i-heroicons-signal" class="w-5 h-5" />
+              <UIcon name="i-heroicons-signal" class="size-8" />
               <span class="capitalize">{{ course.difficulty }}</span>
             </div>
           </div>
 
           <!-- Short Description -->
-          <p class="text-lg text-neutral-300 leading-relaxed max-w-2xl">
+          <p class="text-lg leading-relaxed max-w-2xl">
             {{ course.short_description }}
           </p>
 
           <!-- Date & Payment (Mockup style) -->
           <div
-            class="pt-4 border-t border-neutral-700 flex flex-col sm:flex-row gap-6 sm:items-center"
+            class="pt-4 border-t border-primary flex flex-col sm:flex-row gap-6 sm:items-center"
           >
-            <div>
-              <span
-                class="text-neutral-400 text-xs uppercase tracking-wider block mb-1"
-                >Дата начала</span
-              >
-              <span class="font-medium text-primary-400">{{
-                upcomingDate
-              }}</span>
-            </div>
             <!-- Payment Icons (Visual only) -->
-            <div
+            <!-- <div
               class="flex gap-2 opacity-70 grayscale hover:grayscale-0 transition-all"
             >
               <div
@@ -94,7 +85,7 @@ const upcomingDate = new Date().toLocaleDateString("ru-RU", {
               >
                 MC
               </div>
-            </div>
+            </div> -->
           </div>
         </div>
       </div>

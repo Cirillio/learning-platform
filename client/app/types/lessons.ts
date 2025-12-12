@@ -39,3 +39,46 @@ export interface LessonDetail extends Omit<Lesson, "course"> {
   materials: LessonMaterial[];
   assignments_count: number;
 }
+
+// ---------------------------------------------------------------------------
+// Lesson Progress & Navigation
+// ---------------------------------------------------------------------------
+
+export type LessonCompletionStatus =
+  | "not_started"
+  | "in_progress"
+  | "completed";
+
+export interface LessonProgress {
+  lesson_id: number;
+  status: LessonCompletionStatus;
+  completed_at?: string | null;
+  progress_percent: number;
+}
+
+export interface LessonNavigation {
+  previous: Pick<Lesson, "id" | "slug" | "title" | "order"> | null;
+  next: Pick<Lesson, "id" | "slug" | "title" | "order"> | null;
+  current_index: number;
+  total_lessons: number;
+}
+
+export interface LessonWithProgress extends Lesson {
+  progress?: LessonProgress;
+  is_accessible: boolean;
+}
+
+// Полный ответ для страницы урока
+export interface LessonViewData {
+  lesson: LessonDetail;
+  navigation: LessonNavigation;
+  progress?: LessonProgress;
+  is_enrolled: boolean;
+}
+
+// Ответ на завершение урока
+export interface MarkLessonCompleteResponse {
+  success: boolean;
+  message: string;
+  progress: LessonProgress;
+}

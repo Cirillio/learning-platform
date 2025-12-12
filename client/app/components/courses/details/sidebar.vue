@@ -18,7 +18,7 @@ defineEmits<{
 
 <template>
   <div class="lg:col-span-1">
-    <div class="sticky top-24 space-y-6">
+    <div class="sticky top-14 space-y-6">
       <!-- Course Action Card -->
       <UCard>
         <!-- Preview Image/Video -->
@@ -59,7 +59,10 @@ defineEmits<{
 
         <div class="py-6 space-y-6">
           <!-- Price -->
-          <div v-if="!isUserEnrolled" class="flex items-end gap-2">
+          <div
+            v-if="!isUserEnrolled"
+            class="flex items-center justify-center gap-2"
+          >
             <span class="text-4xl font-bold text-neutral-900 dark:text-white"
               >Бесплатно</span
             >

@@ -112,36 +112,26 @@ const handleLogout = async () => {
             class="bg-muted/25"
             v-else-if="myCourses.length > 0 && !coursesPending"
           >
-            <div class="space-y-4">
-              <h2 class="text-3xl font-bold text-gray-900 dark:text-white">
-                Мои курсы
-              </h2>
-              <TransitionGroup
-                name="stagger"
-                tag="div"
-                class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-                appear
-              >
-                <CoursesCatalogCard
-                  v-for="(course, index) in myCourses"
-                  :key="course.id"
-                  :pending="coursesPending"
-                  :course="course"
-                  :can-enroll="false"
-                  :can-un-enroll="true"
-                  :style="{ '--stagger-delay': `${index * 100}ms` }"
-                  @un-enroll="handleUnEnroll"
-                />
-                <UButton
-                  variant="soft"
-                  color="neutral"
-                  label="Искать ещё курсы"
-                  size="xl"
-                  to="/courses"
-                  class="justify-center col-span-full mt-4 text-lg"
-                />
-              </TransitionGroup>
-            </div>
+            <ProfileCoursesList>
+              <CoursesCatalogCard
+                v-for="(course, index) in myCourses"
+                :key="course.id"
+                :pending="coursesPending"
+                :course="course"
+                :can-enroll="false"
+                :can-un-enroll="true"
+                :style="{ '--stagger-delay': `${index * 100}ms` }"
+                @un-enroll="handleUnEnroll"
+              />
+              <UButton
+                variant="soft"
+                color="neutral"
+                label="Искать ещё курсы"
+                size="xl"
+                to="/courses"
+                class="justify-center col-span-full mt-4 text-lg"
+              />
+            </ProfileCoursesList>
           </UCard>
 
           <!-- Alert если курсов нет -->
