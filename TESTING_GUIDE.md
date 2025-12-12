@@ -788,7 +788,7 @@ Content-Type: application/json
 - `due_date` в формате ISO 8601 (опционально)
 - `max_score` - максимальный балл за задание (по умолчанию 100)
 - `is_required` - обязательное ли задание (по умолчанию false)
-- `allow_late_submission` - разрешена ли поздняя сдача (по умолчанию false)
+- `allow_late_submission` - разрешена ли поздняя сдача (по умолчанию false)logout
 
 **Пример ответа (201 Created):**
 

@@ -73,7 +73,7 @@ defineProps<{
 
       <template #footer>
         <UButton
-          :to="`/courses/category/${category.slug}`"
+          :to="`/courses?category=${category.slug}`"
           label="Смотреть курсы"
           color="primary"
           variant="ghost"

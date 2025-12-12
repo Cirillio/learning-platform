@@ -1,76 +1,97 @@
 <!-- pages/courses/all.vue -->
 <script lang="ts" setup>
 import { useIntersectionObserver } from "@vueuse/core";
-import type { CourseFiltersResponse } from "~/types";
+import type { CoursesResponse, FiltersResponse, CourseFilters } from "~/types";
 import {
   COURSE_PAGE_SIZE_DEFAULT,
   COURSE_ORDERING_DEFAULT,
 } from "~/constants/courseFilters";
+import { useCoursesService } from "~/services";
 const PAGE_SIZE = COURSE_PAGE_SIZE_DEFAULT;
 
 const { isAuthenticated, isStudent } = useAuthStore();
+const coursesService = useCoursesService();
 
-const { api } = useApi();
+const { get } = useApi();
+
+// 1. Load filter options (Client-side only, lazy)
 const {
   data: filterOptions,
   pending: filterOptionsPending,
   error: filterOptionsError,
-} = await useAsyncData<CourseFiltersResponse>("course-filter-options", () =>
-  api("/courses/filters", {
-    method: "GET",
-  })
+} = useAsyncData<FiltersResponse>(
+  "course-filter-options",
+  () => get("/courses/filters"),
+  {
+    server: false,
+    lazy: true,
+  }
 );
 
-const {
-  categoryOptions,
-  difficultyOptions,
-  orderingOptions,
-  searchValue,
-  selectedCategory,
-  selectedDifficulty,
-  selectedOrdering,
-  currentPage,
-  apiFilters,
-  updatePage,
-  updateSearch,
-  updateOrdering,
-  applyFilters,
-  resetFilters,
-} = useCourseFilters({
-  pageSize: PAGE_SIZE,
-  defaultOrdering: COURSE_ORDERING_DEFAULT,
-  filterOptions,
-});
+// 2. Initialize filters logic
+const { filters, apiParams, setFilter, resetFilters } = useCourseFilters();
 
-const { getCourses, enrollToCourse } = useCourses();
+// 3. Load courses (SSR friendly, reactive to filters)
 const {
   data: coursesResponse,
   pending: coursesPending,
   error: coursesError,
-} = await getCourses(apiFilters);
+} = await useAsyncData<CoursesResponse>(
+  () => `courses-${JSON.stringify(apiParams.value)}`, // Unique key based on params
+  () => coursesService.getCourses(apiParams.value),
+  {
+    watch: [apiParams], // Re-fetch when filters change
+  }
+);
 
 const totalItems = computed(() => coursesResponse.value?.count || 0);
 const courses = computed(() => coursesResponse.value?.results || []);
 
-const { isEnrolled, pending: studentPending, isHydrated } = useStudentCourses();
+// 4. Computed options for UI
+const getOptions = (key: string) =>
+  computed(
+    () =>
+      filterOptions.value?.filters.find((f) => f.value === key)?.values || []
+  );
 
-// Local state for search input
-const localSearch = ref(searchValue.value);
+const categoryOptions = getOptions("category");
+const difficultyOptions = getOptions("difficulty");
+const orderingOptions = getOptions("ordering");
 
-// Sync local search with URL/Computed
-watch(searchValue, (val) => {
-  if (val !== localSearch.value) {
-    localSearch.value = val;
+const {
+  isEnrolled,
+  pending: studentPending,
+  isHydrated,
+  refresh: refreshStudentCourses,
+} = useStudentCourses();
+
+// Local state for search input (manual trigger)
+const localSearch = ref(filters.search || "");
+
+// Sync local search if filters change externally (e.g. URL)
+watch(
+  () => filters.search,
+  (val) => {
+    localSearch.value = val || "";
   }
-});
+);
 
 function onSearch() {
-  updateSearch(localSearch.value);
+  setFilter("search", localSearch.value);
 }
 
 function clearSearch() {
   localSearch.value = "";
   onSearch();
+}
+
+async function handleEnroll(slug: string) {
+  try {
+    await coursesService.enrollToCourse(slug);
+    await refreshStudentCourses();
+  } catch (e) {
+    console.error("Failed to enroll", e);
+  }
 }
 
 const sentinelRef = ref<HTMLElement | null>(null);
@@ -103,7 +124,7 @@ useIntersectionObserver(
           :trailing="false"
           placeholder="Поиск курсов..."
           :disabled="coursesPending"
-          class="w-full shadow-md"
+          class="w-full shadow-md opacity-75 hover:opacity-100 focus-within:opacity-100 transition-opacity duration-300"
           size="xl"
           variant="subtle"
           @keyup.enter="onSearch"
@@ -140,27 +161,27 @@ useIntersectionObserver(
         class="filters-sentinel invisible absolute -top-2 left-0 right-0 bg-primary z-60 h-px"
       ></div>
       <CoursesCatalogToolbar
-        :category="selectedCategory?.value"
-        :difficulty="selectedDifficulty?.value"
-        :ordering="selectedOrdering?.value"
+        v-if="filterOptions"
+        :category="filters.category"
+        :difficulty="filters.difficulty"
+        :ordering="filters.ordering"
         :category-options="categoryOptions"
         :difficulty-options="difficultyOptions"
         :ordering-options="orderingOptions"
         :is-loading="coursesPending"
-        @update:category="
-            (val: any) =>
-              applyFilters({
-                category: val,
-                difficulty: selectedDifficulty?.value,
-              })
-          "
-        @update:difficulty="
-            (val: any) =>
-              applyFilters({ category: selectedCategory?.value, difficulty: val })
-          "
-        @update:ordering="updateOrdering"
+        @update:category="(val) => setFilter('category', val)"
+        @update:difficulty="(val) => setFilter('difficulty', val)"
+        @update:ordering="(val) => setFilter('ordering', val)"
         @reset="resetFilters"
       />
+      <div v-else class="flex gap-2">
+        <USkeleton class="size-9" />
+        <div class="flex items-center flex-wrap gap-2 w-full">
+          <USkeleton class="flex-1 h-9 w-full" />
+          <USkeleton class="flex-1 h-9 w-full" />
+          <USkeleton class="flex-1 h-9 w-full" />
+        </div>
+      </div>
     </LayoutContainer>
 
     <LayoutContainer class="mt-8">
@@ -173,7 +194,7 @@ useIntersectionObserver(
           :can-enroll="isStudent && isAuthenticated"
           :enrolled="isEnrolled(course)"
           :pending="!isHydrated"
-          v-on:enroll="() => enrollToCourse(course.slug)"
+          @enroll="handleEnroll(course.slug)"
         />
       </CoursesCatalogCardGrid>
 
@@ -195,9 +216,9 @@ useIntersectionObserver(
           >Показано:
           {{
             1 +
-            (currentPage - 1) * PAGE_SIZE +
+            (filters.page - 1) * PAGE_SIZE +
             "-" +
-            Math.min(currentPage * PAGE_SIZE, totalItems)
+            Math.min(filters.page * PAGE_SIZE, totalItems)
           }}
         </span>
 
@@ -206,10 +227,10 @@ useIntersectionObserver(
           color="neutral"
           :active-color="'secondary'"
           active-variant="subtle"
-          :page="currentPage"
+          :page="filters.page"
           :total="totalItems"
           :items-per-page="PAGE_SIZE"
-          @update:page="updatePage"
+          @update:page="(val) => setFilter('page', val)"
           :ui="{
             item: 'cursor-pointer',
           }"

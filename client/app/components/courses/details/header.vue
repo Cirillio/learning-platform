@@ -16,10 +16,10 @@ const upcomingDate = new Date().toLocaleDateString("ru-RU", {
 </script>
 
 <template>
-  <div class="bg-neutral-900 text-white pt-8 pb-24 relative overflow-hidden">
+  <div class="bg-black text-white pt-8 pb-24 relative overflow-hidden">
     <!-- Background decoration (optional) -->
     <div
-      class="absolute top-0 right-0 w-1/2 h-full bg-linear-to-l from-neutral-800/50 to-transparent pointer-events-none"
+      class="absolute top-0 right-0 w-full h-full bg-linear-to-r dark:from-default to-primary/75 pointer-events-none"
     ></div>
 
     <UContainer>

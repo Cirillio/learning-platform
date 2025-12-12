@@ -1,267 +1,103 @@
-import { computed, type ComputedRef } from "vue";
+import { reactive, computed, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import type {
-  FilterOption,
-  CourseFilters,
-  CourseFiltersResponse,
-} from "~/types";
+import type { CourseFilters } from "~/types";
 import {
   COURSE_PAGE_SIZE_DEFAULT,
   COURSE_ORDERING_DEFAULT,
 } from "~/constants/courseFilters";
 
-interface UseCourseFiltersOptions {
-  pageSize?: number;
-  defaultOrdering?: string;
-  filterOptions?: Ref<CourseFiltersResponse | null | undefined>;
-}
-
-interface UseCourseFiltersReturn {
-  // Filter options data
-  filterOptions?: Ref<CourseFiltersResponse | null | undefined>;
-  categoryOptions: ComputedRef<FilterOption[]>;
-  difficultyOptions: ComputedRef<FilterOption[]>;
-  orderingOptions: ComputedRef<FilterOption[]>;
-
-  // Computed values
-  searchValue: ComputedRef<string>;
-  selectedCategory: ComputedRef<FilterOption | undefined>;
-  selectedDifficulty: ComputedRef<FilterOption | undefined>;
-  selectedOrdering: ComputedRef<FilterOption | undefined>;
-  currentPage: ComputedRef<number>;
-  apiFilters: ComputedRef<CourseFilters>;
-
-  // Update methods
-  updateSearch: (value: string) => void;
-  updateCategory: (option: string | undefined) => void;
-  updateDifficulty: (option: string | undefined) => void;
-  updateOrdering: (option: string | undefined) => void;
-  updatePage: (page: number) => void;
-  applyFilters: (filters: {
-    search?: string;
-    category?: string;
-    difficulty?: string;
-    ordering?: string;
-  }) => void;
-  resetFilters: () => void;
-}
-
 /**
- * Composable для управления фильтрами курсов
- *
- * Обрабатывает:
- * - Получение опций для фильтрации с сервера (SSR)
- * - Синхронизацию фильтров с URL query параметрами
- * - Преобразование между строками URL и объектами FilterOption
- * - Сброс страницы при изменении фильтров
- * - Подготовку параметров для API запросов
- *
- * @param options - Дополнительные настройки
- * @returns Реактивные значения фильтров и методы для их обновления
+ * Simplified composable for managing course filters.
+ * - State is the single source of truth.
+ * - URL is synced from state.
+ * - State is initialized from URL (SSR friendly).
  */
-export function useCourseFilters(
-  options: UseCourseFiltersOptions = {}
-): UseCourseFiltersReturn {
+export function useCourseFilters() {
   const route = useRoute();
   const router = useRouter();
 
-  const {
-    pageSize = COURSE_PAGE_SIZE_DEFAULT,
-    defaultOrdering = COURSE_ORDERING_DEFAULT,
-    filterOptions,
-  } = options;
-
-  // ============================================================================
-  // Получение опций фильтров с сервера (SSR)
-  // ============================================================================
-
-  // Подготавливаем опции для USelectMenu
-  const categoryOptions = computed(
-    () =>
-      filterOptions?.value?.filters.find((f) => f.value === "category")
-        ?.values || []
-  );
-  const difficultyOptions = computed(
-    () =>
-      filterOptions?.value?.filters.find((f) => f.value === "difficulty")
-        ?.values || []
-  );
-  const orderingOptions = computed(
-    () =>
-      filterOptions?.value?.filters.find((f) => f.value === "ordering")
-        ?.values || []
-  );
-
-  // ============================================================================
-  // Вспомогательные функции
-  // ============================================================================
-
-  /**
-   * Находит FilterOption по value из URL
-   */
-  function findFilterOption(
-    options: FilterOption[],
-    value: string
-  ): FilterOption | undefined {
-    return options.find((option) => option.value === value);
-  }
-
-  /**
-   * Обновляет query параметры с сбросом страницы
-   */
-  function updateQuery(updates: Record<string, string | undefined>): void {
-    router.push({
-      query: {
-        ...route.query,
-        ...updates,
-        page: "1", // Всегда сбрасываем на первую страницу при изменении фильтров
-      },
-    });
-  }
-
-  /**
-   * Обновляет query параметры без сброса страницы (для пагинации)
-   */
-  function updateQueryWithoutReset(
-    updates: Record<string, string | undefined>
-  ): void {
-    router.push({
-      query: {
-        ...route.query,
-        ...updates,
-      },
-    });
-  }
-
-  // ============================================================================
-  // Computed - текущие значения фильтров из URL
-  // ============================================================================
-
-  const searchValue = computed(() => String(route.query.search || ""));
-
-  const selectedCategory = computed(() =>
-    route.query.category
-      ? findFilterOption(categoryOptions.value, String(route.query.category))
-      : undefined
-  );
-
-  const selectedDifficulty = computed(() =>
-    route.query.difficulty
-      ? findFilterOption(
-          difficultyOptions.value,
-          String(route.query.difficulty)
-        )
-      : undefined
-  );
-
-  const selectedOrdering = computed(() => {
-    const orderingValue = String(route.query.ordering || defaultOrdering);
-    return findFilterOption(orderingOptions.value, orderingValue);
-  });
-
-  const currentPage = computed(() => Number(route.query.page || 1));
-
-  /**
-   * Параметры для API запроса (со строковыми значениями)
-   */
-  const apiFilters = computed<CourseFilters>(() => ({
-    search: (route.query.search as string) || undefined,
+  // 1. Initialize state from URL (SSR friendly)
+  const filters = reactive({
+    search: (route.query.search as string) || "",
     category: (route.query.category as string) || undefined,
     difficulty: (route.query.difficulty as string) || undefined,
-    ordering: (route.query.ordering as string) || defaultOrdering,
-    page: currentPage.value,
-    page_size: pageSize,
-  }));
+    ordering: (route.query.ordering as string) || COURSE_ORDERING_DEFAULT,
+    page: Number(route.query.page) || 1,
+  });
 
-  // ============================================================================
-  // Методы обновления фильтров
-  // ============================================================================
+  // 2. Computed API params (clean for API calls)
+  const apiParams = computed<CourseFilters>(() => {
+    const params: CourseFilters = {
+      page: filters.page,
+      page_size: COURSE_PAGE_SIZE_DEFAULT,
+    };
 
-  function updateSearch(value: string): void {
-    updateQuery({
-      search: value || undefined,
-    });
-  }
+    if (filters.search) params.search = filters.search;
+    if (filters.category) params.category = filters.category;
+    if (filters.difficulty) params.difficulty = filters.difficulty;
+    if (filters.ordering) params.ordering = filters.ordering;
 
-  function updateCategory(option: string | undefined): void {
-    updateQuery({
-      category: option || undefined,
-    });
-  }
+    return params;
+  });
 
-  function updateDifficulty(option: string | undefined): void {
-    updateQuery({
-      difficulty: option || undefined,
-    });
-  }
+  // 3. Sync State -> URL
+  watch(
+    filters,
+    () => {
+      const query: Record<string, any> = { ...filters };
 
-  function updateOrdering(option: string | undefined): void {
-    updateQuery({
-      ordering: option || undefined,
-    });
-  }
+      // Remove defaults/empty to keep URL clean
+      if (!query.search) delete query.search;
+      if (!query.category) delete query.category;
+      if (!query.difficulty) delete query.difficulty;
+      if (query.ordering === COURSE_ORDERING_DEFAULT) delete query.ordering;
+      if (query.page === 1) delete query.page;
 
-  function updatePage(page: number): void {
-    updateQueryWithoutReset({
-      page: String(page),
-    });
-  }
+      router.push({ query });
+    },
+    { deep: true }
+  );
 
-  /**
-   * Применяет несколько фильтров одновременно
-   */
-  function applyFilters(filters: {
-    search?: string;
-    category?: string;
-    difficulty?: string;
-    ordering?: string;
-  }): void {
-    updateQuery({
-      search: filters.search || undefined,
-      category: filters.category || undefined,
-      difficulty: filters.difficulty || undefined,
-      ordering: filters.ordering || undefined,
-    });
-  }
+  // 4. Sync URL -> State (Handle Back/Forward navigation)
+  watch(
+    () => route.query,
+    (newQuery) => {
+      // Only update if values differ to avoid loops
+      if (newQuery.search !== filters.search)
+        filters.search = (newQuery.search as string) || "";
+      if (newQuery.category !== filters.category)
+        filters.category = (newQuery.category as string) || undefined;
+      if (newQuery.difficulty !== filters.difficulty)
+        filters.difficulty = (newQuery.difficulty as string) || undefined;
+      if (newQuery.ordering !== filters.ordering)
+        filters.ordering =
+          (newQuery.ordering as string) || COURSE_ORDERING_DEFAULT;
+      if (Number(newQuery.page || 1) !== filters.page)
+        filters.page = Number(newQuery.page) || 1;
+    }
+  );
 
-  /**
-   * Сбрасывает все фильтры к начальным значениям
-   */
-  function resetFilters(): void {
-    router.push({
-      query: {
-        ordering: defaultOrdering,
-        page: "1",
-      },
-    });
-  }
+  // 5. Helper methods
+  const setFilter = (key: keyof typeof filters, value: any) => {
+    if (key !== "page") {
+      filters.page = 1; // Reset page on filter change
+    }
+    // @ts-ignore
+    filters[key] = value;
+  };
 
-  // ============================================================================
-  // Return
-  // ============================================================================
+  const resetFilters = () => {
+    filters.search = "";
+    filters.category = undefined;
+    filters.difficulty = undefined;
+    filters.ordering = COURSE_ORDERING_DEFAULT;
+    filters.page = 1;
+  };
 
   return {
-    // Filter options data
-    filterOptions,
-    categoryOptions,
-    difficultyOptions,
-    orderingOptions,
-
-    // Computed values
-    searchValue,
-    selectedCategory,
-    selectedDifficulty,
-    selectedOrdering,
-    currentPage,
-    apiFilters,
-
-    // Update methods
-    updateSearch,
-    updateCategory,
-    updateDifficulty,
-    updateOrdering,
-    updatePage,
-    applyFilters,
+    filters,
+    apiParams,
+    setFilter,
     resetFilters,
   };
 }

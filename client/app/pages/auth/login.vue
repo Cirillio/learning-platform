@@ -16,6 +16,7 @@ const handleLogin = async (credentials: LoginForm): Promise<void> => {
 // Meta
 definePageMeta({
   layout: "auth",
+  middleware: "guest",
 });
 
 // SEO

@@ -18,6 +18,7 @@ const handleRegister = async (userData: RegisterForm): Promise<void> => {
 // Meta
 definePageMeta({
   layout: "auth",
+  middleware: "guest",
 });
 
 // SEO

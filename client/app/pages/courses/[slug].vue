@@ -1,30 +1,42 @@
 <script setup lang="ts">
+import { useCoursesService } from "~/services";
 import type { CourseDetail, Lesson } from "~/types";
 
 const route = useRoute();
+const toast = useToast();
 const slug = route.params.slug as string;
 
-const { getCourse, getCourseLessons, enrollToCourse } = useCourses();
 const { isAuthenticated } = useAuthStore();
+const coursesService = useCoursesService();
+const { enrollToCourse, unenrollFromCourse } = coursesService;
+
+const courseCacheKey = computed(() => `course-${slug}`);
+const lessongsCacheKey = computed(() => `course-${slug}-lessons`);
+
+const enrollPending = ref(false);
 
 // Fetch Course Details
 const {
   data: course,
   pending: coursePending,
   error: courseError,
-} = await getCourse(slug);
+} = await useAsyncData<CourseDetail>(courseCacheKey.value, () =>
+  coursesService.getCourse(slug)
+);
 
 // Fetch Lessons (Syllabus)
-const { data: lessonsResponse, pending: lessonsPending } =
-  await getCourseLessons(slug);
+const { data: lessonsResponse, pending: lessonsPending } = await useAsyncData(
+  lessongsCacheKey.value,
+  () => coursesService.getCourseLessons(slug)
+);
 const lessons = computed(
   () => (lessonsResponse.value as any)?.results || ([] as Lesson[])
 );
 
 // Computed properties for UI
-const isUserEnrolled = computed(() => {
+const isUserEnrolled = computed<boolean>(() => {
   if (!course.value) return false;
-  return course.value.is_enrolled;
+  return course.value.is_enrolled || false;
 });
 
 const breadcrumbLinks = computed(() => [
@@ -40,12 +52,44 @@ const handleEnroll = async () => {
     return;
   }
 
-  const result = await enrollToCourse(slug);
-  if (result.success) {
+  enrollPending.value = true;
+
+  try {
+    await enrollToCourse(slug);
+    // Refresh data to update UI state
+    refreshNuxtData(`course-${slug}`);
+    toast.add({
+      title: "Вы успешно записались на курс!",
+      color: "success",
+    });
+    // Show toast/notification (TODO)
+  } catch (e) {
+    console.error(e);
+  }
+  enrollPending.value = false;
+};
+
+const handleUnenroll = async () => {
+  if (!isAuthenticated) {
+    navigateTo("/auth/login");
+    return;
+  }
+
+  enrollPending.value = true;
+
+  try {
+    await unenrollFromCourse(slug);
     // Refresh data to update UI state
     refreshNuxtData(`course-${slug}`);
     // Show toast/notification (TODO)
+    toast.add({
+      title: "Вы успешно отписались от курса.",
+      color: "info",
+    });
+  } catch (e) {
+    console.error(e);
   }
+  enrollPending.value = false;
 };
 </script>
 
@@ -81,6 +125,8 @@ const handleEnroll = async () => {
           :is-user-enrolled="isUserEnrolled"
           :lessons-count="lessons.length"
           @enroll="handleEnroll"
+          @unenroll="handleUnenroll"
+          :pending="enrollPending"
         />
       </div>
     </UContainer>

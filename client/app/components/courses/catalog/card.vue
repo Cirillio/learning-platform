@@ -1,13 +1,14 @@
 <!-- components/courses/item-card.vue -->
 <script lang="ts" setup>
+import { useCoursesService } from "~/services";
 import type { Course } from "~/types";
 
 interface Props {
   course: Course;
   canEnroll?: boolean;
+  canUnEnroll?: boolean;
   enrolled?: boolean;
   pending?: boolean;
-  onEnroll?: () => void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -15,6 +16,10 @@ const props = withDefaults(defineProps<Props>(), {
   enrolled: false,
   pending: false,
 });
+
+const emit = defineEmits<{
+  unEnroll: [courseSlug: string];
+}>();
 
 const difficultyBadge = computed(() => {
   const badges = {
@@ -37,7 +42,6 @@ const difficultyBadge = computed(() => {
   return badges[props.course.difficulty] || badges.beginner;
 });
 </script>
-
 <template>
   <UCard
     :ui="{
@@ -57,7 +61,7 @@ const difficultyBadge = computed(() => {
           class="flex bg-linear-to-t from-primary/75 items-end to-success/75 w-full h-full"
         >
           <span
-            class="font-extrabold text-2xl sm:text-4xl lg:text-6xl py-3! px-2! sm:py-4! sm:px-3! line-clamp-2 overflow-hidden text-balance h-fit text-white/25 dark:text-default/50"
+            class="select-none pointer-events-none font-extrabold text-2xl sm:text-4xl lg:text-6xl py-3! px-2! sm:py-4! sm:px-3! line-clamp-2 overflow-hidden text-balance h-fit text-white/25 dark:text-default/50"
           >
             {{ course.abbr }}
           </span>
@@ -79,7 +83,7 @@ const difficultyBadge = computed(() => {
           label="В архиве"
         />
         <div
-          v-if="enrolled"
+          v-if="enrolled && !onUnEnroll"
           class="absolute flex bottom-0 left-1/2 overflow-hidden -translate-x-1/2 border rounded-t-md border-default bg-default"
         >
           <span
@@ -131,6 +135,27 @@ const difficultyBadge = computed(() => {
             {{ difficultyBadge.label }}
           </span>
         </div>
+      </div>
+
+      <div v-if="canUnEnroll && !pending" class="flex gap-3 mb-1 mt-3">
+        <CoursesActionsUnenrollModal @confirm="$emit('unEnroll', course.slug)">
+          <UButton
+            block
+            variant="subtle"
+            color="error"
+            size="lg"
+            :loading="pending"
+            >Отменить запись</UButton
+          >
+        </CoursesActionsUnenrollModal>
+
+        <UButton
+          block
+          size="lg"
+          color="primary"
+          :to="'/learning/' + course.slug"
+          >Продолжить</UButton
+        >
       </div>
     </div>
   </UCard>

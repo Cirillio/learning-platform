@@ -1,24 +1,17 @@
 <script lang="ts" setup>
 import type { AvatarProps } from "@nuxt/ui";
-import type { User } from "~/types";
+import type { User, UserProfile } from "~/types";
 
 const props = defineProps<{
   user: User | null;
 }>();
-
-const avatarProps = computed<AvatarProps | undefined>(() => {
-  const avatar = props.user?.avatar;
-  return avatar
-    ? { src: avatar, alt: props.user?.first_name ?? "avatar" }
-    : undefined;
-});
 </script>
 
 <template>
-  <UButton label="Моя доска" to="/dashboard" />
+  <UButton label="Мои уроки" to="/learning" />
   <USeparator orientation="vertical" color="neutral" class="h-6" />
   <UButton
-    to="/my/profile"
+    to="/profile"
     :label="user?.first_name"
     variant="ghost"
     color="neutral"

@@ -59,8 +59,8 @@ export default defineNuxtConfig({
   routeRules: {
     "/": { ssr: true },
     "/auth/**": { ssr: true },
-    "/dashboard/**": { ssr: true },
     "/courses/**": { ssr: true },
+    // "/profile/**": { ssr: false }, // Enable SSR for profile to fix auth hydration
   },
 
   // Настройки SSR

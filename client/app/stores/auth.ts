@@ -1,4 +1,4 @@
-import { type Profile, type User } from "~/types";
+import { type User, type UserProfile } from "~/types";
 import { defineStore } from "pinia";
 
 /**
@@ -20,7 +20,7 @@ export const useAuthStore = defineStore("auth", () => {
 
   // Actions
   const setUser = (userData: User | null): void => {
-    user.value = userData;
+    user.value = userData as User | null;
   };
 
   const clearAuth = (): void => {

@@ -1,12 +1,17 @@
 <script lang="ts" setup>
-const { getCategories } = useCourses();
+import { useCoursesService } from "~/services";
+import type { CategoriesResponse } from "~/types";
+
+const coursesService = useCoursesService();
 const {
   data: categoriesResponse,
   pending,
   error,
-} = await getCategories({
-  page_size: 100,
-});
+} = await useAsyncData<CategoriesResponse>("categories-all", () =>
+  coursesService.getCategories({
+    page_size: 100,
+  })
+);
 </script>
 
 <template>

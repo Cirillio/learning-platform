@@ -1,0 +1,22 @@
+{
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug Nuxt Frontend",
+      "program": "${workspaceFolder}/client/node_modules/.bin/nuxt",
+      "args": ["dev"],
+      "env": {
+        "NODE_ENV": "development"
+      }
+    },
+    {
+      "type": "debugpy",
+      "request": "launch",
+      "name": "Debug Django Backend",
+      "program": "${workspaceFolder}/server/manage.py",
+      "args": ["runserver"],
+      "django": true
+    }
+  ]
+}

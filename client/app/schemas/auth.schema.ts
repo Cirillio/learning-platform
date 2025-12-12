@@ -73,7 +73,7 @@ export const profileUpdateSchema = z.object({
     .min(1, "Фамилия обязательна")
     .max(30, "Фамилия не должна превышать 30 символов"),
 
-  email: z.string().min(1, "Email обязателен").email("Неверный формат email"),
+  email: z.email("Неверный формат email").optional(),
 });
 
 // Password change schema

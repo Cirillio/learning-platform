@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { onUnmounted } from "vue";
 import type { FilterOption } from "~/types";
 
 interface Props {
@@ -48,21 +49,21 @@ const localDifficulty = ref<string | undefined>(props.difficulty);
 const localOrdering = ref<string | undefined>(props.ordering);
 
 // Sync from props to local values
-watch(
+const stopWatchCategory = watch(
   () => props.category,
   (val) => {
     localCategory.value = val;
   }
 );
 
-watch(
+const stopWatchDifficulty = watch(
   () => props.difficulty,
   (val) => {
     localDifficulty.value = val;
   }
 );
 
-watch(
+const stopWatchOrdering = watch(
   () => props.ordering,
   (val) => {
     localOrdering.value = val;
@@ -70,16 +71,26 @@ watch(
 );
 
 // Sync from local values to emits
-watch(localCategory, (val) => {
+const stopWatchLocalCategory = watch(localCategory, (val) => {
   if (val !== props.category) emit("update:category", val);
 });
 
-watch(localDifficulty, (val) => {
+const stopWatchLocalDifficulty = watch(localDifficulty, (val) => {
   if (val !== props.difficulty) emit("update:difficulty", val);
 });
 
-watch(localOrdering, (val) => {
+const stopWatchLocalOrdering = watch(localOrdering, (val) => {
   if (val !== props.ordering) emit("update:ordering", val);
+});
+
+// Cleanup watchers on unmount
+onUnmounted(() => {
+  stopWatchCategory();
+  stopWatchDifficulty();
+  stopWatchOrdering();
+  stopWatchLocalCategory();
+  stopWatchLocalDifficulty();
+  stopWatchLocalOrdering();
 });
 
 const hasActiveFilters = computed(() => {
@@ -108,7 +119,6 @@ const hasActiveFilters = computed(() => {
       placeholder="Категория"
       v-model="localCategory"
       :items="categoryOptionsWithDefault"
-      :disabled="isLoading"
       class="flex-1"
       color="secondary"
       size="lg"
@@ -119,7 +129,6 @@ const hasActiveFilters = computed(() => {
       placeholder="Сложность"
       v-model="localDifficulty"
       :items="difficultyOptionsWithDefault"
-      :disabled="isLoading"
       class="flex-1"
       color="secondary"
       size="lg"
@@ -130,7 +139,6 @@ const hasActiveFilters = computed(() => {
       placeholder="Сортировка"
       v-model="localOrdering"
       :items="orderingOptionsWithDefault"
-      :disabled="isLoading"
       class="flex-1"
       color="secondary"
       size="lg"

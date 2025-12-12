@@ -1,14 +1,3 @@
-<script lang="ts" setup>
-const authStore = useAuthStore();
-
-// Redirect if already authenticated
-onMounted(() => {
-  if (authStore.isAuthenticated) {
-    navigateTo("/dashboard");
-  }
-});
-</script>
-
 <template>
   <UMain class="h-dvh">
     <div

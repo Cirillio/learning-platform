@@ -1,19 +1,5 @@
-export interface LoginCredentials {
-  username: string;
-  password: string;
-  remember_me?: boolean;
-}
-
-export interface RegisterData {
-  username: string;
-  email: string;
-  password: string;
-  password_confirm: string;
-  first_name: string;
-  last_name: string;
-  role: "teacher" | "student";
-  remember_me?: boolean;
-}
+import type { LoginCredentials, RegisterCredentials } from "~/types";
+import { useAuthService } from "~/services/useAuthService";
 
 /**
  * Composable for authentication operations
@@ -22,35 +8,38 @@ export interface RegisterData {
  */
 export const useAuth = () => {
   const authStore = useAuthStore();
-  const { login: apiLogin, register: apiRegister, removeToken } = useApi();
+  const authService = useAuthService();
 
   const login = async (credentials: LoginCredentials) => {
-    console.log("🔍 [Auth] Login credentials:", credentials);
     authStore.setLoading(true);
     try {
-      const response = await apiLogin(credentials);
+      const response = await authService.login(credentials);
       authStore.setUser(response.user);
 
-      await navigateTo("/dashboard");
+      await navigateTo("/profile");
     } catch (error: any) {
-      authStore.setError(error.data?.error || "Login failed");
+      authStore.setError(
+        error.data?.error || "Login failed. Please try again."
+      );
       throw error;
     } finally {
       authStore.setLoading(false);
     }
   };
 
-  const register = async (userData: RegisterData) => {
+  const register = async (credentials: RegisterCredentials) => {
     authStore.setLoading(true);
     try {
-      await apiRegister(userData);
+      await authService.register(credentials);
       await login({
-        username: userData.username,
-        password: userData.password,
+        username: credentials.username,
+        password: credentials.password,
         remember_me: true,
       });
     } catch (error: any) {
-      authStore.setError(error.data?.error || "Registration failed");
+      authStore.setError(
+        error.data?.error || "Registration failed. Please try again."
+      );
       throw error;
     } finally {
       authStore.setLoading(false);
@@ -59,21 +48,29 @@ export const useAuth = () => {
 
   const logout = async () => {
     try {
-      await removeToken();
+      await authService.logout();
     } catch {}
 
     authStore.clearAuth();
+  };
 
-    await navigateTo("/auth/login");
+  const fetchUser = async () => {
+    try {
+      const user = await authService.fetchUser();
+      authStore.setUser(user);
+    } catch (error) {
+      authStore.clearAuth();
+    }
   };
 
   return {
-    user: authStore.user,
-    isAuthenticated: authStore.isAuthenticated,
-    isLoading: authStore.isLoading,
-    error: authStore.error,
+    user: computed(() => authStore.user),
+    isAuthenticated: computed(() => authStore.isAuthenticated),
+    isLoading: computed(() => authStore.isLoading),
+    error: computed(() => authStore.error),
     login,
     register,
     logout,
+    fetchUser,
   };
 };

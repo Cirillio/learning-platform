@@ -21,6 +21,7 @@ defineProps<{
           :course="course"
           :can-enroll="false"
           :pending="false"
+          :enrolled="true"
         />
       </CoursesCatalogCardGrid>
     </div>

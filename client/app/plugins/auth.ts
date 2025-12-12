@@ -1,24 +1,27 @@
 // plugins/auth.ts
 
-import type { User } from "~/types";
+import type { User, UserProfile } from "~/types";
+import { normalizeUser } from "~/utils/get-user-from-profile";
 
 export default defineNuxtPlugin(async () => {
   const authStore = useAuthStore();
 
   // Используем useState для передачи данных между SSR и клиентом
+  // Храним уже нормализованного пользователя
   const ssrUser = useState<User | null>("ssr-user", () => null);
 
   // На сервере читаем из context и сохраняем в useState
   if (import.meta.server) {
     const event = useRequestEvent();
-    console.log("🔍 [SSR] Event context user:", event?.context.user);
+    console.log("🔍 [SSR] Event context user:", event?.context.user?.username);
     if (event?.context.user) {
-      ssrUser.value = event.context.user;
-      authStore.setUser(event.context.user);
-      console.log(
-        "✅ [SSR] User set from context:",
-        event.context.user.username
-      );
+      // event.context.user - это RawUserProfile (с бэкенда)
+      // Нормализуем его в User (Internal)
+      const normalizedUser = normalizeUser(event.context.user as UserProfile);
+
+      ssrUser.value = normalizedUser;
+      authStore.setUser(normalizedUser);
+      console.log("✅ [SSR] User set from context:", normalizedUser.username);
     }
   }
 
@@ -34,30 +37,13 @@ export default defineNuxtPlugin(async () => {
         ssrUser.value.username
       );
     } else {
-      // Нет данных из SSR - проверяем cookies
-      const cookies = document.cookie;
-      const hasToken = cookies.includes("access_token=");
+      // SSR не вернул пользователя.
+      // Поскольку access_token обычно HttpOnly, мы не можем надежно проверить его наличие через document.cookie.
+      // Мы полагаемся на то, что Server Middleware уже попытался авторизовать пользователя.
+      // Если ssrUser пуст, значит сервер считает нас гостем.
 
-      console.log(
-        "🔍 [Client] Has token:",
-        hasToken,
-        "Is authenticated:",
-        authStore.isAuthenticated
-      );
-
-      if (hasToken && !authStore.isAuthenticated) {
-        // Есть токен, но юзера нет - грузим
-        console.log("🔄 [Client] Loading user profile...");
-        try {
-          const api = useApi();
-          const user = await api.getProfile();
-          authStore.setUser(user);
-          console.log("✅ [Client] User loaded:", user.username);
-        } catch (e) {
-          // Токен невалидный
-          console.error("❌ [Client] Failed to load user:", e);
-          authStore.clearAuth();
-        }
+      if (authStore.isAuthenticated) {
+        authStore.clearAuth();
       }
     }
   }

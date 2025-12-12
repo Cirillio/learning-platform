@@ -1,8 +1,9 @@
-.PHONY: help build up down restart logs migrate shell test clean
+.PHONY: help build up down restart logs migrate shell test clean dev-frontend dev-backend dev
 
 help:
 	@echo "University Portal - Команды управления"
 	@echo ""
+	@echo "Docker команды:"
 	@echo "make build       - Собрать Docker образы"
 	@echo "make up          - Запустить все сервисы"
 	@echo "make down        - Остановить все сервисы"
@@ -13,6 +14,11 @@ help:
 	@echo "make superuser   - Создать суперпользователя"
 	@echo "make test        - Запустить тесты"
 	@echo "make clean       - Удалить все контейнеры и volumes"
+	@echo ""
+	@echo "Локальные команды:"
+	@echo "make dev-frontend - Запустить фронтенд локально (pnpm dev)"
+	@echo "make dev-backend  - Запустить бэкенд локально (python manage.py runserver)"
+	@echo "make dev          - Запустить фронтенд и бэкенд локально параллельно"
 
 build:
 	docker-compose build
@@ -44,3 +50,14 @@ test:
 clean:
 	docker-compose down -v
 	docker system prune -f
+
+# Локальные команды разработки
+dev-frontend:
+	cd client && pnpm dev
+
+dev-backend:
+	cd server && . ./virtenv/bin/activate && python3 manage.py runserver
+
+dev:
+	@echo "Запуск фронтенда и бэкенда локально..."
+	@make -j2 dev-frontend dev-backend

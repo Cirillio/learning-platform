@@ -5,12 +5,14 @@ interface Props {
   course: CourseDetail;
   isUserEnrolled: boolean;
   lessonsCount: number;
+  pending: boolean;
 }
 
 defineProps<Props>();
 
 defineEmits<{
   (e: "enroll"): void;
+  (e: "unenroll"): void;
 }>();
 </script>
 
@@ -21,7 +23,7 @@ defineEmits<{
       <UCard>
         <!-- Preview Image/Video -->
         <div
-          class="relative aspect-video w-full bg-neutral-100 dark:bg-neutral-800 overflow-hidden rounded-t-lg group cursor-pointer"
+          class="relative aspect-video w-full bg-neutral-100 dark:bg-neutral-800 overflow-hidden rounded-lg group cursor-pointer"
         >
           <NuxtImg
             v-if="course.cover_image_url"
@@ -55,9 +57,9 @@ defineEmits<{
           </div>
         </div>
 
-        <div class="p-6 space-y-6">
+        <div class="py-6 space-y-6">
           <!-- Price -->
-          <div class="flex items-end gap-2">
+          <div v-if="!isUserEnrolled" class="flex items-end gap-2">
             <span class="text-4xl font-bold text-neutral-900 dark:text-white"
               >Бесплатно</span
             >
@@ -75,12 +77,22 @@ defineEmits<{
               :to="`/learning/${course.slug}`"
             />
             <UButton
+              v-if="isUserEnrolled"
+              block
+              size="xl"
+              color="error"
+              variant="subtle"
+              label="Отписаться"
+              :loading="pending"
+              @click="$emit('unenroll')"
+            />
+            <UButton
               v-else
               block
               size="xl"
               color="primary"
               label="Записаться на курс"
-              :loading="false"
+              :loading="pending"
               @click="$emit('enroll')"
             />
 
@@ -102,7 +114,7 @@ defineEmits<{
           </div>
 
           <p class="text-xs text-center text-neutral-500">
-            Доступ навсегда • Сертификат при завершении
+            • Сертификат при завершении
           </p>
 
           <UDivider />
@@ -146,59 +158,6 @@ defineEmits<{
               </li>
             </ul>
           </div>
-        </div>
-      </UCard>
-
-      <!-- Calendar Widget (Mockup) -->
-      <UCard>
-        <template #header>
-          <div class="flex items-center justify-between">
-            <h3 class="font-semibold text-sm">Расписание</h3>
-            <div class="flex gap-2">
-              <UButton
-                icon="i-heroicons-chevron-left"
-                size="xs"
-                color="neutral"
-                variant="ghost"
-              />
-              <span class="text-xs font-medium">Декабрь 2025</span>
-              <UButton
-                icon="i-heroicons-chevron-right"
-                size="xs"
-                color="neutral"
-                variant="ghost"
-              />
-            </div>
-          </div>
-        </template>
-
-        <div
-          class="grid grid-cols-7 gap-1 text-center text-xs mb-2 text-neutral-400"
-        >
-          <span>Пн</span><span>Вт</span><span>Ср</span><span>Чт</span
-          ><span>Пт</span><span>Сб</span><span>Вс</span>
-        </div>
-        <div class="grid grid-cols-7 gap-1 text-center text-sm">
-          <span class="text-neutral-300 p-1">29</span>
-          <span class="text-neutral-300 p-1">30</span>
-          <span class="p-1">1</span>
-          <span class="p-1">2</span>
-          <span class="p-1">3</span>
-          <span class="p-1">4</span>
-          <span class="p-1">5</span>
-          <span class="p-1">6</span>
-          <span class="p-1">7</span>
-          <span class="p-1">8</span>
-          <span class="p-1">9</span>
-          <span class="bg-primary-500 text-white rounded-full p-1 shadow-md"
-            >10</span
-          >
-          <span class="bg-primary-100 text-primary-700 rounded-full p-1"
-            >11</span
-          >
-          <span class="bg-primary-100 text-primary-700 rounded-full p-1"
-            >12</span
-          >
         </div>
       </UCard>
     </div>

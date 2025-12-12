@@ -1,7 +1,7 @@
 <template>
   <Header />
 
-  <UMain>
+  <UMain class="flex flex-col">
     <slot />
   </UMain>
 

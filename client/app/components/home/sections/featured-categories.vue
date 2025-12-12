@@ -1,15 +1,20 @@
 <script setup lang="ts">
-const { getCategories } = useCourses();
+import { useCoursesService } from "~/services/useCoursesService";
+import type { CategoriesResponse } from "~/types";
+
+const coursesService = useCoursesService();
 
 const {
   data: categoriesResponse,
   pending: categoriesPending,
   error: categoriesError,
-} = await getCategories({
-  page: 1,
-  page_size: 4,
-  ordering: "-created_at",
-});
+} = await useAsyncData<CategoriesResponse>("categories-featured", () =>
+  coursesService.getCategories({
+    page: 1,
+    page_size: 4,
+    ordering: "-created_at",
+  })
+);
 
 // Данные для фич
 const features = [
@@ -94,7 +99,7 @@ const features = [
         </template>
 
         <nuxt-link
-          :to="'/courses/categories/' + category.slug"
+          :to="'/courses?category=' + category.slug"
           class="flex items-center justify-between w-full text-default hover:text-primary transition-colors duration-200 group/title"
         >
           <h3 class="text-2xl font-bold">{{ category.name }}</h3>

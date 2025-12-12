@@ -1,20 +1,20 @@
 <script setup lang="ts">
+import type { pageHeader } from "#build/ui";
 import { z } from "zod";
-import type { FormSubmitEvent } from "#ui/types";
 import type { User } from "~/types";
 
 const props = defineProps<{
-  profile: User;
+  profile: User | undefined;
+  onSubmit: (data: EditSchema) => Promise<void>;
+  isLoading: boolean;
+  profileLoading: boolean;
+  error: string | null;
 }>();
 
 const emit = defineEmits<{
   (e: "cancel"): void;
   (e: "success"): void;
 }>();
-
-const { api } = useApi();
-const toast = useToast();
-const isLoading = ref(false);
 
 const schema = z.object({
   first_name: z.string().min(1, "Имя обязательно"),
@@ -29,170 +29,206 @@ const schema = z.object({
   address: z.string().optional(),
   city: z.string().optional(),
   country: z.string().optional(),
-  birth_date: z.string().optional(),
+  birth_date: z.union([z.string(), z.null()]).optional(),
   specialization: z.string().optional(),
 });
 
-type Schema = z.output<typeof schema>;
+export type EditSchema = z.output<typeof schema>;
 
-const state = reactive<Schema>({
-  first_name: props.profile.first_name,
-  last_name: props.profile.last_name,
-  email: props.profile.email,
-  bio: props.profile.bio || "",
-  phone: props.profile.phone || "",
-  address: props.profile.address || "",
-  city: props.profile.city || "",
-  country: props.profile.country || "",
-  birth_date: props.profile.birth_date || "",
-  specialization: props.profile.specialization || "",
+const state = reactive<EditSchema>({
+  first_name: props.profile?.first_name || "",
+  last_name: props.profile?.last_name || "",
+  email: props.profile?.email || "",
+  bio: props.profile?.bio || "",
+  phone: props.profile?.phone || "",
+  address: props.profile?.address || "",
+  city: props.profile?.city || "",
+  country: props.profile?.country || "",
+  birth_date: props.profile?.birth_date || "",
+  specialization: props.profile?.specialization || "",
 });
-
-async function onSubmit(event: FormSubmitEvent<Schema>) {
-  isLoading.value = true;
-  try {
-    await api("/auth/profile/", {
-      method: "PATCH",
-      body: event.data,
-    });
-
-    toast.add({
-      title: "Профиль обновлен",
-      color: "success",
-    });
-
-    emit("success");
-  } catch (error: any) {
-    toast.add({
-      title: "Ошибка",
-      description: error.data?.detail || "Не удалось обновить профиль",
-      color: "error",
-    });
-  } finally {
-    isLoading.value = false;
-  }
-}
 </script>
 
 <template>
-  <UCard
-    @keydown.esc="emit('cancel')"
-    :ui="{
-      header: 'bg-primary text-white',
-    }"
+  <UForm
+    :schema="schema"
+    :state="state"
+    class="space-y-4"
+    @submit="() => props.onSubmit(state)"
   >
-    <template #header>
-      <div class="flex items-center justify-between">
-        <h3 class="font-semibold text-lg">Редактирование профиля</h3>
-        <UButton
-          icon="i-heroicons-x-mark"
-          color="neutral"
-          class="text-white hover:text-white/75"
-          variant="link"
-          @click="emit('cancel')"
-        />
-      </div>
-    </template>
-
-    <UForm
-      :schema="schema"
-      :state="state"
-      class="flex gap-6 flex-col"
-      @submit="onSubmit"
+    <h2
+      class="text-2xl w-fit font-semibold text-highlighted border-b border-default pb-3"
     >
-      <div class="flex gap-6">
-        <section class="flex-1/2 w-full">
-          <!-- Основная информация -->
-          <USeparator label="Основная информация" />
-          <div class="flex flex-col gap-4">
-            <div class="grid mt-6 grid-cols-1 md:grid-cols-2 gap-4">
-              <UFormField label="Имя" name="first_name" required>
-                <UInput v-model="state.first_name" class="w-full" />
-              </UFormField>
-              <UFormField label="Фамилия" name="last_name" required>
-                <UInput v-model="state.last_name" class="w-full" />
-              </UFormField>
-            </div>
+      Личная информация
+    </h2>
+    <div class="max-w-3xl grid grid-cols-1 md:grid-cols-2 gap-4">
+      <UFormField label="First name" name="first_name" required size="xl">
+        <UInput
+          v-model="state.first_name"
+          class="w-full"
+          color="neutral"
+          variant="soft"
+          :disabled="isLoading"
+          size="xl"
+        />
+      </UFormField>
 
-            <UFormField label="Email" name="email" required>
-              <UInput v-model="state.email" type="email" class="w-full" />
-            </UFormField>
+      <UFormField label="Last name" name="last_name" required size="xl">
+        <UInput
+          v-model="state.last_name"
+          class="w-full"
+          color="neutral"
+          variant="soft"
+          :disabled="isLoading"
+          size="xl"
+        />
+      </UFormField>
+    </div>
 
-            <UFormField label="О себе" name="bio">
-              <UTextarea
-                v-model="state.bio"
-                :rows="4"
-                class="w-full"
-                placeholder="Расскажите немного о себе..."
-              />
-            </UFormField>
-          </div>
-        </section>
+    <UFormField
+      label="What best describes your work?"
+      size="xl"
+      name="specialization"
+      help="This will be displayed on your public profile."
+      class="max-w-3xl"
+    >
+      <UInput
+        v-model="state.specialization"
+        placeholder="e.g. Engineering"
+        class="w-full"
+        color="neutral"
+        :disabled="isLoading"
+        variant="soft"
+        size="xl"
+      />
+    </UFormField>
 
-        <section class="flex-1/2 w-full">
-          <USeparator label="Контактные данные" />
+    <UFormField
+      label="Bio"
+      name="bio"
+      size="xl"
+      description="What personal preferences should we consider?"
+    >
+      <UTextarea
+        v-model="state.bio"
+        :rows="4"
+        class="w-full"
+        placeholder="Tell us a little bit about yourself..."
+        color="neutral"
+        variant="soft"
+        :disabled="isLoading"
+        autoresize
+        size="xl"
+      />
+    </UFormField>
 
-          <div class="flex mt-6 gap-4">
-            <div class="flex flex-1/2 flex-col gap-4">
-              <UFormField label="Страна" name="country" class="w-full">
-                <UInput
-                  class="w-full"
-                  v-model="state.country"
-                  icon="i-heroicons-globe-alt"
-                />
-              </UFormField>
-              <UFormField label="Город" name="city" class="w-full">
-                <UInput
-                  class="w-full"
-                  v-model="state.city"
-                  icon="i-heroicons-building-office-2"
-                />
-              </UFormField>
-              <UFormField label="Адрес" name="address" class="w-full">
-                <UInput
-                  class="w-full"
-                  v-model="state.address"
-                  icon="i-heroicons-map-pin"
-                />
-              </UFormField>
-            </div>
+    <UFormField label="Birth Date" name="birth_date" size="xl">
+      <UInput
+        v-model="state.birth_date"
+        type="date"
+        color="neutral"
+        :disabled="isLoading"
+        size="xl"
+        variant="soft"
+        :ui="{
+          base: 'px-4',
+        }"
+        :max="new Date().toISOString().split('T')[0]"
+      />
+    </UFormField>
 
-            <div class="flex flex-1/2 flex-col gap-4">
-              <UFormField label="Телефон" name="phone">
-                <UInput
-                  v-model="state.phone"
-                  icon="i-heroicons-phone"
-                  class="w-full"
-                />
-              </UFormField>
-              <UFormField label="Дата рождения" name="birth_date">
-                <UInput v-model="state.birth_date" type="date" class="w-full" />
-              </UFormField>
-            </div>
-          </div>
-        </section>
-      </div>
+    <USeparator class="my-4" />
 
-      <section>
-        <USeparator class="mb-6" label="Профессиональное" />
+    <div class="space-y-2 max-w-2xl">
+      <h2
+        class="text-2xl w-fit font-semibold text-highlighted border-b border-default pb-3"
+      >
+        Контактная информация
+      </h2>
 
-        <UFormField label="Специализация" name="specialization">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <UFormField label="Email" name="email" size="xl">
           <UInput
-            v-model="state.specialization"
-            placeholder="Например: Python Developer"
-            icon="i-heroicons-briefcase"
+            v-model="state.email"
+            type="email"
+            icon="i-lucide-mail"
+            :disabled="isLoading"
+            color="neutral"
+            variant="soft"
+            size="xl"
+            class="w-full"
           />
         </UFormField>
 
-        <div class="flex justify-end pt-4 gap-3">
-          <UButton color="neutral" variant="soft" @click="emit('cancel')">
-            Отмена
-          </UButton>
-          <UButton type="submit" color="primary" :loading="isLoading">
-            Сохранить изменения
-          </UButton>
-        </div>
-      </section>
-    </UForm>
-  </UCard>
+        <UFormField label="Phone" name="phone" size="xl">
+          <UInput
+            v-model="state.phone"
+            icon="i-lucide-phone"
+            color="neutral"
+            :disabled="isLoading"
+            size="xl"
+            variant="soft"
+            class="w-full"
+          />
+        </UFormField>
+
+        <UFormField label="Country" name="country" size="xl">
+          <UInput
+            v-model="state.country"
+            icon="i-lucide-globe"
+            :disabled="isLoading"
+            color="neutral"
+            size="xl"
+            variant="soft"
+            class="w-full"
+          />
+        </UFormField>
+
+        <UFormField label="City" name="city" size="xl">
+          <UInput
+            v-model="state.city"
+            icon="i-lucide-building-2"
+            :disabled="isLoading"
+            color="neutral"
+            size="xl"
+            variant="soft"
+            class="w-full"
+          />
+        </UFormField>
+
+        <UFormField label="Address" name="address" size="xl">
+          <UInput
+            v-model="state.address"
+            icon="i-lucide-map-pin"
+            :disabled="isLoading"
+            color="neutral"
+            variant="soft"
+            size="xl"
+            class="w-full"
+          />
+        </UFormField>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-3 mt-8">
+      <UButton
+        type="submit"
+        color="primary"
+        variant="solid"
+        size="xl"
+        label="Save profile"
+        :loading="isLoading"
+        :disabled="profileLoading"
+      />
+
+      <UButton
+        color="neutral"
+        variant="ghost"
+        size="xl"
+        label="Cancel"
+        :disabled="isLoading"
+        @click="emit('cancel')"
+      />
+    </div>
+  </UForm>
 </template>

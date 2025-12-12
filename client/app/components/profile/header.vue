@@ -3,7 +3,6 @@ import type { User } from "~/types";
 
 const props = defineProps<{
   profile: User;
-  onEditSuccess: () => Promise<void>;
 }>();
 
 const emit = defineEmits<{
@@ -27,8 +26,17 @@ const isModalOpen = ref(false);
 </script>
 
 <template>
-  <UCard class="w-full">
-    <div class="flex flex-col gap-6">
+  <UCard class="w-full bg-muted/25">
+    <div class="flex flex-col gap-6 relative">
+      <UButton
+        color="error"
+        variant="subtle"
+        class="justify-center absolute top-0 right-0 mt-2 mr-2"
+        size="sm"
+        @click="emit('logout')"
+      >
+        Выйти
+      </UButton>
       <UAvatar
         :src="profile.avatar || undefined"
         :alt="fullName"
@@ -45,7 +53,7 @@ const isModalOpen = ref(false);
             variant="link"
             class="justify-center mt-2"
             size="sm"
-            to="/settings/edit-profile"
+            to="/settings/account"
           >
             Редактировать
           </UButton>
@@ -83,18 +91,19 @@ const isModalOpen = ref(false);
           </template>
         </UCollapsible>
       </div>
+    </div>
 
-      <USeparator />
-      <div class="flex items-center justify-between w-full gap-2">
-        <UButton
-          icon="i-heroicons-pencil-square"
-          color="primary"
-          size="xl"
-          class="justify-center"
-        >
-          Моя доска обучения
-        </UButton>
-      </div>
+    <USeparator class="my-6" />
+    <div class="flex items-center justify-between w-full gap-2">
+      <UButton
+        icon="heroicons:academic-cap-16-solid"
+        color="primary"
+        size="xl"
+        class="justify-center"
+        to="/learning"
+      >
+        Моё обучение
+      </UButton>
     </div>
 
     <USeparator class="my-6" />

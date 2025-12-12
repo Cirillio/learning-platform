@@ -4,4 +4,4 @@ definePageMeta({
 });
 </script>
 
-<template>sd</template>
+<template>notifications</template>
