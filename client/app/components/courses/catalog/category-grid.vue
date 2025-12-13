@@ -47,7 +47,7 @@ defineProps<{
     >
       <template #header>
         <div
-          class="flex items-center justify-center h-60 bg-gray-50 dark:bg-gray-800 overflow-hidden"
+          class="flex items-center justify-center h-60 bg-elevated overflow-hidden"
         >
           <NuxtImg
             v-if="category.icon"
@@ -57,16 +57,16 @@ defineProps<{
           <UIcon
             v-else
             name="i-heroicons-academic-cap"
-            class="h-24 w-24 text-gray-300"
+            class="h-24 w-24 text-muted"
           />
         </div>
       </template>
 
       <div class="flex flex-col gap-1">
-        <h3 class="text-2xl font-bold text-gray-900 dark:text-white">
+        <h3 class="text-2xl font-bold text-default">
           {{ category.name }}
         </h3>
-        <p class="text-sm text-gray-500 dark:text-gray-400 line-clamp-3">
+        <p class="text-sm text-muted line-clamp-3">
           {{ category.description }}
         </p>
       </div>

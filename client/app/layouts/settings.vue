@@ -7,10 +7,17 @@ useHead({
 
 <template>
   <div class="flex flex-col bg-default min-h-dvh">
-    <Header />
-
     <LayoutContainer class="flex flex-col flex-1 gap-4 py-6">
-      <h1 class="text-3xl px-4 font-extrabold">Настройки</h1>
+      <div>
+        <UButton
+          label="Назад"
+          icon="heroicons:chevron-left"
+          variant="link"
+          color="neutral"
+          @click="$router.back"
+        />
+        <h1 class="text-3xl px-4 font-extrabold">Настройки</h1>
+      </div>
 
       <UCard
         class="flex-1 flex"
@@ -27,7 +34,5 @@ useHead({
         </div>
       </UCard>
     </LayoutContainer>
-
-    <Footer class="mt-auto" />
   </div>
 </template>

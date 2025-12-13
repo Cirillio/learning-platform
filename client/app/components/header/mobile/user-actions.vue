@@ -12,11 +12,23 @@ const avatarProps = computed<AvatarProps | undefined>(() => {
     ? { src: avatar, alt: props.user?.first_name ?? "avatar" }
     : undefined;
 });
+
+// Динамические ссылки в зависимости от роли
+const isTeacher = computed(() => props.user?.role === "teacher");
+const profileLink = computed(() =>
+  isTeacher.value ? "/teacher/profile" : "/profile"
+);
+const dashboardLink = computed(() =>
+  isTeacher.value ? "/teacher" : "/learning"
+);
+const dashboardLabel = computed(() =>
+  isTeacher.value ? "Панель учителя" : "Мои курсы"
+);
 </script>
 
 <template>
   <UButton
-    to="/my/profile"
+    :to="profileLink"
     icon="heroicons:user"
     :label="user?.first_name"
     variant="outline"
@@ -29,20 +41,21 @@ const avatarProps = computed<AvatarProps | undefined>(() => {
 
   <UButton
     icon="heroicons:academic-cap"
-    label="Мои доска"
+    :label="dashboardLabel"
     class="justify-start"
     block
     variant="subtle"
-    to="/my/dashboard"
+    :to="dashboardLink"
   />
 
   <UButton
-    label="Корзина"
+    label="Настройки"
     variant="subtle"
-    icon="heroicons:shopping-bag"
-    color="secondary"
+    icon="heroicons:cog-6-tooth"
+    color="neutral"
     block
     class="justify-start"
+    to="/settings"
   />
 
   <UButton
@@ -52,5 +65,6 @@ const avatarProps = computed<AvatarProps | undefined>(() => {
     color="info"
     block
     class="justify-start"
+    to="/settings/notifications"
   />
 </template>

@@ -15,8 +15,8 @@ export default defineNuxtRouteMiddleware(async (to) => {
     });
   }
 
-  // Получаем slug курса из роута
-  const courseSlug = to.params.slug as string;
+  // Получаем slug курса из роута (поддержка обоих вариантов)
+  const courseSlug = (to.params.course_slug || to.params.slug) as string;
 
   if (!courseSlug) {
     return navigateTo("/courses");

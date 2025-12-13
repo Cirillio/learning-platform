@@ -12,12 +12,10 @@
           class="lg:size-32 size-16 text-primary animate-pulse"
         />
         <div>
-          <h1
-            class="lg:text-5xl text-3xl my-2 font-bold text-gray-900 dark:text-white"
-          >
+          <h1 class="lg:text-5xl text-3xl my-2 font-bold text-default">
             Учебный портал
           </h1>
-          <p class="text-sm text-gray-600 dark:text-gray-400">
+          <p class="text-sm text-muted">
             Образовательная платформа для студентов и преподавателей
           </p>
         </div>

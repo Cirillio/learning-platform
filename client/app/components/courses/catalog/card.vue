@@ -68,18 +68,18 @@ const difficultyBadge = computed(() => {
         </picture>
         <UBadge
           v-if="course.status === 'draft'"
-          color="info"
-          variant="subtle"
-          size="sm"
-          class="absolute top-2 right-6 z-10"
+          color="warning"
+          variant="solid"
+          size="lg"
+          class="absolute top-2 right-2 z-10"
           label="Черновик"
         />
         <UBadge
           v-if="course.status === 'archived'"
           color="warning"
-          variant="subtle"
+          variant="solid"
           size="lg"
-          class="absolute top-2 right-6 z-10"
+          class="absolute top-2 right-2 z-10"
           label="В архиве"
         />
         <div

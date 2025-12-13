@@ -2,7 +2,7 @@
 
 <template>
   <div class="space-y-4">
-    <h2 class="text-3xl font-bold text-gray-900 dark:text-white">Мои курсы</h2>
+    <h2 class="text-3xl font-bold text-default">Мои курсы</h2>
     <TransitionGroup
       name="stagger"
       tag="div"

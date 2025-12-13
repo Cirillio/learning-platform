@@ -3,7 +3,7 @@ import { useAuthService, useCoursesService } from "~/services";
 import type { User, CoursesResponse } from "~/types";
 
 definePageMeta({
-  middleware: ["auth"],
+  middleware: ["auth", "profile-redirect"],
 });
 
 const toast = useToast();

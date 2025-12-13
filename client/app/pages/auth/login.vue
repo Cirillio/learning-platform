@@ -40,7 +40,7 @@ useHead({
   </div>
   <div class="w-full flex flex-col max-md:items-center">
     <h2
-      class="text-2xl lg:text-3xl font-bold border-b-2 border-primary pb-2 w-fit text-gray-900 dark:text-white"
+      class="text-2xl lg:text-3xl font-bold border-b-2 border-primary pb-2 w-fit text-default"
     >
       Авторизация
     </h2>
@@ -54,7 +54,7 @@ useHead({
   </div>
 
   <div class="flex w-fit max-md:mx-auto justify-between items-center mt-4">
-    <p class="text-sm text-gray-600 dark:text-gray-400">
+    <p class="text-sm text-muted">
       Нет аккаунта?
       <UButton
         variant="link"

@@ -44,7 +44,7 @@ const isModalOpen = ref(false);
       />
       <div class="w-full flex flex-col">
         <div class="flex justify-between items-center">
-          <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
+          <h1 class="text-2xl font-bold text-default">
             {{ fullName }}
           </h1>
           <UButton
@@ -75,7 +75,7 @@ const isModalOpen = ref(false);
             {{ profile.experience_years }}
           </li>
         </ul>
-        <p class="text-sm text-gray-400 mt-1">
+        <p class="text-sm text-muted mt-1">
           На сайте с {{ formatDate(profile.date_joined) }}
         </p>
 

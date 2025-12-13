@@ -46,12 +46,8 @@ useHead({
             name="i-heroicons-arrow-right-on-rectangle"
             class="size-8 text-error"
           />
-          <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
-            Выход из системы
-          </h1>
-          <p class="text-gray-600 dark:text-gray-300">
-            Подтверждение выхода из системы
-          </p>
+          <h1 class="text-2xl font-bold text-default">Выход из системы</h1>
+          <p class="text-muted">Подтверждение выхода из системы</p>
         </div>
       </template>
       <template #body>
@@ -68,10 +64,10 @@ useHead({
             </UAvatar>
 
             <div class="flex-1 min-w-0">
-              <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+              <h3 class="text-lg font-semibold text-default">
                 {{ user?.first_name }} {{ user?.last_name }}
               </h3>
-              <p class="text-sm text-gray-500 dark:text-gray-400">
+              <p class="text-sm text-muted">
                 {{ user?.username }}
               </p>
               <UBadge
@@ -123,7 +119,7 @@ useHead({
       </template>
 
       <template #footer>
-        <p class="text-sm text-gray-500 dark:text-gray-400 text-center">
+        <p class="text-sm text-muted text-center">
           Вы всегда сможете войти снова
         </p>
       </template>

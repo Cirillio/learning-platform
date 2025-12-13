@@ -5,7 +5,7 @@ export const getHeaderMenuItems = (config: { onLogout: () => void }) => {
     {
       label: "Настройки",
       icon: "heroicons:cog-6-tooth",
-      href: "/profile/settings",
+      href: "/settings",
       color: "neutral",
       variant: "subtle",
       size: "md",
