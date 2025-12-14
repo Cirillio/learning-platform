@@ -185,13 +185,10 @@ const handleDeleteLesson = async (lessonId: number) => {
       />
 
       <!-- Students Tab -->
-      <div
+      <TeacherCoursesDetailStudentsTab
         v-if="activeTab === 'students'"
-        class="bg-elevated rounded-xl border border-default p-12 text-center"
-      >
-        <UIcon name="i-lucide-users" class="size-12 text-muted mx-auto mb-3" />
-        <p class="text-muted">Список студентов появится здесь</p>
-      </div>
+        :slug="slug"
+      />
 
       <!-- Stats Tab -->
       <div

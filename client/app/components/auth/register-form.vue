@@ -149,6 +149,16 @@ const onSubmit = async (
       />
     </UFormField>
 
+    <!-- Role info banner -->
+    <UAlert
+      icon="i-lucide-info"
+      color="info"
+      variant="subtle"
+      title="Регистрация студента"
+      description="Вы регистрируетесь как студент. Если вы преподаватель, обратитесь к администратору для получения доступа."
+      :ui="{ title: 'font-medium' }"
+    />
+
     <UButton
       type="submit"
       label="Зарегистрироваться"
