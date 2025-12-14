@@ -103,7 +103,7 @@ const handleUnenroll = async () => {
     <LayoutContainer class="-mt-20 relative z-20">
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-2">
         <!-- Left Column: Content -->
-        <div class="lg:col-span-2 space-y-12">
+        <div class="lg:col-span-2 space-y-2">
           <!-- Description & Trusted By -->
           <CoursesDetailsDescription :description="course.description" />
 
@@ -142,9 +142,9 @@ const handleUnenroll = async () => {
   <!-- Error State -->
   <div
     v-else
-    class="min-h-screen flex flex-col items-center justify-center gap-4"
+    class="min-h-screen flex flex-col items-center justify-center gap-2"
   >
     <h1 class="text-2xl font-bold text-default">Курс не найден</h1>
-    <UButton to="/courses" label="Вернуться в каталог" />
+    <UButton to="/courses" label="Вернуться в каталог" size="lg" />
   </div>
 </template>

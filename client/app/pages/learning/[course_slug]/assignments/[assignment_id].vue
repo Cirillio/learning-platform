@@ -136,9 +136,9 @@ useHead(() => ({
 </script>
 
 <template>
-  <div class="p-6 lg:p-8">
+  <div class="space-y-2">
     <!-- Loading -->
-    <div v-if="assignmentPending" class="max-w-4xl mx-auto space-y-6">
+    <div v-if="assignmentPending" class="max-w-4xl mx-auto space-y-2">
       <USkeleton class="h-10 w-2/3 rounded-lg" />
       <USkeleton class="h-40 w-full rounded-xl" />
       <USkeleton class="h-60 w-full rounded-xl" />
@@ -147,22 +147,26 @@ useHead(() => ({
     <!-- Error -->
     <div
       v-else-if="assignmentError"
-      class="flex flex-col items-center justify-center py-20 gap-4"
+      class="flex flex-col items-center justify-center py-20 gap-2"
     >
       <UIcon name="i-lucide-alert-circle" class="size-16 text-error" />
-      <h2 class="text-xl font-semibold text-default">Задание не найдено</h2>
-      <UButton :to="`/learning/${courseSlug}/assignments`" color="primary">
+      <h2 class="text-2xl font-bold text-default">Задание не найдено</h2>
+      <UButton
+        :to="`/learning/${courseSlug}/assignments`"
+        color="primary"
+        size="lg"
+      >
         К списку заданий
       </UButton>
     </div>
 
     <!-- Content -->
     <template v-else-if="assignment">
-      <div class="max-w-4xl mx-auto space-y-6">
+      <div class="max-w-4xl mx-auto space-y-2">
         <!-- Back Link -->
         <NuxtLink
           :to="`/learning/${courseSlug}/assignments`"
-          class="inline-flex items-center gap-2 text-sm text-muted hover:text-default transition-colors"
+          class="inline-flex items-center gap-2 text-base text-muted hover:text-default transition-colors"
         >
           <UIcon name="i-lucide-arrow-left" class="size-4" />
           <span>К списку заданий</span>
@@ -212,6 +216,7 @@ useHead(() => ({
               color="primary"
               :loading="isSubmitting"
               icon="i-lucide-send"
+              size="lg"
             >
               {{ hasSubmission ? "Обновить ответ" : "Отправить" }}
             </UButton>

@@ -39,38 +39,42 @@ useHead({
 </script>
 
 <template>
-  <div class="space-y-6 max-w-2xl">
+  <div class="space-y-2 max-w-2xl">
     <!-- Page Header -->
-    <div class="pb-4 border-b border-default">
-      <h2 class="text-xl font-semibold text-default">Настройки уведомлений</h2>
-      <p class="text-sm text-muted mt-1">
+    <div class="pb-2 border-b border-default">
+      <h2 class="text-2xl font-bold text-default">Настройки уведомлений</h2>
+      <p class="text-base text-muted mt-1">
         Управляйте способами получения уведомлений
       </p>
     </div>
 
     <!-- Email Notifications -->
-    <UCard>
+    <UCard :ui="{ body: 'p-3' }">
       <template #header>
-        <div class="flex items-center gap-3">
+        <div class="flex items-center gap-2">
           <div
             class="size-10 rounded-lg bg-primary/10 flex items-center justify-center"
           >
             <UIcon name="i-lucide-mail" class="size-5 text-primary" />
           </div>
           <div>
-            <h3 class="font-semibold text-default">Email-уведомления</h3>
-            <p class="text-sm text-muted">
+            <h3 class="text-base font-semibold text-default">
+              Email-уведомления
+            </h3>
+            <p class="text-base text-muted">
               Получайте уведомления на вашу почту
             </p>
           </div>
         </div>
       </template>
 
-      <div class="space-y-4">
+      <div class="space-y-2">
         <div class="flex items-center justify-between">
           <div>
-            <p class="font-medium text-default">Включить email-уведомления</p>
-            <p class="text-sm text-muted">
+            <p class="text-base font-medium text-default">
+              Включить email-уведомления
+            </p>
+            <p class="text-base text-muted">
               Основной переключатель для всех email
             </p>
           </div>
@@ -80,13 +84,15 @@ useHead({
         <USeparator />
 
         <div
-          class="space-y-4 transition-opacity"
+          class="space-y-2 transition-opacity"
           :class="{ 'opacity-50 pointer-events-none': !emailNotifications }"
         >
           <div class="flex items-center justify-between">
             <div>
-              <p class="font-medium text-default">Обновления курсов</p>
-              <p class="text-sm text-muted">
+              <p class="text-base font-medium text-default">
+                Обновления курсов
+              </p>
+              <p class="text-base text-muted">
                 Новые уроки, материалы и объявления
               </p>
             </div>
@@ -95,8 +101,10 @@ useHead({
 
           <div class="flex items-center justify-between">
             <div>
-              <p class="font-medium text-default">Напоминания о заданиях</p>
-              <p class="text-sm text-muted">
+              <p class="text-base font-medium text-default">
+                Напоминания о заданиях
+              </p>
+              <p class="text-base text-muted">
                 Сроки сдачи и непроверенные работы
               </p>
             </div>
@@ -105,8 +113,10 @@ useHead({
 
           <div class="flex items-center justify-between">
             <div>
-              <p class="font-medium text-default">Уведомления об оценках</p>
-              <p class="text-sm text-muted">
+              <p class="text-base font-medium text-default">
+                Уведомления об оценках
+              </p>
+              <p class="text-base text-muted">
                 Новые оценки и комментарии преподавателей
               </p>
             </div>
@@ -115,8 +125,10 @@ useHead({
 
           <div class="flex items-center justify-between">
             <div>
-              <p class="font-medium text-default">Еженедельный дайджест</p>
-              <p class="text-sm text-muted">Сводка активности за неделю</p>
+              <p class="text-base font-medium text-default">
+                Еженедельный дайджест
+              </p>
+              <p class="text-base text-muted">Сводка активности за неделю</p>
             </div>
             <USwitch v-model="weeklyDigest" color="primary" />
           </div>
@@ -125,25 +137,31 @@ useHead({
     </UCard>
 
     <!-- Push Notifications -->
-    <UCard>
+    <UCard :ui="{ body: 'p-3' }">
       <template #header>
-        <div class="flex items-center gap-3">
+        <div class="flex items-center gap-2">
           <div
             class="size-10 rounded-lg bg-warning/10 flex items-center justify-center"
           >
             <UIcon name="i-lucide-bell" class="size-5 text-warning" />
           </div>
           <div>
-            <h3 class="font-semibold text-default">Push-уведомления</h3>
-            <p class="text-sm text-muted">Мгновенные уведомления в браузере</p>
+            <h3 class="text-base font-semibold text-default">
+              Push-уведомления
+            </h3>
+            <p class="text-base text-muted">
+              Мгновенные уведомления в браузере
+            </p>
           </div>
         </div>
       </template>
 
       <div class="flex items-center justify-between">
         <div>
-          <p class="font-medium text-default">Включить push-уведомления</p>
-          <p class="text-sm text-muted">Требуется разрешение браузера</p>
+          <p class="text-base font-medium text-default">
+            Включить push-уведомления
+          </p>
+          <p class="text-base text-muted">Требуется разрешение браузера</p>
         </div>
         <USwitch v-model="pushNotifications" color="warning" />
       </div>
@@ -155,22 +173,24 @@ useHead({
         icon="i-lucide-info"
         title="Push-уведомления отключены"
         description="Включите для получения мгновенных оповещений о важных событиях"
-        class="mt-4"
+        class="mt-2"
       />
     </UCard>
 
     <!-- Marketing -->
-    <UCard>
+    <UCard :ui="{ body: 'p-3' }">
       <template #header>
-        <div class="flex items-center gap-3">
+        <div class="flex items-center gap-2">
           <div
             class="size-10 rounded-lg bg-info/10 flex items-center justify-center"
           >
             <UIcon name="i-lucide-megaphone" class="size-5 text-info" />
           </div>
           <div>
-            <h3 class="font-semibold text-default">Маркетинговые рассылки</h3>
-            <p class="text-sm text-muted">
+            <h3 class="text-base font-semibold text-default">
+              Маркетинговые рассылки
+            </h3>
+            <p class="text-base text-muted">
               Новости, акции и специальные предложения
             </p>
           </div>
@@ -179,15 +199,19 @@ useHead({
 
       <div class="flex items-center justify-between">
         <div>
-          <p class="font-medium text-default">Получать промо-материалы</p>
-          <p class="text-sm text-muted">Информация о новых курсах и скидках</p>
+          <p class="text-base font-medium text-default">
+            Получать промо-материалы
+          </p>
+          <p class="text-base text-muted">
+            Информация о новых курсах и скидках
+          </p>
         </div>
         <USwitch v-model="promotionalEmails" color="info" />
       </div>
     </UCard>
 
     <!-- Save Button -->
-    <div class="flex justify-end pt-4">
+    <div class="flex justify-end pt-2">
       <UButton
         color="primary"
         size="lg"

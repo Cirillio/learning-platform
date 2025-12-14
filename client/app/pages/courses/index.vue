@@ -117,7 +117,7 @@ useIntersectionObserver(
       description="Изучайте новые навыки с нашими профессиональными курсами."
     >
       <!-- Search -->
-      <div class="flex w-full max-w-lg gap-4 items-center">
+      <div class="flex w-full max-w-lg gap-2 items-center">
         <UInput
           v-model="localSearch"
           leading-icon="i-heroicons-magnifying-glass-20-solid"
@@ -125,7 +125,7 @@ useIntersectionObserver(
           placeholder="Поиск курсов..."
           :disabled="coursesPending"
           class="w-full shadow-md opacity-75 hover:opacity-100 focus-within:opacity-100 transition-opacity duration-300"
-          size="xl"
+          size="lg"
           variant="subtle"
           @keyup.enter="onSearch"
         >
@@ -143,7 +143,7 @@ useIntersectionObserver(
         <UButton
           label="Найти"
           color="primary"
-          size="xl"
+          size="lg"
           class="shadow-md"
           :disabled="coursesPending"
           @click="onSearch"
@@ -184,7 +184,7 @@ useIntersectionObserver(
       </div>
     </LayoutContainer>
 
-    <LayoutContainer class="mt-8">
+    <LayoutContainer class="mt-2">
       <!-- Курсы -->
       <CoursesCatalogCardGrid v-if="courses.length > 0" :courses="courses">
         <CoursesCatalogCard
@@ -202,7 +202,7 @@ useIntersectionObserver(
 
       <div
         v-else-if="!coursesPending"
-        class="text-center py-12 text-neutral-500"
+        class="text-center py-12 text-base text-neutral-500"
       >
         Курсы не найдены
       </div>
@@ -210,7 +210,7 @@ useIntersectionObserver(
       <!-- Пагинация -->
       <div
         v-if="!coursesPending && totalItems > PAGE_SIZE"
-        class="mt-8 mx-auto text-dimmed text-sm w-full px-2 items-center flex justify-between"
+        class="mt-2 mx-auto text-base text-dimmed w-full px-2 items-center flex justify-between"
       >
         <span
           >Показано:

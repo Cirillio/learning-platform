@@ -58,11 +58,11 @@ useHead(() => ({
 </script>
 
 <template>
-  <div class="p-6 lg:p-8">
+  <div class="space-y-2">
     <!-- Loading -->
-    <div v-if="coursePending || lessonsPending" class="space-y-6">
+    <div v-if="coursePending || lessonsPending" class="space-y-2">
       <USkeleton class="h-32 w-full rounded-xl" />
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
         <USkeleton v-for="i in 3" :key="i" class="h-24 rounded-xl" />
       </div>
       <USkeleton class="h-96 w-full rounded-xl" />
@@ -92,10 +92,12 @@ useHead(() => ({
     </template>
 
     <!-- Error State -->
-    <div v-else class="flex flex-col items-center justify-center py-20 gap-4">
+    <div v-else class="flex flex-col items-center justify-center py-20 gap-2">
       <UIcon name="i-lucide-alert-circle" class="size-16 text-error" />
-      <h2 class="text-xl font-semibold text-default">Курс не найден</h2>
-      <UButton to="/dashboard" color="primary"> Вернуться в панель </UButton>
+      <h2 class="text-2xl font-bold text-default">Курс не найден</h2>
+      <UButton to="/dashboard" color="primary" size="lg">
+        Вернуться в панель
+      </UButton>
     </div>
   </div>
 </template>

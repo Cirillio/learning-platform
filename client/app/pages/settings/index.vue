@@ -38,38 +38,40 @@ useHead({
 </script>
 
 <template>
-  <div class="space-y-6 max-w-2xl">
+  <div class="space-y-2 max-w-2xl">
     <!-- Page Header -->
-    <div class="pb-4 border-b border-default">
-      <h2 class="text-xl font-semibold text-default">Общие настройки</h2>
-      <p class="text-sm text-muted mt-1">
+    <div class="pb-2 border-b border-default">
+      <h2 class="text-2xl font-bold text-default">Общие настройки</h2>
+      <p class="text-base text-muted mt-1">
         Настройте внешний вид и язык интерфейса
       </p>
     </div>
 
     <!-- Theme Section -->
-    <UCard>
+    <UCard :ui="{ body: 'p-3' }">
       <template #header>
-        <div class="flex items-center gap-3">
+        <div class="flex items-center gap-2">
           <div
             class="size-10 rounded-lg bg-primary/10 flex items-center justify-center"
           >
             <UIcon name="i-lucide-palette" class="size-5 text-primary" />
           </div>
           <div>
-            <h3 class="font-semibold text-default">Тема оформления</h3>
-            <p class="text-sm text-muted">
+            <h3 class="text-base font-semibold text-default">
+              Тема оформления
+            </h3>
+            <p class="text-base text-muted">
               Выберите предпочитаемую цветовую схему
             </p>
           </div>
         </div>
       </template>
 
-      <div class="grid grid-cols-3 gap-3">
+      <div class="grid grid-cols-3 gap-2">
         <button
           v-for="theme in themeOptions"
           :key="theme.value"
-          class="flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-all"
+          class="flex flex-col items-center gap-2 p-3 rounded-xl border-2 transition-all"
           :class="[
             currentTheme === theme.value
               ? 'border-primary bg-primary/5'
@@ -78,7 +80,7 @@ useHead({
           @click="currentTheme = theme.value"
         >
           <UIcon :name="theme.icon" class="size-6 text-muted" />
-          <span class="text-sm font-medium text-default">{{
+          <span class="text-base font-medium text-default">{{
             theme.label
           }}</span>
         </button>
@@ -86,17 +88,19 @@ useHead({
     </UCard>
 
     <!-- Language Section -->
-    <UCard>
+    <UCard :ui="{ body: 'p-3' }">
       <template #header>
-        <div class="flex items-center gap-3">
+        <div class="flex items-center gap-2">
           <div
             class="size-10 rounded-lg bg-info/10 flex items-center justify-center"
           >
             <UIcon name="i-lucide-globe" class="size-5 text-info" />
           </div>
           <div>
-            <h3 class="font-semibold text-default">Язык интерфейса</h3>
-            <p class="text-sm text-muted">Выберите язык отображения</p>
+            <h3 class="text-base font-semibold text-default">
+              Язык интерфейса
+            </h3>
+            <p class="text-base text-muted">Выберите язык отображения</p>
           </div>
         </div>
       </template>
@@ -106,6 +110,7 @@ useHead({
         :items="languageOptions"
         placeholder="Выберите язык"
         class="max-w-xs"
+        size="lg"
       />
 
       <UAlert
@@ -114,45 +119,49 @@ useHead({
         icon="i-lucide-info"
         title="В разработке"
         description="Поддержка других языков будет добавлена в ближайшее время"
-        class="mt-4"
+        class="mt-2"
       />
     </UCard>
 
     <!-- Account Info -->
-    <UCard>
+    <UCard :ui="{ body: 'p-3' }">
       <template #header>
-        <div class="flex items-center gap-3">
+        <div class="flex items-center gap-2">
           <div
             class="size-10 rounded-lg bg-success/10 flex items-center justify-center"
           >
             <UIcon name="i-lucide-user-circle" class="size-5 text-success" />
           </div>
           <div>
-            <h3 class="font-semibold text-default">Информация об аккаунте</h3>
-            <p class="text-sm text-muted">Основные данные вашего профиля</p>
+            <h3 class="text-base font-semibold text-default">
+              Информация об аккаунте
+            </h3>
+            <p class="text-base text-muted">Основные данные вашего профиля</p>
           </div>
         </div>
       </template>
 
-      <div class="space-y-4">
+      <div class="space-y-2">
         <div
           class="flex items-center justify-between py-2 border-b border-default"
         >
-          <span class="text-muted">Email</span>
-          <span class="text-default font-medium">{{ user?.email || "—" }}</span>
+          <span class="text-base text-muted">Email</span>
+          <span class="text-base text-default font-medium">{{
+            user?.email || "—"
+          }}</span>
         </div>
         <div
           class="flex items-center justify-between py-2 border-b border-default"
         >
-          <span class="text-muted">Имя пользователя</span>
-          <span class="text-default font-medium">{{
+          <span class="text-base text-muted">Имя пользователя</span>
+          <span class="text-base text-default font-medium">{{
             user?.username || "—"
           }}</span>
         </div>
         <div
           class="flex items-center justify-between py-2 border-b border-default"
         >
-          <span class="text-muted">Роль</span>
+          <span class="text-base text-muted">Роль</span>
           <UBadge
             :color="user?.role === 'teacher' ? 'primary' : 'secondary'"
             variant="soft"
@@ -161,8 +170,8 @@ useHead({
           </UBadge>
         </div>
         <div class="flex items-center justify-between py-2">
-          <span class="text-muted">Дата регистрации</span>
-          <span class="text-default font-medium">
+          <span class="text-base text-muted">Дата регистрации</span>
+          <span class="text-base text-default font-medium">
             {{
               user?.date_joined
                 ? new Date(user.date_joined).toLocaleDateString("ru-RU")
@@ -178,6 +187,7 @@ useHead({
           color="primary"
           variant="soft"
           trailing-icon="i-lucide-arrow-right"
+          size="lg"
         >
           Редактировать профиль
         </UButton>

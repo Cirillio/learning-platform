@@ -88,45 +88,44 @@ useHead({
 </script>
 
 <template>
-  <LayoutContainer class="py-8 bg-default">
+  <div class="space-y-2">
     <!-- Header -->
-    <div class="mb-2">
-      <div class="flex items-center gap-2 mb-2">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-2">
         <UIcon name="i-lucide-trophy" class="size-8 text-primary" />
-        <h1 class="text-2xl lg:text-3xl font-bold text-default">Мои оценки</h1>
+        <div>
+          <h1 class="text-2xl font-bold text-default">Мои оценки</h1>
+          <p class="text-base text-muted">
+            История всех полученных оценок за выполненные задания
+          </p>
+        </div>
       </div>
-      <p class="text-muted">
-        История всех полученных оценок за выполненные задания
-      </p>
     </div>
 
     <!-- Stats Cards -->
-    <div
-      v-if="stats && !pending"
-      class="grid grid-cols-2 md:grid-cols-4 gap-2 mb-2"
-    >
-      <UCard :ui="{ body: 'p-4' }">
+    <div v-if="stats && !pending" class="grid grid-cols-2 md:grid-cols-4 gap-2">
+      <UCard :ui="{ body: 'p-3' }">
         <div class="text-center">
           <p class="text-2xl font-bold text-default">{{ stats.total }}</p>
-          <p class="text-sm text-muted">Всего оценок</p>
+          <p class="text-base text-muted">Всего оценок</p>
         </div>
       </UCard>
-      <UCard :ui="{ body: 'p-4' }">
+      <UCard :ui="{ body: 'p-3' }">
         <div class="text-center">
           <p class="text-2xl font-bold text-primary">{{ stats.average }}</p>
-          <p class="text-sm text-muted">Средний балл</p>
+          <p class="text-base text-muted">Средний балл</p>
         </div>
       </UCard>
-      <UCard :ui="{ body: 'p-4' }">
+      <UCard :ui="{ body: 'p-3' }">
         <div class="text-center">
           <p class="text-2xl font-bold text-success">{{ stats.max }}</p>
-          <p class="text-sm text-muted">Лучший балл</p>
+          <p class="text-base text-muted">Лучший балл</p>
         </div>
       </UCard>
-      <UCard :ui="{ body: 'p-4' }">
+      <UCard :ui="{ body: 'p-3' }">
         <div class="text-center">
           <p class="text-2xl font-bold text-warning">{{ stats.min }}</p>
-          <p class="text-sm text-muted">Минимальный балл</p>
+          <p class="text-base text-muted">Минимальный балл</p>
         </div>
       </UCard>
     </div>
@@ -137,22 +136,24 @@ useHead({
     </div>
 
     <!-- Empty State -->
-    <UCard v-else-if="grades.length === 0" :ui="{ body: 'p-12 text-center' }">
+    <UCard v-else-if="grades.length === 0" :ui="{ body: 'p-3 text-center' }">
       <UIcon
         name="i-lucide-clipboard-check"
         class="size-16 text-muted mx-auto mb-4"
       />
-      <h2 class="text-xl font-semibold text-default mb-2">Оценок пока нет</h2>
-      <p class="text-muted mb-6">
+      <h2 class="text-2xl font-bold text-default mb-2">Оценок пока нет</h2>
+      <p class="text-base text-muted mb-6">
         Выполняйте задания на курсах, чтобы получить оценки
       </p>
-      <UButton to="/courses" color="primary"> Перейти к курсам </UButton>
+      <UButton to="/courses" color="primary" size="lg">
+        Перейти к курсам
+      </UButton>
     </UCard>
 
     <!-- Grades List -->
     <div v-else class="space-y-2">
-      <UCard v-for="grade in grades" :key="grade.id" :ui="{ body: 'p-0' }">
-        <div class="flex flex-col md:flex-row md:items-center gap-4 p-4">
+      <UCard v-for="grade in grades" :key="grade.id" :ui="{ body: 'p-3' }">
+        <div class="flex flex-col md:flex-row md:items-center gap-2">
           <!-- Score Badge -->
           <div class="shrink-0">
             <UBadge
@@ -167,13 +168,13 @@ useHead({
 
           <!-- Info -->
           <div class="flex-1 min-w-0">
-            <h3 class="font-semibold text-default truncate">
+            <h3 class="text-base font-semibold text-default truncate">
               {{ grade.assignment_title }}
             </h3>
-            <p class="text-sm text-muted mt-1">
+            <p class="text-base text-muted mt-1">
               Проверил: {{ grade.graded_by_name }}
             </p>
-            <p class="text-xs text-muted">
+            <p class="text-base text-muted">
               {{ formatDate(grade.graded_at) }}
             </p>
           </div>
@@ -182,7 +183,7 @@ useHead({
           <div v-if="grade.feedback" class="md:max-w-xs">
             <UTooltip :text="grade.feedback" :delay="100">
               <div
-                class="flex items-center gap-2 text-sm text-muted cursor-help"
+                class="flex items-center gap-2 text-base text-muted cursor-help"
               >
                 <UIcon name="i-lucide-message-square" class="size-4" />
                 <span class="truncate max-w-[200px]">{{ grade.feedback }}</span>
@@ -192,11 +193,8 @@ useHead({
         </div>
 
         <!-- Expanded Feedback -->
-        <div
-          v-if="grade.feedback"
-          class="px-4 pb-4 pt-0 border-t border-default mt-2"
-        >
-          <p class="text-sm text-muted italic">
+        <div v-if="grade.feedback" class="border-t border-default mt-2 pt-2">
+          <p class="text-base text-muted italic">
             <span class="font-medium">Комментарий:</span> {{ grade.feedback }}
           </p>
         </div>
@@ -204,7 +202,7 @@ useHead({
     </div>
 
     <!-- Pagination -->
-    <div v-if="pageCount > 1" class="flex justify-center mt-8">
+    <div v-if="pageCount > 1" class="flex justify-center">
       <UPagination
         v-model:page="currentPage"
         :total="totalCount"
@@ -213,5 +211,5 @@ useHead({
         :sibling-count="2"
       />
     </div>
-  </LayoutContainer>
+  </div>
 </template>

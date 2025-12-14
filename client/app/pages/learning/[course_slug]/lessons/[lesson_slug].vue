@@ -66,7 +66,7 @@ useHead(() => ({
 <template>
   <div class="min-h-full">
     <!-- Loading State -->
-    <div v-if="isLoading" class="p-6 lg:p-8 space-y-6">
+    <div v-if="isLoading" class="space-y-2">
       <USkeleton class="h-8 w-1/3 rounded-lg" />
       <USkeleton class="aspect-video w-full rounded-xl" />
       <USkeleton class="h-64 w-full rounded-xl" />
@@ -76,9 +76,9 @@ useHead(() => ({
     <template v-else-if="lesson">
       <!-- Lesson Header -->
       <div class="border-b border-default bg-elevated/50">
-        <div class="px-6 py-4 flex items-center justify-between">
-          <div class="flex items-center gap-4">
-            <div class="flex items-center gap-2 text-sm text-muted">
+        <div class="px-3 py-3 flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <div class="flex items-center gap-2 text-base text-muted">
               <span
                 >Урок
                 {{
@@ -91,11 +91,13 @@ useHead(() => ({
               <span>{{ navigation?.total_lessons }}</span>
             </div>
             <div class="h-4 w-px bg-default" />
-            <h1 class="font-semibold text-default">{{ lesson.title }}</h1>
+            <h1 class="text-base font-semibold text-default">
+              {{ lesson.title }}
+            </h1>
           </div>
 
           <!-- Completion Status -->
-          <div class="flex items-center gap-3">
+          <div class="flex items-center gap-2">
             <UBadge
               v-if="isCompleted"
               color="success"
@@ -116,8 +118,8 @@ useHead(() => ({
       </div>
 
       <!-- Main Content -->
-      <div class="p-6 lg:p-8">
-        <div class="max-w-4xl mx-auto space-y-6">
+      <div class="space-y-2">
+        <div class="max-w-4xl mx-auto space-y-2">
           <!-- Video Player -->
           <div
             v-if="hasVideo"
@@ -131,11 +133,11 @@ useHead(() => ({
           </div>
 
           <!-- Lesson Content (Markdown) -->
-          <div class="bg-elevated rounded-xl border border-default p-6 lg:p-8">
-            <div class="flex items-center gap-3 mb-6">
+          <UCard :ui="{ body: 'p-3' }">
+            <div class="flex items-center gap-2 mb-2">
               <UIcon name="i-lucide-file-text" class="size-5 text-primary" />
-              <h2 class="text-lg font-semibold text-default">Материал урока</h2>
-              <div class="ml-auto flex items-center gap-2 text-sm text-muted">
+              <h2 class="text-2xl font-bold text-default">Материал урока</h2>
+              <div class="ml-auto flex items-center gap-2 text-base text-muted">
                 <UIcon name="i-lucide-clock" class="size-4" />
                 <span>{{ lesson.duration_minutes }} мин</span>
               </div>
@@ -146,62 +148,61 @@ useHead(() => ({
               :content="lesson.content"
               :duration="lesson.duration_minutes"
             />
-          </div>
+          </UCard>
 
           <!-- Materials -->
-          <div
-            v-if="hasMaterials"
-            class="bg-elevated rounded-xl border border-default overflow-hidden"
-          >
-            <div
-              class="px-6 py-4 border-b border-default flex items-center gap-3"
-            >
+          <UCard v-if="hasMaterials" :ui="{ body: 'p-3' }">
+            <div class="flex items-center gap-2 mb-2">
               <UIcon name="i-lucide-paperclip" class="size-5 text-primary" />
-              <h2 class="text-lg font-semibold text-default">
+              <h2 class="text-2xl font-bold text-default">
                 Материалы для скачивания
               </h2>
             </div>
             <LazyLessonsMaterialsList :materials="lesson.materials" />
-          </div>
+          </UCard>
 
           <!-- Assignments Link -->
-          <div
+          <UCard
             v-if="hasAssignments"
-            class="bg-warning/5 border border-warning/20 rounded-xl p-6 flex items-center justify-between"
+            :ui="{ body: 'p-3' }"
+            class="bg-warning/5 border-warning/20"
           >
-            <div class="flex items-center gap-4">
-              <div
-                class="size-12 rounded-full bg-warning/10 flex items-center justify-center"
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <div
+                  class="size-12 rounded-full bg-warning/10 flex items-center justify-center"
+                >
+                  <UIcon
+                    name="i-lucide-clipboard-list"
+                    class="size-6 text-warning"
+                  />
+                </div>
+                <div>
+                  <h3 class="text-base font-semibold text-default">
+                    Задания к уроку
+                  </h3>
+                  <p class="text-base text-muted">
+                    {{ lesson.assignments_count }}
+                    {{ lesson.assignments_count === 1 ? "задание" : "заданий" }}
+                    для выполнения
+                  </p>
+                </div>
+              </div>
+              <UButton
+                :to="`/learning/${courseSlug}/assignments?lesson=${lesson.slug}`"
+                color="warning"
+                variant="soft"
+                trailing-icon="i-lucide-arrow-right"
+                size="lg"
               >
-                <UIcon
-                  name="i-lucide-clipboard-list"
-                  class="size-6 text-warning"
-                />
-              </div>
-              <div>
-                <h3 class="font-semibold text-default">Задания к уроку</h3>
-                <p class="text-sm text-muted">
-                  {{ lesson.assignments_count }}
-                  {{
-                    lesson.assignments_count === 1 ? "задание" : "заданий"
-                  }}
-                  для выполнения
-                </p>
-              </div>
+                Посмотреть
+              </UButton>
             </div>
-            <UButton
-              :to="`/learning/${courseSlug}/assignments?lesson=${lesson.slug}`"
-              color="warning"
-              variant="soft"
-              trailing-icon="i-lucide-arrow-right"
-            >
-              Посмотреть
-            </UButton>
-          </div>
+          </UCard>
 
           <!-- Navigation Footer -->
           <div
-            class="flex items-center justify-between pt-6 border-t border-default"
+            class="flex items-center justify-between pt-2 border-t border-default"
           >
             <!-- Previous -->
             <UButton
@@ -209,6 +210,7 @@ useHead(() => ({
               color="neutral"
               variant="ghost"
               icon="i-lucide-arrow-left"
+              size="lg"
               @click="navigateToPrevious"
             >
               {{ navigation?.previous?.title }}
@@ -221,6 +223,7 @@ useHead(() => ({
               color="success"
               :loading="isCompletingLesson"
               icon="i-lucide-check"
+              size="lg"
               @click="markAsComplete"
             >
               Завершить урок
@@ -231,6 +234,7 @@ useHead(() => ({
               v-if="canNavigateNext"
               color="primary"
               trailing-icon="i-lucide-arrow-right"
+              size="lg"
               @click="navigateToNext"
             >
               {{ navigation?.next?.title }}
@@ -242,11 +246,11 @@ useHead(() => ({
     </template>
 
     <!-- Error State -->
-    <div v-else class="flex flex-col items-center justify-center py-20 gap-6">
+    <div v-else class="flex flex-col items-center justify-center py-20 gap-2">
       <UIcon name="i-lucide-file-x" class="size-16 text-muted" />
       <div class="text-center space-y-2">
         <h1 class="text-2xl font-bold text-default">Урок не найден</h1>
-        <p class="text-muted">
+        <p class="text-base text-muted">
           Возможно, урок был удалён или у вас нет к нему доступа
         </p>
       </div>
@@ -254,6 +258,7 @@ useHead(() => ({
         :to="`/learning/${courseSlug}`"
         color="primary"
         icon="i-lucide-arrow-left"
+        size="lg"
       >
         Вернуться к курсу
       </UButton>

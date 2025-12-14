@@ -127,9 +127,9 @@ const handleLogout = async () => {
                 variant="soft"
                 color="neutral"
                 label="Искать ещё курсы"
-                size="xl"
+                size="lg"
                 to="/courses"
-                class="justify-center col-span-full mt-4 text-lg"
+                class="justify-center col-span-full mt-2 text-base"
               />
             </ProfileCoursesList>
           </UCard>
