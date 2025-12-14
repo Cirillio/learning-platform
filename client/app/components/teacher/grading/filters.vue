@@ -15,12 +15,16 @@ const statusOptions = [
 </script>
 
 <template>
-  <div class="flex items-center gap-4 mb-6">
+  <div class="flex items-center gap-4">
     <UTabs
+      variant="link"
       :items="statusOptions.map((s) => ({ label: s.label, value: s.value }))"
       :model-value="statusFilter"
       @update:model-value="emit('update:statusFilter', $event as string)"
       class="w-fit"
+      :ui="{
+        content: 'hidden',
+      }"
     />
   </div>
 </template>

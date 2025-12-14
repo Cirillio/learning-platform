@@ -46,12 +46,12 @@ class CourseSerializer(serializers.ModelSerializer):
     teacher_name = serializers.CharField(source='teacher.get_full_name', read_only=True)
     category_name = serializers.CharField(source='category.name', read_only=True)
     enrolled_count = serializers.ReadOnlyField()
-    cover_image_url = serializers.ImageField(source='cover_image', read_only=True)
+    cover_image_url = serializers.CharField(source='cover_image', read_only=True)
 
     class Meta:
         model = Course
         fields = [
-            'id', 'title', 'slug', 'abbr', 'short_description', 'teacher', 'teacher_name',
+            'id', 'title', 'slug', 'abbr', 'short_description', 'description', 'teacher', 'teacher_name',
             'category', 'category_name', 'cover_image', 'cover_image_url',
             'status', 'difficulty', 'duration_weeks', 'max_students',
             'enrolled_count', 'is_featured', 'created_at', 'updated_at'

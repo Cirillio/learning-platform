@@ -106,7 +106,8 @@ const submitGrade = async () => {
   isSubmitting.value = true;
 
   try {
-    await api.post(`/submissions/${submissionId.value}/grade/`, {
+    await api.post(`/grades/`, {
+      submission: submissionId.value,
       score: gradeForm.score,
       feedback: gradeForm.feedback,
     });
@@ -130,23 +131,6 @@ const submitGrade = async () => {
   }
 };
 
-// Format helpers
-const formatDate = (date: string) => {
-  return new Intl.DateTimeFormat("ru-RU", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  }).format(new Date(date));
-};
-
-const formatFileSize = (bytes: number): string => {
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-};
-
 // SEO
 useHead(() => ({
   title: submission.value
@@ -156,7 +140,7 @@ useHead(() => ({
 </script>
 
 <template>
-  <div class="max-w-5xl">
+  <div>
     <!-- Loading -->
     <div v-if="submissionPending" class="space-y-6">
       <USkeleton class="h-10 w-1/3" />

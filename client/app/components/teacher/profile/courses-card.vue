@@ -4,6 +4,7 @@ import type { CourseDetail } from "~/types";
 defineProps<{
   courses: CourseDetail[];
   pending: boolean;
+  refresh?: () => void;
 }>();
 </script>
 
@@ -26,7 +27,10 @@ defineProps<{
       <USkeleton v-for="i in 3" :key="i" class="h-20 rounded-xl" />
     </div>
 
-    <TeacherCoursesEmptyState v-else-if="courses.length === 0" />
+    <TeacherCoursesEmptyState
+      v-else-if="courses.length === 0"
+      @update="refresh"
+    />
 
     <div v-else class="space-y-1">
       <TeacherCoursesMyListCard

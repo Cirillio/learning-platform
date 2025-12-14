@@ -16,10 +16,13 @@ interface CoursesResponse {
   results: CourseDetail[];
 }
 
-const { data: coursesData, pending: coursesPending } =
-  await useAsyncData<CoursesResponse>("teacher-courses", () =>
-    api.get<CoursesResponse>("/courses/my_courses")
-  );
+const {
+  data: coursesData,
+  pending: coursesPending,
+  refresh: refreshCourses,
+} = await useAsyncData<CoursesResponse>("teacher-courses", () =>
+  api.get<CoursesResponse>("/courses/my_courses")
+);
 
 const courses = computed(() => coursesData.value?.results || []);
 
@@ -76,7 +79,11 @@ useHead({
 
     <div class="grid grid-cols-2 gap-2">
       <!-- My Courses -->
-      <TeacherProfileCoursesCard :courses="courses" :pending="coursesPending" />
+      <TeacherProfileCoursesCard
+        :courses="courses"
+        :pending="coursesPending"
+        :refresh="refreshCourses"
+      />
       <!-- Stats Grid -->
       <TeacherProfileStatsGrid :stats="stats" class="max-h-100" />
     </div>

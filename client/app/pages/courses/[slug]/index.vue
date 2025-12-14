@@ -100,7 +100,7 @@ const handleUnenroll = async () => {
     <CoursesDetailsHeader :course="course" :breadcrumbs="breadcrumbLinks" />
 
     <!-- Main Content & Sidebar Layout -->
-    <UContainer class="-mt-20 relative z-20">
+    <LayoutContainer class="-mt-20 relative z-20">
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-2">
         <!-- Left Column: Content -->
         <div class="lg:col-span-2 space-y-12">
@@ -128,7 +128,7 @@ const handleUnenroll = async () => {
           @unenroll="handleUnenroll"
         />
       </div>
-    </UContainer>
+    </LayoutContainer>
   </div>
 
   <!-- Loading State -->

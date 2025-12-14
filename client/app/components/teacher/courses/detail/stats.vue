@@ -38,22 +38,11 @@ const stats = computed(() => [
 </script>
 
 <template>
-  <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-    <UCard v-for="stat in stats" :key="stat.label">
-      <div class="flex items-center gap-3">
-        <div
-          class="size-10 rounded-lg flex items-center justify-center"
-          :class="stat.bgColor"
-        >
-          <UIcon :name="stat.icon" class="size-5" :class="stat.iconColor" />
-        </div>
-        <div>
-          <p class="text-2xl font-bold text-default">
-            {{ stat.value(course) }}
-          </p>
-          <p class="text-xs text-muted">{{ stat.label }}</p>
-        </div>
-      </div>
-    </UCard>
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-2">
+    <TeacherDashboardStatCard
+      v-for="stat in stats"
+      :key="stat.label"
+      :stat="{ ...stat, value: stat.value(course) }"
+    />
   </div>
 </template>

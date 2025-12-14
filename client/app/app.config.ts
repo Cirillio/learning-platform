@@ -45,5 +45,10 @@ export default defineAppConfig({
         body: "p-3!",
       },
     },
+    tabs: {
+      slots: {
+        trigger: "cursor-pointer ",
+      },
+    },
   },
 });

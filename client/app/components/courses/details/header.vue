@@ -22,7 +22,7 @@ const upcomingDate = new Date().toLocaleDateString("ru-RU", {
       class="absolute top-0 right-0 w-full h-full bg-linear-to-r dark:from-default to-primary/75 pointer-events-none"
     ></div>
 
-    <UContainer>
+    <LayoutContainer>
       <!-- Breadcrumbs -->
       <UBreadcrumb :links="breadcrumbs" class="mb-6" />
 
@@ -89,6 +89,6 @@ const upcomingDate = new Date().toLocaleDateString("ru-RU", {
           </div>
         </div>
       </div>
-    </UContainer>
+    </LayoutContainer>
   </div>
 </template>

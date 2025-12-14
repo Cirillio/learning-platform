@@ -3,7 +3,7 @@
 
 @layer utilities {
   .main-container {
-    @apply sm:px-8 px-2 lg:px-24 xl:px-32 2xl:px-40;
+    @apply sm:px-8 px-2 lg:px-24 xl:px-44 2xl:px-60;
   }
 
   .hide-scrollbar {

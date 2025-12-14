@@ -1,7 +1,22 @@
 <script lang="ts" setup>
 import type { NavigationMenuItem } from "@nuxt/ui";
 
-const isSidebarCollapsed = useState<boolean>("teacher-sidebar-collapsed");
+const cookie = useCookie<boolean>("teacher-sidebar-collapsed", {
+  default: () => false,
+});
+
+const isSidebarCollapsed = useState<boolean>(
+  "teacher-sidebar-collapsed",
+  () => false
+);
+
+onMounted(() => {
+  isSidebarCollapsed.value = cookie.value;
+});
+
+watch(isSidebarCollapsed, (val) => {
+  cookie.value = val;
+});
 
 // Navigation items
 const navItems = ref<NavigationMenuItem[]>([

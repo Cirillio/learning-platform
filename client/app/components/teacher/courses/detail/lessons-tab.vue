@@ -17,11 +17,11 @@ const emit = defineEmits<{
   <UCard>
     <template #header>
       <div class="flex items-center justify-between">
-        <h2 class="text-lg font-semibold text-default">Уроки курса</h2>
+        <h2 class="text-2xl font-semibold text-default">Уроки курса</h2>
         <UButton
           icon="i-lucide-plus"
           color="primary"
-          size="sm"
+          size="lg"
           @click="emit('add')"
         >
           Добавить урок
@@ -45,57 +45,39 @@ const emit = defineEmits<{
 
     <!-- List -->
     <div v-else class="space-y-3">
-      <div
+      <TeacherCoursesDetailListItem
         v-for="lesson in lessons"
         :key="lesson.id"
-        class="flex items-center gap-4 p-3 rounded-lg border border-default bg-elevated group hover:border-primary/50 transition-colors"
+        :desc="lesson.description"
+        :order="lesson.order"
+        :subdesc="lesson.duration_minutes + ' мин.'"
+        :link="'/teacher/courses/' + slug + '/lessons/' + lesson.slug"
+        @delete="() => emit('delete', lesson.id)"
       >
-        <!-- Order -->
-        <div
-          class="size-10 rounded-lg bg-primary/10 flex items-center justify-center font-semibold text-primary shrink-0"
-        >
-          {{ lesson.order }}
-        </div>
-
-        <!-- Info -->
-        <div class="flex-1 min-w-0">
-          <div class="flex items-center gap-2 mb-1">
-            <h3 class="font-medium text-default">{{ lesson.title }}</h3>
-            <UBadge
-              v-if="!lesson.is_published"
-              color="warning"
-              variant="soft"
-              size="sm"
-            >
-              Черновик
-            </UBadge>
+        <template #leading>
+          <div
+            class="size-12 rounded-lg opacity-50 group-hover:opacity-100 transition-all bg-primary/10 flex items-center justify-center text-2xl font-semibold text-primary shrink-0"
+          >
+            {{ lesson.order }}
           </div>
-          <p class="text-sm text-muted truncate">{{ lesson.description }}</p>
-        </div>
+        </template>
 
-        <!-- Duration -->
-        <div class="text-sm text-muted shrink-0">
-          {{ lesson.duration_minutes }} мин
-        </div>
-
-        <!-- Actions -->
-        <div class="flex items-center gap-1">
-          <UButton
+        <template #title>
+          <NuxtLink
             :to="`/teacher/courses/${slug}/lessons/${lesson.slug}`"
-            icon="i-lucide-pencil"
-            color="neutral"
-            variant="ghost"
+            class="font-medium text-xl text-default"
+            >{{ lesson.title }}</NuxtLink
+          >
+          <UBadge
+            v-if="!lesson.is_published"
+            color="warning"
+            variant="soft"
             size="sm"
-          />
-          <UButton
-            icon="i-lucide-trash-2"
-            color="error"
-            variant="ghost"
-            size="sm"
-            @click="emit('delete', lesson.id)"
-          />
-        </div>
-      </div>
+          >
+            Черновик
+          </UBadge>
+        </template>
+      </TeacherCoursesDetailListItem>
     </div>
   </UCard>
 </template>

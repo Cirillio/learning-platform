@@ -94,11 +94,11 @@ class Course(models.Model):
         related_name='courses',
         verbose_name='Категория'
     )
-    cover_image = models.ImageField(
-        upload_to='course_covers/',
-        null=True,
+    cover_image = models.CharField(
+        max_length=500,
         blank=True,
-        verbose_name='Обложка курса'
+        null=True,
+        verbose_name='Обложка курса (URL)'
     )
     status = models.CharField(
         max_length=20,

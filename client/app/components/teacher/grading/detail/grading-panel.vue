@@ -37,22 +37,23 @@ const formatDate = (date: string) => {
         </h2>
       </template>
 
-      <form @submit.prevent="emit('submit')" class="space-y-6">
+      <form @submit.prevent="emit('submit')" class="space-y-2">
         <!-- Score Input -->
         <div>
-          <label class="block text-sm font-medium text-default mb-2">
+          <label class="block text-xl font-medium text-default mb-2">
             Баллы (макс. {{ maxScore }})
           </label>
           <div class="flex items-center gap-3">
             <UInput
+              size="xl"
               v-model.number="gradeForm.score"
               type="number"
               :min="0"
               :max="maxScore"
               class="w-24"
             />
-            <span class="text-2xl font-bold text-default">/</span>
-            <span class="text-2xl text-muted">{{ maxScore }}</span>
+            <span class="text-3xl font-bold text-default">/</span>
+            <span class="text-3xl text-muted">{{ maxScore }}</span>
           </div>
 
           <!-- Quick Score Buttons -->
@@ -60,7 +61,7 @@ const formatDate = (date: string) => {
             <UButton
               v-for="percent in [100, 80, 60, 40]"
               :key="percent"
-              size="xs"
+              size="md"
               color="neutral"
               variant="soft"
               @click="gradeForm.score = Math.round((maxScore * percent) / 100)"
@@ -72,13 +73,14 @@ const formatDate = (date: string) => {
 
         <!-- Feedback -->
         <div>
-          <label class="block text-sm font-medium text-default mb-2">
+          <label class="block text-xl font-medium text-default mb-2">
             Комментарий (необязательно)
           </label>
           <UTextarea
             v-model="gradeForm.feedback"
             placeholder="Напишите комментарий для студента..."
             :rows="5"
+            size="xl"
             class="w-full"
           />
         </div>
@@ -88,8 +90,8 @@ const formatDate = (date: string) => {
           type="submit"
           color="primary"
           :loading="isSubmitting"
-          class="w-full"
-          size="lg"
+          block
+          size="xl"
         >
           {{ isGraded ? "Обновить оценку" : "Выставить оценку" }}
         </UButton>

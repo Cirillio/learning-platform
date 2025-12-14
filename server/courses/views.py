@@ -8,7 +8,7 @@ from django.utils import timezone
 from rest_framework.views import APIView
 from django.urls import reverse
 
-from courses.pagination import CoursePagination, CategoryPagination # Added this import
+from courses.pagination import CoursePagination, CategoryPagination, SubmissionPagination # Added this import
 
 from .models import (
     Category, Course, CourseEnrollment, Lesson, LessonMaterial,
@@ -322,7 +322,7 @@ class AssignmentViewSet(viewsets.ModelViewSet):
     """
     queryset = Assignment.objects.all()
     serializer_class = AssignmentSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticated]
     
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -340,6 +340,17 @@ class AssignmentViewSet(viewsets.ModelViewSet):
         course_slug = self.request.query_params.get('course', None)
         if course_slug:
             queryset = queryset.filter(lesson__course__slug=course_slug)
+        
+        # Фильтрация по ролям пользователей
+        if self.request.user.role == 'teacher':
+            # Преподаватели видят задания из курсов, которые они ведут
+            queryset = queryset.filter(lesson__course__teacher=self.request.user)
+        elif self.request.user.role == 'student':
+            # Студенты видят задания из курсов, на которые записаны
+            enrolled_course_ids = self.request.user.course_enrollments.filter(
+                is_active=True
+            ).values_list('course_id', flat=True)
+            queryset = queryset.filter(lesson__course_id__in=enrolled_course_ids)
         
         return queryset.select_related('lesson', 'lesson__course').prefetch_related('files')
     
@@ -366,6 +377,10 @@ class SubmissionViewSet(viewsets.ModelViewSet):
     """
     queryset = Submission.objects.all()
     permission_classes = [IsAuthenticated]
+    pagination_class = SubmissionPagination
+    filter_backends = [filters.OrderingFilter]
+    ordering_fields = ['student__username', 'submitted_at', 'status']
+    ordering = ['-submitted_at']
     
     def get_serializer_class(self):
         if self.action in ['retrieve', 'create', 'update', 'partial_update']:
@@ -379,6 +394,11 @@ class SubmissionViewSet(viewsets.ModelViewSet):
         assignment_id = self.request.query_params.get('assignment', None)
         if assignment_id:
             queryset = queryset.filter(assignment_id=assignment_id)
+        
+        # Фильтрация по статусу
+        status_filter = self.request.query_params.get('status', None)
+        if status_filter:
+            queryset = queryset.filter(status=status_filter)
         
         # Студенты видят только свои ответы
         if self.request.user.role == 'student':

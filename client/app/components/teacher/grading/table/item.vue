@@ -18,7 +18,7 @@ const formatDate = (date: string) => {
 </script>
 
 <template>
-  <tr class="hover:bg-muted/25 transition-colors">
+  <tr class="dark:hover:bg-muted/50 hover:bg-default/75 transition-colors">
     <!-- Student -->
     <td class="px-6 py-4">
       <div class="flex items-center gap-3">

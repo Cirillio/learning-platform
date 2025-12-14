@@ -147,18 +147,22 @@ const handleDeleteLesson = async (lessonId: number) => {
     <!-- Content -->
     <template v-else>
       <!-- Header -->
-      <TeacherCoursesDetailHeader :course="course" :slug="slug" class="mb-8" />
+      <TeacherCoursesDetailHeader :course="course" :slug="slug" class="mb-2" />
 
       <!-- Stats -->
-      <TeacherCoursesDetailStats :course="course" class="mb-8" />
+      <TeacherCoursesDetailStats :course="course" class="mb-2" />
 
       <!-- Tabs -->
-      <div class="mb-6">
+      <div class="mb-2">
         <UTabs
           v-model="activeTab"
           :items="
             tabs.map((t) => ({ label: t.label, value: t.value, icon: t.icon }))
           "
+          size="lg"
+          :ui="{
+            content: 'hidden',
+          }"
         />
       </div>
 

@@ -21,21 +21,28 @@ const statusOptions = [
       Управляйте своими курсами и учебными материалами
     </p>
 
-    <UButton
-      to="/teacher/courses/create"
-      icon="i-lucide-plus"
-      color="primary"
-      size="lg"
-    >
-      Создать курс
-    </UButton>
+    <div class="flex items-center justify-between w-full gap-2">
+      <!-- Filters -->
+      <UTabs
+        :items="statusOptions.map((s) => ({ label: s.label, value: s.value }))"
+        :model-value="statusFilter"
+        @update:model-value="emit('update:statusFilter', $event as string)"
+        class="w-fit"
+        variant="link"
+        :ui="{
+          content: 'hidden',
+          label: 'cursor-pointer text-lg',
+        }"
+      />
 
-    <!-- Filters -->
-    <UTabs
-      :items="statusOptions.map((s) => ({ label: s.label, value: s.value }))"
-      :model-value="statusFilter"
-      @update:model-value="emit('update:statusFilter', $event as string)"
-      class="w-fit -mb-2"
-    />
+      <UButton
+        to="/teacher/courses/create"
+        icon="i-lucide-plus"
+        color="primary"
+        size="lg"
+      >
+        Создать курс
+      </UButton>
+    </div>
   </div>
 </template>

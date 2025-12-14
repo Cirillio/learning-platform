@@ -12,12 +12,12 @@ defineProps<{
   <UCard>
     <template #header>
       <div class="flex items-center justify-between">
-        <h2 class="text-lg font-semibold text-default">Задания курса</h2>
+        <h2 class="text-2xl font-semibold text-default">Задания курса</h2>
         <UButton
           :to="`/teacher/courses/${slug}/assignments/create`"
           icon="i-lucide-plus"
           color="primary"
-          size="sm"
+          size="lg"
         >
           Добавить задание
         </UButton>
@@ -47,20 +47,28 @@ defineProps<{
 
     <!-- List -->
     <div v-else class="space-y-3">
-      <div
+      <TeacherCoursesDetailListItem
         v-for="assignment in assignments"
         :key="assignment.id"
-        class="flex items-center gap-4 p-3 rounded-lg border border-default bg-elevated group hover:border-primary/50 transition-colors"
+        :desc="
+          assignment.submissions_count +
+          ' сдач • Макс. балл: ' +
+          assignment.max_score
+        "
       >
-        <div
-          class="size-10 rounded-lg bg-warning/10 flex items-center justify-center shrink-0"
-        >
-          <UIcon name="i-lucide-clipboard-list" class="size-5 text-warning" />
-        </div>
+        <template #leading>
+          <div
+            class="size-12 rounded-lg bg-warning/10 flex items-center justify-center shrink-0"
+          >
+            <UIcon name="i-lucide-clipboard-list" class="size-6 text-warning" />
+          </div>
+        </template>
 
-        <div class="flex-1 min-w-0">
-          <div class="flex items-center gap-2 mb-1">
-            <h3 class="font-medium text-default">{{ assignment.title }}</h3>
+        <template #title>
+          <div class="flex items-center gap-2">
+            <h3 class="font-medium text-xl text-default">
+              {{ assignment.title }}
+            </h3>
             <UBadge
               v-if="assignment.is_required"
               color="error"
@@ -70,28 +78,8 @@ defineProps<{
               Обязательное
             </UBadge>
           </div>
-          <p class="text-sm text-muted truncate">
-            {{ assignment.submissions_count }} сдач • Макс. балл:
-            {{ assignment.max_score }}
-          </p>
-        </div>
-
-        <div class="flex items-center gap-1">
-          <UButton
-            :to="`/teacher/courses/${slug}/grading?assignment=${assignment.id}`"
-            icon="i-lucide-check-circle"
-            color="success"
-            variant="ghost"
-            size="sm"
-          />
-          <UButton
-            icon="i-lucide-pencil"
-            color="neutral"
-            variant="ghost"
-            size="sm"
-          />
-        </div>
-      </div>
+        </template>
+      </TeacherCoursesDetailListItem>
     </div>
   </UCard>
 </template>
