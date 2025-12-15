@@ -89,15 +89,15 @@ defineExpose({
 </script>
 
 <template>
-  <div class="bg-elevated rounded-xl border border-default overflow-hidden">
-    <div
-      class="px-6 py-4 border-b border-default flex items-center justify-between"
-    >
-      <h2 class="text-lg font-semibold text-default flex items-center gap-2">
-        <UIcon name="i-lucide-send" class="size-5 text-primary" />
+  <UCard>
+    <template #header>
+      <h2 class="text-2xl font-semibold text-default flex items-center gap-2">
+        <UIcon name="i-lucide-send" class="size-6 text-primary" />
         {{ hasSubmission ? "Ваш ответ" : "Сдать задание" }}
       </h2>
+    </template>
 
+    <div class="flex items-center justify-between">
       <UButton
         v-if="hasSubmission && canEdit && !isEditing"
         color="neutral"
@@ -110,7 +110,7 @@ defineExpose({
       </UButton>
     </div>
 
-    <div class="p-6 lg:p-8">
+    <div class="px-3">
       <!-- View Mode -->
       <template v-if="hasSubmission && !isEditing">
         <div class="space-y-4">
@@ -158,19 +158,20 @@ defineExpose({
       <template v-else-if="canSubmit || isEditing">
         <form class="space-y-6" @submit.prevent="handleSubmit">
           <div>
-            <label class="block text-sm font-medium text-default mb-2">
+            <label class="block text-xl font-medium text-default mb-2">
               Ваш ответ
             </label>
             <UTextarea
               v-model="content"
               placeholder="Напишите ваш ответ здесь..."
               :rows="6"
+              size="xl"
               class="w-full"
             />
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-default mb-2">
+            <label class="block text-xl font-medium text-default mb-2">
               Файлы (опционально)
             </label>
             <div
@@ -183,6 +184,7 @@ defineExpose({
                 ref="fileInput"
                 type="file"
                 multiple
+                size="xl"
                 class="hidden"
                 @change="handleFileSelect"
               />
@@ -232,7 +234,12 @@ defineExpose({
               Отмена
             </UButton>
             <slot name="submit-button">
-              <UButton type="submit" color="primary" icon="i-lucide-send">
+              <UButton
+                type="submit"
+                size="lg"
+                color="primary"
+                icon="i-lucide-send"
+              >
                 {{ hasSubmission ? "Обновить ответ" : "Отправить" }}
               </UButton>
             </slot>
@@ -256,5 +263,5 @@ defineExpose({
         </div>
       </template>
     </div>
-  </div>
+  </UCard>
 </template>

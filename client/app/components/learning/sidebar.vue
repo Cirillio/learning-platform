@@ -50,7 +50,7 @@ const lessons = computed(() => lessonsResponse.value?.results || []);
     >
       <NuxtLink
         v-if="!isCollapsed"
-        to="/dashboard"
+        to="/learning"
         class="flex items-center gap-2 text-default hover:text-primary transition-colors"
       >
         <UIcon name="i-lucide-graduation-cap" class="size-6" />

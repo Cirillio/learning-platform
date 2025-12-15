@@ -3,7 +3,7 @@ import type { CourseDetail, LessonWithProgress } from "~/types";
 import { useCoursesService } from "~/services";
 
 definePageMeta({
-  layout: "learning",
+  layout: "default",
   middleware: ["auth", "enrolled-course"],
 });
 
@@ -58,7 +58,7 @@ useHead(() => ({
 </script>
 
 <template>
-  <div class="space-y-2">
+  <LayoutContainer class="py-8 bg-default space-y-2">
     <!-- Loading -->
     <div v-if="coursePending || lessonsPending" class="space-y-2">
       <USkeleton class="h-32 w-full rounded-xl" />
@@ -95,9 +95,9 @@ useHead(() => ({
     <div v-else class="flex flex-col items-center justify-center py-20 gap-2">
       <UIcon name="i-lucide-alert-circle" class="size-16 text-error" />
       <h2 class="text-2xl font-bold text-default">Курс не найден</h2>
-      <UButton to="/dashboard" color="primary" size="lg">
+      <UButton to="/learning" color="primary" size="lg">
         Вернуться в панель
       </UButton>
     </div>
-  </div>
+  </LayoutContainer>
 </template>

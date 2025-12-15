@@ -13,7 +13,7 @@ const profileLink = computed(() => {
 
 // Динамическая ссылка на "Мои уроки" / "Мои курсы"
 const learningLink = computed(() => {
-  return props.user?.role === "teacher" ? "/teacher" : "/dashboard";
+  return props.user?.role === "teacher" ? "/teacher" : "/learning";
 });
 
 const learningLabel = computed(() => {

@@ -1,8 +1,13 @@
 <script setup lang="ts">
-import type { Assignment, SubmissionDetail, Grade } from "~/types";
+import type {
+  Assignment,
+  SubmissionDetail,
+  Grade,
+  PaginatedResponse,
+} from "~/types";
 
 definePageMeta({
-  layout: "learning",
+  layout: "default",
   middleware: ["auth", "enrolled-course"],
 });
 
@@ -30,15 +35,15 @@ const {
 
 // Fetch existing submission (if any)
 const {
-  data: submission,
+  data: submissionResponse,
   pending: submissionPending,
   refresh: refreshSubmission,
-} = await useAsyncData<SubmissionDetail | null>(
+} = await useAsyncData<PaginatedResponse<SubmissionDetail> | null>(
   `submission-${assignmentId.value}`,
   async () => {
     try {
-      return await api.get<SubmissionDetail>(
-        `/assignments/${assignmentId.value}/my-submission/`
+      return await api.get<PaginatedResponse<SubmissionDetail>>(
+        `/submissions/?assignment=${assignmentId.value}`
       );
     } catch {
       return null;
@@ -47,23 +52,34 @@ const {
 );
 
 // Fetch grade (if graded)
-const { data: grade, refresh: refreshGrade } = await useAsyncData<Grade | null>(
-  `grade-${assignmentId.value}`,
-  async () => {
-    if (!submission.value || submission.value.status !== "graded") return null;
-    try {
-      return await api.get<Grade>(`/submissions/${submission.value.id}/grade/`);
-    } catch {
-      return null;
-    }
-  },
-  { watch: [submission] }
-);
+const { data: gradeResponse, refresh: refreshGrade } =
+  await useAsyncData<PaginatedResponse<Grade> | null>(
+    `grade-${assignmentId.value}`,
+    async () => {
+      if (
+        !submissionResponse.value?.results[0] ||
+        submissionResponse.value.results[0].status !== "graded"
+      )
+        return null;
+      try {
+        return await api.get<PaginatedResponse<Grade>>(`/grades/`, {
+          submission: submissionResponse.value.results[0].id,
+        });
+      } catch {
+        return null;
+      }
+    },
+    { watch: [submissionResponse] }
+  );
 
 // Computed states
-const hasSubmission = computed(() => !!submission.value);
-const isGraded = computed(() => submission.value?.status === "graded");
-const isPending = computed(() => submission.value?.status === "pending");
+const hasSubmission = computed(() => !!submissionResponse.value?.results[0]);
+const isGraded = computed(
+  () => submissionResponse.value?.results[0]?.status === "graded"
+);
+const isPending = computed(
+  () => submissionResponse.value?.results[0]?.status === "pending"
+);
 const canEdit = computed(() => !isGraded.value);
 
 const isOverdue = computed(() => {
@@ -94,10 +110,12 @@ const handleSubmit = async (payload: { content: string; files: File[] }) => {
       formData.append(`files[${index}]`, file);
     });
 
-    if (hasSubmission.value) {
-      await api.fetch(`/submissions/${submission.value!.id}/`, {
+    if (hasSubmission.value && submissionResponse.value) {
+      await api.fetch(`/submissions/`, {
         method: "PATCH",
-        body: formData,
+        body: {
+          ...formData,
+        },
         headers: { "Content-Type": "multipart/form-data" },
       });
       toast.add({ title: "Ответ обновлён", color: "success" });
@@ -136,7 +154,7 @@ useHead(() => ({
 </script>
 
 <template>
-  <div class="space-y-2">
+  <LayoutContainer class="space-y-2 bg-default py-6 flex-1">
     <!-- Loading -->
     <div v-if="assignmentPending" class="max-w-4xl mx-auto space-y-2">
       <USkeleton class="h-10 w-2/3 rounded-lg" />
@@ -162,20 +180,36 @@ useHead(() => ({
 
     <!-- Content -->
     <template v-else-if="assignment">
-      <div class="max-w-4xl mx-auto space-y-2">
-        <!-- Back Link -->
-        <NuxtLink
-          :to="`/learning/${courseSlug}/assignments`"
-          class="inline-flex items-center gap-2 text-base text-muted hover:text-default transition-colors"
-        >
-          <UIcon name="i-lucide-arrow-left" class="size-4" />
-          <span>К списку заданий</span>
-        </NuxtLink>
+      <div class="space-y-2">
+        <div class="flex justify-between">
+          <!-- Back Link -->
+          <NuxtLink
+            :to="`/learning/${courseSlug}/assignments`"
+            class="inline-flex items-center gap-2 text-base text-muted hover:text-default transition-colors"
+          >
+            <UIcon name="i-lucide-arrow-left" class="size-4" />
+            <span>К списку заданий</span>
+          </NuxtLink>
+
+          <NuxtLink
+            :to="
+              '/learning/' +
+              courseSlug +
+              '/lessons/' +
+              submissionResponse?.results[0]?.lesson_slug
+            "
+            class="inline-flex items-center gap-2 text-base text-muted hover:text-default transition-colors"
+          >
+            <UIcon name="heroicons:document-text" class="size-4" />
+
+            На страницу урока
+          </NuxtLink>
+        </div>
 
         <!-- Assignment Header -->
         <AssignmentsHeader
           :assignment="assignment"
-          :grade="grade"
+          :grade="gradeResponse?.results[0]"
           :is-graded="isGraded"
           :is-pending="isPending"
           :is-overdue="isOverdue"
@@ -196,15 +230,20 @@ useHead(() => ({
 
         <!-- Grade Result -->
         <AssignmentsGradeResult
-          v-if="isGraded && grade"
-          :grade="grade"
+          v-if="
+            isGraded &&
+            gradeResponse &&
+            gradeResponse.results[0] &&
+            gradeResponse?.results.length > 0
+          "
+          :grade="gradeResponse.results[0]"
           :max-score="assignment.max_score"
         />
 
         <!-- Submission Form -->
         <AssignmentsSubmissionForm
           ref="submissionFormRef"
-          :submission="submission"
+          :submission="submissionResponse?.results[0]"
           :has-submission="hasSubmission"
           :can-edit="canEdit"
           :can-submit="canSubmit"
@@ -224,5 +263,5 @@ useHead(() => ({
         </AssignmentsSubmissionForm>
       </div>
     </template>
-  </div>
+  </LayoutContainer>
 </template>

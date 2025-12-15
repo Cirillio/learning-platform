@@ -11,9 +11,9 @@ defineProps<Props>();
 </script>
 
 <template>
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-2 mb-2">
     <!-- Progress -->
-    <div class="bg-elevated rounded-xl p-5 border border-default">
+    <UCard>
       <div class="flex items-center justify-between mb-3">
         <span class="text-sm text-muted">Прогресс</span>
         <UIcon name="i-lucide-trending-up" class="size-5 text-primary" />
@@ -22,10 +22,10 @@ defineProps<Props>();
         {{ progressPercent }}%
       </div>
       <UProgress :model-value="progressPercent" size="sm" color="primary" />
-    </div>
+    </UCard>
 
     <!-- Lessons -->
-    <div class="bg-elevated rounded-xl p-5 border border-default">
+    <UCard>
       <div class="flex items-center justify-between mb-3">
         <span class="text-sm text-muted">Уроки</span>
         <UIcon name="i-lucide-book-open" class="size-5 text-success" />
@@ -34,10 +34,10 @@ defineProps<Props>();
         {{ completedLessons }}/{{ totalLessons }}
       </div>
       <p class="text-xs text-muted mt-1">уроков пройдено</p>
-    </div>
+    </UCard>
 
     <!-- Assignments -->
-    <div class="bg-elevated rounded-xl p-5 border border-default">
+    <UCard>
       <div class="flex items-center justify-between mb-3">
         <span class="text-sm text-muted">Задания</span>
         <UIcon name="i-lucide-clipboard-check" class="size-5 text-warning" />
@@ -51,6 +51,6 @@ defineProps<Props>();
       >
         Посмотреть все →
       </NuxtLink>
-    </div>
+    </UCard>
   </div>
 </template>

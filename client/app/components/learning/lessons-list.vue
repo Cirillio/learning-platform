@@ -10,10 +10,10 @@ defineProps<Props>();
 </script>
 
 <template>
-  <div class="bg-elevated rounded-xl border border-default overflow-hidden">
-    <div class="px-6 py-4 border-b border-default">
-      <h2 class="text-lg font-semibold text-default">Содержание курса</h2>
-    </div>
+  <UCard>
+    <template #header>
+      <h2 class="text-2xl font-semibold text-default">Содержание курса</h2>
+    </template>
 
     <div class="divide-y divide-default">
       <NuxtLink
@@ -71,5 +71,5 @@ defineProps<Props>();
         />
       </NuxtLink>
     </div>
-  </div>
+  </UCard>
 </template>

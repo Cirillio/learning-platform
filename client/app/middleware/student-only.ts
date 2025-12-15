@@ -17,6 +17,6 @@ export default defineNuxtRouteMiddleware(async (to) => {
 
   // Check if user is student
   if (!authStore.isStudent) {
-    return navigateTo("/dashboard");
+    return navigateTo("/learning");
   }
 });

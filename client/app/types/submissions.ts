@@ -17,6 +17,8 @@ export interface Submission {
   id: number;
   assignment: number; // ID
   assignment_title: string;
+  lesson_slug?: string;
+  course_slug?: string;
   student: number;
   student_name: string;
   content: string;
@@ -36,7 +38,12 @@ export interface Grade {
   submission: number;
   submission_content: string;
   student_name: string;
+  assignment_id: number;
   assignment_title: string;
+  lesson_slug: string;
+  lesson_title: string;
+  course_slug: string;
+  course_title: string;
   score: number;
   feedback?: string;
   graded_by: number;

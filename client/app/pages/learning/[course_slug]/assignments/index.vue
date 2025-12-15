@@ -1,8 +1,13 @@
 <script setup lang="ts">
-import type { Assignment } from "~/types";
+import type {
+  Assignment,
+  Lesson,
+  LessonDetail,
+  PaginatedResponse,
+} from "~/types";
 
 definePageMeta({
-  layout: "learning",
+  layout: "default",
   middleware: ["auth", "enrolled-course"],
 });
 
@@ -13,23 +18,34 @@ const lessonFilter = computed(() => route.query.lesson as string | undefined);
 // Service placeholder - will be implemented
 const api = useApi();
 
-interface AssignmentsResponse {
-  count: number;
-  next: string | null;
-  previous: string | null;
-  results: Assignment[];
-}
-
 // Fetch assignments
-const { data: assignmentsResponse, pending } =
-  await useAsyncData<AssignmentsResponse>(
-    `learning-assignments-${courseSlug.value}`,
-    () =>
-      api.get<AssignmentsResponse>("/assignments/", {
-        course: courseSlug.value,
-        lesson: lessonFilter.value,
-      }),
-    { watch: [lessonFilter] }
+const { data: assignmentsResponse, pending } = await useAsyncData<
+  PaginatedResponse<Assignment>
+>(
+  `learning-assignments-${courseSlug.value}`,
+  () =>
+    api.get<PaginatedResponse<Assignment>>("/assignments/", {
+      course: courseSlug.value,
+      lesson: lessonFilter.value,
+    }),
+  { watch: [lessonFilter] }
+);
+
+const { data: lessonData, pending: lessonPending } =
+  await useAsyncData<LessonDetail | null>(
+    `learning-lesson-${lessonFilter.value}`,
+    async () => {
+      if (!lessonFilter.value) return null;
+      const resp = api.get<LessonDetail>(`/lessons/${lessonFilter.value}/`);
+      resp.then((r) => {
+        console.log({ ...r });
+      });
+      return resp;
+    },
+
+    {
+      watch: [lessonFilter],
+    }
   );
 
 const assignments = computed(() => assignmentsResponse.value?.results || []);
@@ -85,14 +101,20 @@ useHead({
 </script>
 
 <template>
-  <div class="space-y-2">
+  <LayoutContainer class="bg-default py-6 flex-1 space-y-2">
     <!-- Header -->
     <div>
       <div class="flex items-center gap-2 mb-2">
-        <UIcon name="i-lucide-clipboard-list" class="size-6 text-primary" />
-        <h1 class="text-2xl font-bold text-default">Задания курса</h1>
+        <UButton
+          :to="`/learning/${courseSlug}`"
+          color="primary"
+          variant="soft"
+          icon="heroicons:arrow-left"
+        />
+        <UIcon name="i-lucide-clipboard-list" class="size-8 text-primary" />
+        <h1 class="text-4xl font-bold text-default">Задания курса</h1>
       </div>
-      <p class="text-base text-muted">
+      <p class="text-lg text-muted">
         Выполняйте задания для закрепления материала и получения оценок
       </p>
     </div>
@@ -100,10 +122,68 @@ useHead({
     <!-- Filters -->
     <div>
       <UTabs
+        size="lg"
         :items="filterOptions.map((f) => ({ label: f.label, value: f.value }))"
         v-model="activeFilter"
         class="w-fit"
       />
+    </div>
+
+    <!-- Lesson info (when lesson is selected) -->
+    <div v-if="lessonFilter">
+      <USkeleton v-if="lessonPending" class="h-40 rounded-xl" />
+
+      <UCard v-else-if="lessonData">
+        <div class="flex items-start gap-4">
+          <div class="flex-1 min-w-0">
+            <div class="flex items-start justify-between">
+              <div>
+                <h4 class="text-2xl font-semibold text-default">
+                  {{ lessonData.title }}
+                </h4>
+                <p class="text-base text-muted mt-3 line-clamp-4">
+                  {{
+                    lessonData.description ||
+                    (lessonData.content
+                      ? lessonData.content.slice(0, 240) +
+                        (lessonData.content.length > 240 ? "..." : "")
+                      : "")
+                  }}
+                </p>
+              </div>
+              <div class="text-right text-sm text-muted">
+                <div>Длительность: {{ lessonData.duration_minutes }} мин</div>
+                <div>Материалов: {{ lessonData.materials?.length || 0 }}</div>
+                <div>Заданий: {{ lessonData.assignments_count ?? 0 }}</div>
+              </div>
+            </div>
+
+            <div class="mt-4 flex items-center gap-3">
+              <UButton
+                v-if="lessonData.slug"
+                :to="`/learning/${courseSlug}/lessons/${lessonData.slug}`"
+                color="primary"
+                size="md"
+                icon="i-lucide-arrow-right"
+              >
+                Открыть урок
+              </UButton>
+
+              <UButton
+                v-if="lessonData.materials && lessonData.materials.length > 0"
+                color="neutral"
+                variant="ghost"
+                size="md"
+                :to="`/learning/${courseSlug}/lessons/${lessonData.slug}#materials`"
+              >
+                Материалы ({{ lessonData.materials.length }})
+              </UButton>
+            </div>
+          </div>
+        </div>
+      </UCard>
+
+      <USeparator class="my-6" />
     </div>
 
     <!-- Loading -->
@@ -142,9 +222,9 @@ useHead({
           <div class="flex items-start justify-between gap-2">
             <div class="flex-1 min-w-0">
               <!-- Title & Status -->
-              <div class="flex items-center gap-2 mb-2">
+              <div class="flex items-center gap-2">
                 <h3
-                  class="text-base font-semibold text-default group-hover:text-primary transition-colors"
+                  class="text-2xl font-semibold text-default group-hover:text-primary transition-colors"
                 >
                   {{ assignment.title }}
                 </h3>
@@ -152,7 +232,6 @@ useHead({
                   v-if="assignment.is_submitted"
                   color="success"
                   variant="subtle"
-                  size="sm"
                 >
                   Сдано
                 </UBadge>
@@ -160,7 +239,6 @@ useHead({
                   v-else-if="isOverdue(assignment.due_date)"
                   color="error"
                   variant="subtle"
-                  size="sm"
                 >
                   Просрочено
                 </UBadge>
@@ -168,14 +246,13 @@ useHead({
                   v-else-if="assignment.is_required"
                   color="warning"
                   variant="subtle"
-                  size="sm"
                 >
                   Обязательное
                 </UBadge>
               </div>
 
               <!-- Description -->
-              <p class="text-base text-muted line-clamp-2 mb-2">
+              <p class="text-lg text-muted line-clamp-2 my-2">
                 {{ assignment.description }}
               </p>
 
@@ -232,5 +309,5 @@ useHead({
         </UCard>
       </NuxtLink>
     </div>
-  </div>
+  </LayoutContainer>
 </template>

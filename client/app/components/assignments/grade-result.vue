@@ -33,7 +33,7 @@ const formatDate = (date: string | null | undefined): string => {
       </div>
       <div v-if="grade.feedback">
         <span class="text-muted block mb-2">Комментарий преподавателя:</span>
-        <div class="bg-elevated rounded-lg p-4 text-default">
+        <div class="bg-muted ring ring-muted rounded-lg p-4 text-default">
           {{ grade.feedback }}
         </div>
       </div>

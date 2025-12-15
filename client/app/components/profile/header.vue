@@ -100,7 +100,7 @@ const isModalOpen = ref(false);
         color="primary"
         size="xl"
         class="justify-center"
-        to="/dashboard"
+        to="/learning"
       >
         Моё обучение
       </UButton>

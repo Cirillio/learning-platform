@@ -261,12 +261,14 @@ class SubmissionSerializer(serializers.ModelSerializer):
     """
     student_name = serializers.CharField(source='student.get_full_name', read_only=True)
     assignment_title = serializers.CharField(source='assignment.title', read_only=True)
+    lesson_slug = serializers.CharField(source='assignment.lesson.slug', read_only=True)
+    course_slug = serializers.CharField(source='assignment.lesson.course.slug', read_only=True)
     files_count = serializers.SerializerMethodField()
 
     class Meta:
         model = Submission
         fields = [
-            'id', 'assignment', 'assignment_title', 'student', 'student_name',
+            'id', 'assignment', 'assignment_title', 'lesson_slug', 'course_slug', 'student', 'student_name',
             'content', 'status', 'submitted_at', 'updated_at', 'is_late', 'files_count'
         ]
         read_only_fields = ['student', 'status', 'submitted_at', 'updated_at', 'is_late']
@@ -305,13 +307,21 @@ class GradeSerializer(serializers.ModelSerializer):
     """
     submission_content = serializers.CharField(source='submission.content', read_only=True)
     student_name = serializers.CharField(source='submission.student.get_full_name', read_only=True)
+    assignment_id = serializers.IntegerField(source='submission.assignment.id', read_only=True)
     assignment_title = serializers.CharField(source='submission.assignment.title', read_only=True)
+    lesson_slug = serializers.CharField(source='submission.assignment.lesson.slug', read_only=True)
+    lesson_title = serializers.CharField(source='submission.assignment.lesson.title', read_only=True)
+    course_slug = serializers.CharField(source='submission.assignment.lesson.course.slug', read_only=True)
+    course_title = serializers.CharField(source='submission.assignment.lesson.course.title', read_only=True)
     graded_by_name = serializers.CharField(source='graded_by.get_full_name', read_only=True)
 
     class Meta:
         model = Grade
         fields = [
-            'id', 'submission', 'submission_content', 'student_name', 'assignment_title',
+            'id', 'submission', 'submission_content', 'student_name', 
+            'assignment_id', 'assignment_title', 
+            'lesson_slug', 'lesson_title',
+            'course_slug', 'course_title',
             'score', 'feedback', 'graded_by', 'graded_by_name',
             'graded_at', 'updated_at'
         ]

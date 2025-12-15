@@ -25,7 +25,7 @@ const courseSlug = computed(() => route.params.course_slug as string);
         />
 
         <UBreadcrumb>
-          <UBreadcrumbItem to="/dashboard" icon="i-lucide-home" />
+          <UBreadcrumbItem to="/learning" icon="i-lucide-home" />
           <UBreadcrumbItem :to="`/courses/${courseSlug}`" label="Курс" />
           <UBreadcrumbItem v-if="route.params.lesson_slug" label="Урок" />
         </UBreadcrumb>
@@ -53,7 +53,7 @@ const courseSlug = computed(() => route.params.course_slug as string);
               {
                 label: 'Мои курсы',
                 icon: 'i-lucide-book-open',
-                to: '/dashboard',
+                to: '/learning',
               },
             ],
             [{ label: 'Выйти', icon: 'i-lucide-log-out', to: '/auth/logout' }],

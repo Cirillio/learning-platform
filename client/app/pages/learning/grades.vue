@@ -88,7 +88,7 @@ useHead({
 </script>
 
 <template>
-  <div class="space-y-2">
+  <LayoutContainer class="space-y-2 py-6 bg-default">
     <!-- Header -->
     <div class="flex items-center justify-between">
       <div class="flex items-center gap-2">
@@ -178,18 +178,6 @@ useHead({
               {{ formatDate(grade.graded_at) }}
             </p>
           </div>
-
-          <!-- Feedback -->
-          <div v-if="grade.feedback" class="md:max-w-xs">
-            <UTooltip :text="grade.feedback" :delay="100">
-              <div
-                class="flex items-center gap-2 text-base text-muted cursor-help"
-              >
-                <UIcon name="i-lucide-message-square" class="size-4" />
-                <span class="truncate max-w-[200px]">{{ grade.feedback }}</span>
-              </div>
-            </UTooltip>
-          </div>
         </div>
 
         <!-- Expanded Feedback -->
@@ -211,5 +199,5 @@ useHead({
         :sibling-count="2"
       />
     </div>
-  </div>
+  </LayoutContainer>
 </template>

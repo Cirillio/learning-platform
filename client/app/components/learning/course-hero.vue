@@ -31,13 +31,13 @@ const difficultyColor = computed(() => {
 
 <template>
   <div
-    class="relative rounded-2xl bg-linear-to-br from-primary/20 to-primary/5 p-6 lg:p-8 mb-8 overflow-hidden"
+    class="relative rounded-2xl bg-linear-to-br from-primary/20 to-primary/5 p-6 lg:p-8 mb-2 overflow-hidden"
   >
     <div class="absolute inset-0 bg-grid-pattern opacity-5" />
     <div
       class="relative z-10 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6"
     >
-      <div class="space-y-4">
+      <div class="space-y-2">
         <div class="flex items-center gap-2">
           <UBadge color="primary" variant="subtle">
             {{ course.category?.name || "Курс" }}
@@ -46,10 +46,10 @@ const difficultyColor = computed(() => {
             {{ difficultyLabel }}
           </UBadge>
         </div>
-        <h1 class="text-2xl lg:text-3xl font-bold text-default">
+        <h1 class="text-2xl lg:text-4xl font-bold text-default">
           {{ course.title }}
         </h1>
-        <p class="text-muted max-w-2xl">
+        <p class="text-muted text-xl max-w-2xl">
           {{ course.short_description }}
         </p>
       </div>

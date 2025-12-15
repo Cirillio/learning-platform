@@ -23,11 +23,11 @@ const formatDate = (date: string | null | undefined): string => {
 </script>
 
 <template>
-  <div class="bg-elevated rounded-xl border border-default p-6 lg:p-8">
+  <UCard>
     <div class="flex items-start justify-between gap-4 mb-6">
       <div>
-        <div class="flex items-center gap-3 mb-2">
-          <h1 class="text-2xl font-bold text-default">
+        <div class="flex items-center gap-2">
+          <h1 class="text-4xl font-bold text-default">
             {{ assignment.title }}
           </h1>
           <UBadge v-if="isGraded" color="success" variant="subtle">
@@ -40,13 +40,13 @@ const formatDate = (date: string | null | undefined): string => {
             Просрочено
           </UBadge>
         </div>
-        <p class="text-muted">{{ assignment.description }}</p>
+        <p class="text-muted text-lg">{{ assignment.description }}</p>
       </div>
 
       <!-- Score Display -->
       <div
         v-if="isGraded && grade"
-        class="text-center px-6 py-4 bg-success/10 rounded-xl shrink-0"
+        class="text-center px-6 bg-success/10 rounded-xl shrink-0"
       >
         <div class="text-3xl font-bold text-success">
           {{ grade.score }}/{{ assignment.max_score }}
@@ -56,7 +56,7 @@ const formatDate = (date: string | null | undefined): string => {
     </div>
 
     <!-- Meta Info -->
-    <div class="flex flex-wrap items-center gap-6 text-sm text-muted">
+    <div class="flex flex-wrap items-center gap-2 text-lg text-muted">
       <div class="flex items-center gap-2">
         <UIcon name="i-lucide-calendar" class="size-4" />
         <span>Срок сдачи: </span>
@@ -90,5 +90,5 @@ const formatDate = (date: string | null | undefined): string => {
         Можно сдать позже срока
       </UBadge>
     </div>
-  </div>
+  </UCard>
 </template>

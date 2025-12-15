@@ -45,7 +45,7 @@ const heroLinks = computed<ButtonProps[]>(() =>
     : [
         {
           label: "Мои курсы",
-          to: "/dashboard/courses",
+          to: "/learning",
           color: "primary" as const,
           size: "xl" as const,
           variant: "solid" as const,

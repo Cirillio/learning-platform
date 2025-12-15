@@ -13,7 +13,7 @@ const formatFileSize = (bytes: number): string => {
 </script>
 
 <template>
-  <div class="bg-elevated rounded-xl border border-default overflow-hidden">
+  <UCard>
     <div class="px-6 py-4 border-b border-default">
       <h2 class="text-lg font-semibold text-default flex items-center gap-2">
         <UIcon name="i-lucide-paperclip" class="size-5 text-primary" />
@@ -36,5 +36,5 @@ const formatFileSize = (bytes: number): string => {
         <UIcon name="i-lucide-download" class="size-5 text-primary" />
       </a>
     </div>
-  </div>
+  </UCard>
 </template>

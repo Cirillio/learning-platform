@@ -8,7 +8,7 @@ from django.utils import timezone
 from rest_framework.views import APIView
 from django.urls import reverse
 
-from courses.pagination import CoursePagination, CategoryPagination, SubmissionPagination # Added this import
+from courses.pagination import CoursePagination, CategoryPagination, SubmissionPagination, GradePagination # Added this import
 
 from .models import (
     Category, Course, CourseEnrollment, Lesson, LessonMaterial,
@@ -403,6 +403,11 @@ class SubmissionViewSet(viewsets.ModelViewSet):
         # Студенты видят только свои ответы
         if self.request.user.role == 'student':
             queryset = queryset.filter(student=self.request.user)
+            # Показываем ответы только по активным курсам
+            queryset = queryset.filter(
+                assignment__lesson__course__enrollments__student=self.request.user,
+                assignment__lesson__course__enrollments__is_active=True
+            )
         
         return queryset.select_related(
             'assignment', 'student', 'assignment__lesson', 'assignment__lesson__course'
@@ -441,6 +446,7 @@ class GradeViewSet(viewsets.ModelViewSet):
     queryset = Grade.objects.all()
     serializer_class = GradeSerializer
     permission_classes = [IsAuthenticated]
+    pagination_class = GradePagination
     
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -453,6 +459,11 @@ class GradeViewSet(viewsets.ModelViewSet):
         # Студенты видят только свои оценки
         if self.request.user.role == 'student':
             queryset = queryset.filter(submission__student=self.request.user)
+            # Показываем оценки только по активным курсам
+            queryset = queryset.filter(
+                submission__assignment__lesson__course__enrollments__student=self.request.user,
+                submission__assignment__lesson__course__enrollments__is_active=True
+            )
         
         return queryset.select_related(
             'submission', 'submission__student', 'submission__assignment', 'graded_by'
