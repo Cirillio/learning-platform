@@ -29,7 +29,7 @@ const schema = z.object({
   address: z.string().optional(),
   city: z.string().optional(),
   country: z.string().optional(),
-  birth_date: z.union([z.string(), z.null()]).optional(),
+  birth_date: z.string().min(1, "Дата рождения не указана"),
   specialization: z.string().optional(),
 });
 

@@ -18,6 +18,7 @@ const state = reactive({
   password_confirm: "",
   first_name: "",
   last_name: "",
+  birth_date: "",
   role: "student" as const,
 } as RegisterForm);
 
@@ -31,13 +32,13 @@ const onSubmit = async (
 
 <template>
   <UForm
-    class="flex flex-col mt-8 gap-6 w-full"
+    class="flex flex-col mt-8 gap-2 w-full"
     :schema="registerSchema"
     :state="state"
     @submit="onSubmit"
     :validate-on="['change']"
   >
-    <div class="grid grid-cols-2 gap-4">
+    <div class="grid grid-cols-2 gap-2">
       <UFormField
         label="Имя"
         name="first_name"
@@ -77,6 +78,23 @@ const onSubmit = async (
     </div>
 
     <UFormField
+      label="Дата рождения"
+      name="birth_date"
+      :ui="{
+        label: 'text-base lg:text-lg font-semibold',
+      }"
+    >
+      <UInput
+        v-model="state.birth_date"
+        type="date"
+        class="w-full"
+        :ui="{
+          base: 'text-base lg:text-xl py-2 px-4',
+        }"
+      />
+    </UFormField>
+
+    <UFormField
       label="Имя пользователя"
       name="username"
       :ui="{
@@ -113,41 +131,45 @@ const onSubmit = async (
       />
     </UFormField>
 
-    <UFormField
-      label="Пароль"
-      name="password"
-      :ui="{
-        label: 'text-base lg:text-lg font-semibold',
-      }"
-    >
-      <UInput
-        v-model="state.password"
-        type="password"
-        placeholder="********"
-        class="w-full"
+    <div class="flex gap-2">
+      <UFormField
+        class="flex-1"
+        label="Пароль"
+        name="password"
         :ui="{
-          base: 'text-base lg:text-xl py-2 px-4',
+          label: 'text-base lg:text-lg font-semibold',
         }"
-      />
-    </UFormField>
+      >
+        <UInput
+          v-model="state.password"
+          type="password"
+          placeholder="********"
+          class="w-full"
+          :ui="{
+            base: 'text-base lg:text-xl py-2 px-4',
+          }"
+        />
+      </UFormField>
 
-    <UFormField
-      label="Подтверждение пароля"
-      name="password_confirm"
-      :ui="{
-        label: 'text-base lg:text-lg font-semibold',
-      }"
-    >
-      <UInput
-        v-model="state.password_confirm"
-        type="password"
-        placeholder="********"
-        class="w-full"
+      <UFormField
+        class="flex-1"
+        label="Подтверждение пароля"
+        name="password_confirm"
         :ui="{
-          base: 'text-base lg:text-xl py-2 px-4',
+          label: 'text-base lg:text-lg font-semibold',
         }"
-      />
-    </UFormField>
+      >
+        <UInput
+          v-model="state.password_confirm"
+          type="password"
+          placeholder="********"
+          class="w-full"
+          :ui="{
+            base: 'text-base lg:text-xl py-2 px-4',
+          }"
+        />
+      </UFormField>
+    </div>
 
     <!-- Role info banner -->
     <UAlert

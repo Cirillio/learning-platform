@@ -30,7 +30,7 @@ defineProps<Props>();
         class="group border-b bg-muted/25 last:border-0 border-default hover:bg-muted/50 transition-colors cursor-pointer"
       >
         <NuxtLink
-          :to="`/courses/${courseSlug}/lessons/${lesson.slug}`"
+          :to="`/learning/${courseSlug}/lessons/${lesson.slug}`"
           class="block p-3"
         >
           <div class="flex items-center gap-3">

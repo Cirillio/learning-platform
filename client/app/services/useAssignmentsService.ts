@@ -13,6 +13,28 @@ interface AssignmentFilters {
   is_required?: boolean;
 }
 
+interface CreateAssignmentPayload {
+  lesson: string; // slug
+  title: string;
+  description?: string;
+  instructions?: string;
+  max_score?: number;
+  due_date?: string | null;
+  is_required?: boolean;
+  allow_late_submission?: boolean;
+}
+
+interface UpdateAssignmentPayload {
+  lesson?: string;
+  title?: string;
+  description?: string;
+  instructions?: string;
+  max_score?: number;
+  due_date?: string | null;
+  is_required?: boolean;
+  allow_late_submission?: boolean;
+}
+
 /**
  * Service для работы с заданиями
  */
@@ -31,6 +53,30 @@ export const useAssignmentsService = () => {
    */
   const getAssignment = (id: number | string) => {
     return api.get<Assignment>(`/assignments/${id}/`);
+  };
+
+  /**
+   * Создать задание
+   */
+  const createAssignment = (payload: CreateAssignmentPayload) => {
+    return api.post<Assignment>("/assignments/", payload);
+  };
+
+  /**
+   * Обновить задание
+   */
+  const updateAssignment = (
+    id: number | string,
+    payload: UpdateAssignmentPayload
+  ) => {
+    return api.patch<Assignment>(`/assignments/${id}/`, payload);
+  };
+
+  /**
+   * Удалить задание
+   */
+  const deleteAssignment = (id: number | string) => {
+    return api.delete<void>(`/assignments/${id}/`);
   };
 
   /**
@@ -60,6 +106,9 @@ export const useAssignmentsService = () => {
   return {
     getAssignments,
     getAssignment,
+    createAssignment,
+    updateAssignment,
+    deleteAssignment,
     getLessonAssignments,
     getMySubmission,
   };

@@ -14,7 +14,7 @@ useHead({
           icon="heroicons:chevron-left"
           variant="link"
           color="neutral"
-          @click="$router.back"
+          @click="navigateTo('/')"
         />
         <h1 class="text-3xl px-4 font-extrabold">Настройки</h1>
       </div>

@@ -8,7 +8,7 @@ const props = defineProps<{
 
 // Динамическая ссылка на профиль в зависимости от роли
 const profileLink = computed(() => {
-  return props.user?.role === "teacher" ? "/teacher/profile" : "/profile";
+  return props.user?.role === "teacher" ? "/teacher" : "/profile";
 });
 
 // Динамическая ссылка на "Мои уроки" / "Мои курсы"

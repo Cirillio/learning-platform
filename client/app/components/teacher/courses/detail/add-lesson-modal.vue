@@ -7,13 +7,19 @@ const emit = defineEmits<{
   (e: "update:open", value: boolean): void;
   (
     e: "submit",
-    lesson: { title: string; description: string; duration_minutes: number }
+    lesson: {
+      title: string;
+      description: string;
+      slug: string;
+      duration_minutes: number;
+    }
   ): void;
 }>();
 
 const form = reactive({
   title: "",
   description: "",
+  slug: "",
   duration_minutes: 30,
 });
 
@@ -24,6 +30,7 @@ const handleSubmit = () => {
   emit("submit", { ...form });
   form.title = "";
   form.description = "";
+  form.slug = "";
   form.duration_minutes = 30;
 };
 
@@ -48,6 +55,14 @@ defineExpose({
             <UInput
               v-model="form.title"
               placeholder="Введение в курс"
+              class="w-full"
+            />
+          </UFormField>
+
+          <UFormField label="Slug" description="URL имя урока">
+            <UInput
+              v-model="form.slug"
+              placeholder="vvedenie-v-kurs"
               class="w-full"
             />
           </UFormField>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { z } from "zod";
-import type { Category } from "~/types";
+import type { Category, Course } from "~/types";
 
 definePageMeta({
   layout: "teacher",
@@ -18,6 +18,14 @@ const courseSchema = z.object({
     .string()
     .min(3, "Минимум 3 символа")
     .max(200, "Максимум 200 символов"),
+  slug: z
+    .string()
+    .min(3, "Минимум 3 символа")
+    .max(200, "Максимум 200 символов")
+    .regex(
+      /^[a-z0-9-]+$/,
+      "Slug может содержать только строчные буквы, цифры и дефисы"
+    ),
   short_description: z
     .string()
     .min(10, "Минимум 10 символов")
@@ -28,6 +36,7 @@ const courseSchema = z.object({
   duration_weeks: z.number().min(1).max(52).nullable(),
   max_students: z.number().min(1).max(1000).nullable(),
   status: z.enum(["draft", "published"]),
+  cover_image: z.string().optional(),
 });
 
 type CourseForm = z.infer<typeof courseSchema>;
@@ -35,6 +44,7 @@ type CourseForm = z.infer<typeof courseSchema>;
 // Form state
 const form = reactive<CourseForm>({
   title: "",
+  slug: "",
   short_description: "",
   description: "",
   category: 0,
@@ -42,11 +52,35 @@ const form = reactive<CourseForm>({
   duration_weeks: null,
   max_students: null,
   status: "draft",
+  cover_image: "",
 });
 
-const coverImage = ref<File | null>(null);
 const coverPreview = ref<string | null>(null);
 const isSubmitting = ref(false);
+
+// Generate slug from title
+watch(
+  () => form.title,
+  (newTitle) => {
+    if (newTitle) {
+      form.slug = newTitle
+        .toLowerCase()
+        .replace(/[^a-zа-яё0-9\s-]/g, "") // Remove special chars except spaces and hyphens
+        .replace(/\s+/g, "-") // Replace spaces with hyphens
+        .replace(/-+/g, "-") // Replace multiple hyphens with single
+        .replace(/^-|-$/g, ""); // Remove leading/trailing hyphens
+    }
+  }
+);
+
+// Initialize cover preview from existing image
+watch(
+  () => form.cover_image,
+  (url) => {
+    coverPreview.value = url || null;
+  },
+  { immediate: true }
+);
 
 // Fetch categories
 interface CategoriesResponse {
@@ -76,23 +110,11 @@ const difficultyOptions = [
 
 const statusOptions = [
   { label: "Черновик", value: "draft" },
-  { label: "Опубликовать", value: "published" },
+  { label: "Опубликован", value: "published" },
 ];
-
-// Handle cover image
-const onCoverChange = (file: File) => {
-  coverImage.value = file;
-  coverPreview.value = URL.createObjectURL(file);
-};
-
-const removeCover = () => {
-  coverImage.value = null;
-  coverPreview.value = null;
-};
 
 // Submit
 const onSubmit = async () => {
-  // Validate
   const result = courseSchema.safeParse(form);
   if (!result.success) {
     const firstIssue = result.error.issues[0];
@@ -107,21 +129,7 @@ const onSubmit = async () => {
   isSubmitting.value = true;
 
   try {
-    const formData = new FormData();
-    Object.entries(form).forEach(([key, value]) => {
-      if (value !== null && value !== undefined) {
-        formData.append(key, String(value));
-      }
-    });
-
-    if (coverImage.value) {
-      formData.append("cover_image", coverImage.value);
-    }
-
-    const response = await api.fetch<{ slug: string }>("/courses/", {
-      method: "POST",
-      body: formData,
-    });
+    const response = await api.post<Course>("/courses/", form);
 
     toast.add({
       title: "Курс создан!",
@@ -129,13 +137,32 @@ const onSubmit = async () => {
       color: "success",
     });
 
-    router.push(`/teacher/courses/${response.slug}`);
+    console.log("Created course:", response.slug);
+
+    navigateTo(`/teacher/courses/${response.slug}`);
   } catch (e: any) {
-    toast.add({
-      title: "Ошибка",
-      description: e.data?.detail || "Не удалось создать курс",
-      color: "error",
-    });
+    // Handle validation errors from server
+    if (e.status === 400 && e.data) {
+      const errors = Object.entries(e.data)
+        .map(
+          ([field, messages]) =>
+            `${field}: ${
+              Array.isArray(messages) ? messages.join(", ") : messages
+            }`
+        )
+        .join("; ");
+      toast.add({
+        title: "Ошибка валидации",
+        description: errors || "Проверьте введённые данные",
+        color: "error",
+      });
+    } else {
+      toast.add({
+        title: "Ошибка",
+        description: e.data?.detail || "Не удалось создать курс",
+        color: "error",
+      });
+    }
   } finally {
     isSubmitting.value = false;
   }
@@ -148,58 +175,197 @@ useHead({
 </script>
 
 <template>
-  <div class="max-w-4xl">
+  <div class="">
     <!-- Header -->
-    <div class="mb-8">
+    <div class="mb-2">
       <NuxtLink
         to="/teacher/courses"
-        class="inline-flex items-center gap-2 text-sm text-muted hover:text-default transition-colors mb-4"
+        class="inline-flex items-center gap-2 text-sm text-muted hover:text-default transition-colors"
       >
         <UIcon name="i-lucide-arrow-left" class="size-4" />
         Назад к курсам
       </NuxtLink>
-      <h1 class="text-2xl font-bold text-default">Создание нового курса</h1>
-      <p class="text-muted mt-1">Заполните информацию о курсе</p>
+      <h1 class="text-4xl font-bold text-default">Создание нового курса</h1>
+      <p class="text-muted text-lg mt-1">Заполните информацию о курсе</p>
     </div>
 
     <!-- Form -->
-    <form @submit.prevent="onSubmit" class="space-y-8">
-      <!-- Basic Info -->
-      <TeacherCourseFormBasicInfo :form="form" />
+    <form @submit.prevent="onSubmit" class="flex flex-col gap-2">
+      <div class="flex gap-2">
+        <!-- Basic Info -->
+        <UCard class="flex-1/2">
+          <template #header>
+            <h2 class="text-2xl font-semibold text-default">
+              Основная информация
+            </h2>
+          </template>
 
-      <!-- Cover Image -->
-      <TeacherCourseFormCoverImage
-        :preview="coverPreview"
-        @change="onCoverChange"
-        @remove="removeCover"
-      />
+          <div class="space-y-6">
+            <UFormField size="xl" label="Название курса" required>
+              <UInput
+                v-model="form.title"
+                placeholder="Например: Основы веб-разработки"
+                class="w-full"
+              />
+            </UFormField>
 
-      <!-- Settings -->
-      <TeacherCourseFormSettings
-        :form="form"
-        :category-options="categoryOptions"
-        :difficulty-options="difficultyOptions"
-      />
+            <UFormField
+              size="xl"
+              label="Slug"
+              required
+              hint="URL-идентификатор курса"
+            >
+              <UInput
+                v-model="form.slug"
+                placeholder="osnovy-veb-razrabotki"
+                class="w-full"
+              />
+            </UFormField>
 
-      <!-- Publish Settings -->
-      <TeacherCourseFormPublishSettings
-        :form="form"
-        :status-options="statusOptions"
-      />
+            <UFormField
+              size="xl"
+              label="Краткое описание"
+              required
+              hint="Будет показано в карточке курса"
+            >
+              <UTextarea
+                v-model="form.short_description"
+                placeholder="Краткое описание курса в 1-2 предложения"
+                :rows="2"
+                class="w-full"
+              />
+            </UFormField>
+
+            <UFormField
+              size="xl"
+              label="Полное описание"
+              required
+              hint="Поддерживается Markdown"
+            >
+              <UTextarea
+                v-model="form.description"
+                placeholder="Подробное описание курса..."
+                :rows="8"
+                class="w-full"
+              />
+            </UFormField>
+          </div>
+        </UCard>
+
+        <div class="flex flex-1/2 h-fit flex-col gap-2">
+          <!-- Cover Image -->
+          <UCard class="">
+            <template #header>
+              <h2 class="text-2xl font-semibold text-default">Обложка курса</h2>
+            </template>
+
+            <UFormField label="URL обложки" hint="Ссылка на изображение">
+              <UInput
+                v-model="form.cover_image"
+                placeholder="https://example.com/image.jpg"
+                class="w-full"
+              />
+            </UFormField>
+
+            <div v-if="coverPreview" class="mt-4">
+              <img
+                :src="coverPreview"
+                alt="Cover preview"
+                class="w-full aspect-video object-cover rounded-xl"
+              />
+            </div>
+          </UCard>
+
+          <!-- Settings -->
+          <UCard class="flex-2/3 h-fit">
+            <template #header>
+              <h2 class="text-2xl font-semibold text-default">Настройки</h2>
+            </template>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <UFormField size="xl" label="Категория" required>
+                <USelect
+                  v-model="form.category"
+                  :items="categoryOptions"
+                  placeholder="Выберите категорию"
+                  class="w-full"
+                />
+              </UFormField>
+
+              <UFormField size="xl" label="Уровень сложности" required>
+                <USelect
+                  v-model="form.difficulty"
+                  :items="difficultyOptions"
+                  class="w-full"
+                />
+              </UFormField>
+
+              <UFormField size="xl" label="Длительность (недель)">
+                <UInput
+                  v-model.number="form.duration_weeks"
+                  type="number"
+                  :min="1"
+                  :max="52"
+                  placeholder="Например: 8"
+                  class="w-full"
+                />
+              </UFormField>
+
+              <UFormField size="xl" label="Максимум студентов">
+                <UInput
+                  v-model.number="form.max_students"
+                  type="number"
+                  :min="1"
+                  :max="1000"
+                  placeholder="Например: 100"
+                  class="w-full"
+                />
+              </UFormField>
+            </div>
+          </UCard>
+
+          <!-- Status -->
+          <UCard class="flex-1/3 h-fit">
+            <h2 class="text-lg font-semibold text-default mb-6">
+              Статус публикации
+            </h2>
+
+            <UFormField size="xl" label="Статус">
+              <URadioGroup
+                v-model="form.status"
+                :items="statusOptions"
+                class="flex gap-4"
+                :ui="{
+                  label: 'cursor-pointer',
+                  base: 'cursor-pointer',
+                }"
+              />
+            </UFormField>
+          </UCard>
+        </div>
+      </div>
 
       <!-- Actions -->
-      <div class="flex items-center justify-end gap-4 pt-4">
-        <UButton to="/teacher/courses" color="neutral" variant="ghost">
-          Отмена
-        </UButton>
-        <UButton
-          type="submit"
-          color="primary"
-          :loading="isSubmitting"
-          icon="i-lucide-plus"
-        >
-          Создать курс
-        </UButton>
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <UButton
+            type="submit"
+            color="primary"
+            :loading="isSubmitting"
+            icon="i-lucide-plus"
+            size="xl"
+          >
+            Создать курс
+          </UButton>
+          <UButton
+            to="/teacher/courses"
+            color="neutral"
+            variant="ghost"
+            size="xl"
+          >
+            Отмена
+          </UButton>
+        </div>
       </div>
     </form>
   </div>

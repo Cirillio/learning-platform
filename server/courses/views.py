@@ -430,7 +430,33 @@ class SubmissionViewSet(viewsets.ModelViewSet):
                 )
             is_late = True
         
-        serializer.save(student=self.request.user, is_late=is_late)
+        submission = serializer.save(student=self.request.user, is_late=is_late)
+        
+        # Обработка загруженного файла
+        if 'file' in self.request.FILES:
+            uploaded_file = self.request.FILES['file']
+            SubmissionFile.objects.create(
+                submission=submission,
+                file=uploaded_file,
+                filename=uploaded_file.name,
+                file_size=uploaded_file.size
+            )
+    
+    def perform_update(self, serializer):
+        submission = serializer.save()
+        
+        # Обработка загруженного файла при обновлении
+        if 'file' in self.request.FILES:
+            # Удаляем старые файлы (если нужна замена, а не добавление)
+            submission.files.all().delete()
+            
+            uploaded_file = self.request.FILES['file']
+            SubmissionFile.objects.create(
+                submission=submission,
+                file=uploaded_file,
+                filename=uploaded_file.name,
+                file_size=uploaded_file.size
+            )
 
 
 class GradeViewSet(viewsets.ModelViewSet):

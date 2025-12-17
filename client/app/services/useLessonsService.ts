@@ -20,6 +20,29 @@ interface LessonViewResponse {
   is_enrolled: boolean;
 }
 
+interface CreateLessonPayload {
+  course: string; // slug
+  title: string;
+  slug?: string;
+  description?: string;
+  order?: number;
+  duration_minutes?: number;
+  is_published?: boolean;
+  video_url?: string;
+  content?: string;
+}
+
+interface UpdateLessonPayload {
+  title?: string;
+  slug?: string;
+  description?: string;
+  order?: number;
+  duration_minutes?: number;
+  is_published?: boolean;
+  video_url?: string;
+  content?: string;
+}
+
 /**
  * Service для работы с уроками
  * Отвечает за HTTP-запросы к API уроков
@@ -32,6 +55,27 @@ export const useLessonsService = () => {
    */
   const getLessonsByCourse = (courseSlug: string) => {
     return api.get<LessonsListResponse>("/lessons/", { course: courseSlug });
+  };
+
+  /**
+   * Создать новый урок
+   */
+  const createLesson = (payload: CreateLessonPayload) => {
+    return api.post<Lesson>("/lessons/", payload);
+  };
+
+  /**
+   * Обновить урок
+   */
+  const updateLesson = (lessonSlug: string, payload: UpdateLessonPayload) => {
+    return api.patch<Lesson>(`/lessons/${lessonSlug}/`, payload);
+  };
+
+  /**
+   * Удалить урок
+   */
+  const deleteLesson = (lessonSlug: string) => {
+    return api.delete<void>(`/lessons/${lessonSlug}/`);
   };
 
   /**
@@ -93,6 +137,9 @@ export const useLessonsService = () => {
 
   return {
     getLessonsByCourse,
+    createLesson,
+    updateLesson,
+    deleteLesson,
     getLessonBySlug,
     getLessonView,
     markLessonComplete,

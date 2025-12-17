@@ -96,7 +96,10 @@ const canSubmit = computed(() => {
 // Submission handler
 const isSubmitting = ref(false);
 
-const handleSubmit = async (payload: { content: string; files: File[] }) => {
+const handleSubmit = async (payload: {
+  content: string;
+  file: File | null;
+}) => {
   if (!assignment.value || !canSubmit.value) return;
 
   isSubmitting.value = true;
@@ -105,25 +108,23 @@ const handleSubmit = async (payload: { content: string; files: File[] }) => {
     const formData = new FormData();
     formData.append("content", payload.content);
     formData.append("assignment", assignmentId.value);
+    if (payload.file) {
+      formData.append("file", payload.file);
+    }
 
-    payload.files.forEach((file, index) => {
-      formData.append(`files[${index}]`, file);
-    });
-
-    if (hasSubmission.value && submissionResponse.value) {
-      await api.fetch(`/submissions/`, {
-        method: "PATCH",
-        body: {
-          ...formData,
-        },
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+    if (hasSubmission.value && submissionResponse.value?.results[0]) {
+      await api.fetch(
+        `/submissions/${submissionResponse.value.results[0].id}/`,
+        {
+          method: "PATCH",
+          body: formData,
+        }
+      );
       toast.add({ title: "Ответ обновлён", color: "success" });
     } else {
       await api.fetch("/submissions/", {
         method: "POST",
         body: formData,
-        headers: { "Content-Type": "multipart/form-data" },
       });
       toast.add({
         title: "Задание сдано!",

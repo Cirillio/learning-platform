@@ -9,12 +9,12 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  (e: "submit", payload: { content: string; files: File[] }): void;
+  (e: "submit", payload: { content: string; file: File | null }): void;
 }>();
 
 const isEditing = ref(false);
 const content = ref(props.submission?.content || "");
-const uploadedFiles = ref<File[]>([]);
+const uploadedFile = ref<File | null>(null);
 const fileInput = ref<HTMLInputElement>();
 
 // Initialize edit mode for new submissions
@@ -50,39 +50,39 @@ const startEditing = () => {
 
 const cancelEditing = () => {
   content.value = props.submission?.content || "";
-  uploadedFiles.value = [];
+  uploadedFile.value = null;
   isEditing.value = false;
 };
 
 const handleFileDrop = (event: DragEvent) => {
   event.preventDefault();
   const files = event.dataTransfer?.files;
-  if (files) {
-    uploadedFiles.value = [...uploadedFiles.value, ...Array.from(files)];
+  if (files && files.length > 0 && files[0]) {
+    uploadedFile.value = files[0];
   }
 };
 
 const handleFileSelect = (event: Event) => {
   const input = event.target as HTMLInputElement;
-  if (input.files) {
-    uploadedFiles.value = [...uploadedFiles.value, ...Array.from(input.files)];
+  if (input.files && input.files.length > 0 && input.files[0]) {
+    uploadedFile.value = input.files[0];
   }
 };
 
-const removeFile = (index: number) => {
-  uploadedFiles.value.splice(index, 1);
+const removeFile = () => {
+  uploadedFile.value = null;
 };
 
 const handleSubmit = () => {
-  emit("submit", { content: content.value, files: uploadedFiles.value });
-  uploadedFiles.value = [];
+  emit("submit", { content: content.value, file: uploadedFile.value });
+  uploadedFile.value = null;
   isEditing.value = false;
 };
 
 // Expose for parent to reset state after successful submission
 defineExpose({
   resetForm: () => {
-    uploadedFiles.value = [];
+    uploadedFile.value = null;
     isEditing.value = false;
   },
 });
@@ -183,7 +183,6 @@ defineExpose({
               <input
                 ref="fileInput"
                 type="file"
-                multiple
                 size="xl"
                 class="hidden"
                 @change="handleFileSelect"
@@ -199,23 +198,23 @@ defineExpose({
               <p class="text-xs text-muted mt-1">PDF, DOC, ZIP до 10MB</p>
             </div>
 
-            <div v-if="uploadedFiles.length > 0" class="mt-4 space-y-2">
+            <div v-if="uploadedFile" class="mt-4">
               <div
-                v-for="(file, index) in uploadedFiles"
-                :key="index"
                 class="flex items-center gap-3 px-4 py-2 bg-muted/10 rounded-lg"
               >
                 <UIcon name="i-lucide-file" class="size-4 text-muted" />
-                <span class="flex-1 text-sm truncate">{{ file.name }}</span>
+                <span class="flex-1 text-sm truncate">{{
+                  uploadedFile.name
+                }}</span>
                 <span class="text-xs text-muted">{{
-                  formatFileSize(file.size)
+                  formatFileSize(uploadedFile.size)
                 }}</span>
                 <UButton
                   color="error"
                   variant="ghost"
                   size="xs"
                   icon="i-lucide-x"
-                  @click="removeFile(index)"
+                  @click="removeFile"
                 />
               </div>
             </div>

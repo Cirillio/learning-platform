@@ -164,6 +164,13 @@ class RegisterView(generics.CreateAPIView):
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
         
+        # Обновляем профиль датой рождения, если указана (профиль создается сигналом)
+        birth_date = serializer.validated_data.get('birth_date')
+        if birth_date:
+            profile = user.profile
+            profile.birth_date = birth_date
+            profile.save()
+        
         refresh = RefreshToken.for_user(user)
         
         if remember_me:

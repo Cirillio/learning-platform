@@ -52,6 +52,8 @@ export const registerSchema = z
       .min(1, "Фамилия обязательна")
       .max(30, "Фамилия не должна превышать 30 символов"),
 
+    birth_date: z.string().min(1, "Дата рождения обязательна"),
+
     role: z.literal("student", {
       message: "Регистрация доступна только для студентов",
     }),

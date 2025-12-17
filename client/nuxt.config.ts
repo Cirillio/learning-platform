@@ -10,6 +10,12 @@ export default defineNuxtConfig({
     "@nuxtjs/google-fonts",
     "@vueuse/nuxt",
   ],
+
+  // Авто-импорт сервисов
+  imports: {
+    dirs: ["services"],
+  },
+
   vite: {
     plugins: [tailwindcss()],
     server: {

@@ -48,12 +48,13 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
     )
     password_confirm = serializers.CharField(write_only=True, required=True)
     role = serializers.HiddenField(default='student')
+    birth_date = serializers.DateField(required=True)
 
     class Meta:
         model = User
         fields = [
             'username', 'email', 'password', 'password_confirm', 'role',
-            'first_name', 'last_name'
+            'first_name', 'last_name', 'birth_date'
         ]
         extra_kwargs = {
             'email': {'required': True},
@@ -68,6 +69,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         validated_data.pop('password_confirm')
+        validated_data.pop('birth_date', None)  # Убираем birth_date, так как оно не для User
         user = User.objects.create_user(**validated_data)
         return user
 
@@ -102,6 +104,9 @@ class UserProfileSerializer(serializers.ModelSerializer):
             'created_at', 'updated_at'
         ]
         read_only_fields = ['user', 'student_id', 'created_at', 'updated_at']
+        extra_kwargs = {
+            'birth_date': {'required': True},
+        }
 
     def update(self, instance, validated_data):
         # Обновляем поля пользователя

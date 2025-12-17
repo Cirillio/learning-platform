@@ -6,6 +6,23 @@ defineProps<{
   loading: boolean;
   slug: string;
 }>();
+
+const emit = defineEmits<{
+  (e: "edit", assignment: Assignment): void;
+  (e: "delete", assignment: Assignment): void;
+}>();
+
+// Форматирование даты
+const formatDueDate = (dateString: string | null | undefined): string => {
+  if (!dateString) return "Без срока";
+  const date = new Date(dateString);
+  return date.toLocaleDateString("ru-RU", {
+    day: "numeric",
+    month: "short",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+};
 </script>
 
 <template>
@@ -50,11 +67,10 @@ defineProps<{
       <TeacherCoursesDetailListItem
         v-for="assignment in assignments"
         :key="assignment.id"
-        :desc="
-          assignment.submissions_count +
-          ' сдач • Макс. балл: ' +
-          assignment.max_score
-        "
+        :desc="`${assignment.submissions_count} сдач • Макс. балл: ${assignment.max_score}`"
+        :subdesc="formatDueDate(assignment.due_date)"
+        @edit="emit('edit', assignment)"
+        @delete="emit('delete', assignment)"
       >
         <template #leading>
           <div

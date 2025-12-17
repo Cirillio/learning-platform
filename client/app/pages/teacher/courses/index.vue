@@ -22,7 +22,7 @@ const {
   pending,
   refresh,
 } = await useAsyncData<CoursesResponse>("teacher-all-courses", () =>
-  api.get<CoursesResponse>("/courses/my_courses")
+  api.get<CoursesResponse>("/courses/my_courses?page_size=10")
 );
 
 const courses = computed(() => coursesData.value?.results || []);

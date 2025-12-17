@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import { z } from "zod";
-import type { SubmissionDetail, Assignment, Grade } from "~/types";
+import type {
+  SubmissionDetail,
+  Assignment,
+  Grade,
+  PaginatedResponse,
+} from "~/types";
 
 definePageMeta({
   layout: "teacher",
@@ -46,9 +51,10 @@ const { data: existingGrade, refresh: refreshGrade } =
       if (!submission.value || submission.value.status !== "graded")
         return null;
       try {
-        return await api.get<Grade>(
-          `/submissions/${submissionId.value}/grade/`
+        const response = await api.get<PaginatedResponse<Grade>>(
+          `/grades/?submission=${submissionId.value}`
         );
+        return response.results[0] || null;
       } catch {
         return null;
       }
@@ -106,17 +112,32 @@ const submitGrade = async () => {
   isSubmitting.value = true;
 
   try {
-    await api.post(`/grades/`, {
-      submission: submissionId.value,
-      score: gradeForm.score,
-      feedback: gradeForm.feedback,
-    });
+    if (existingGrade.value) {
+      // Обновляем существующую оценку
+      await api.patch(`/grades/${existingGrade.value.id}/`, {
+        score: gradeForm.score,
+        feedback: gradeForm.feedback,
+      });
 
-    toast.add({
-      title: "Оценка выставлена",
-      description: "Работа успешно проверена",
-      color: "success",
-    });
+      toast.add({
+        title: "Оценка обновлена",
+        description: "Работа успешно перепроверена",
+        color: "success",
+      });
+    } else {
+      // Создаём новую оценку
+      await api.post(`/grades/`, {
+        submission: Number(submissionId.value),
+        score: gradeForm.score,
+        feedback: gradeForm.feedback,
+      });
+
+      toast.add({
+        title: "Оценка выставлена",
+        description: "Работа успешно проверена",
+        color: "success",
+      });
+    }
 
     await refreshSubmission();
     await refreshGrade();

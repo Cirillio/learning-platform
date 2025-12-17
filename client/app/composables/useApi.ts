@@ -14,7 +14,6 @@ export const useApi = () => {
 
   // Headers management for SSR
   const headers: Record<string, string> = {
-    "Content-Type": "application/json",
     Accept: "application/json",
   };
 

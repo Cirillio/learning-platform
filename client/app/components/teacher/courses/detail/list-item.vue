@@ -1,21 +1,18 @@
 <script lang="ts" setup>
-import type { Lesson } from "~/types";
-
 interface Props {
   order?: number;
   title?: string;
   desc: string;
   subdesc?: string;
   link?: string;
-
-  onEdit?: () => void;
-  onDelete?: () => void;
 }
 
-withDefaults(defineProps<Props>(), {
-  onEdit: () => {},
-  onDelete: () => {},
-});
+defineProps<Props>();
+
+const emit = defineEmits<{
+  (e: "edit"): void;
+  (e: "delete"): void;
+}>();
 </script>
 
 <template>
@@ -46,18 +43,26 @@ withDefaults(defineProps<Props>(), {
     <!-- Actions -->
     <div class="flex items-center gap-1">
       <UButton
+        v-if="link"
+        :to="link"
+        icon="i-lucide-external-link"
+        color="neutral"
+        variant="ghost"
+        size="lg"
+      />
+      <UButton
         icon="i-lucide-pencil"
         color="neutral"
         variant="ghost"
         size="lg"
-        @click="onEdit"
+        @click="emit('edit')"
       />
       <UButton
         icon="i-lucide-trash-2"
         color="error"
         variant="ghost"
         size="lg"
-        @click="onDelete"
+        @click="emit('delete')"
       />
     </div>
   </UCard>

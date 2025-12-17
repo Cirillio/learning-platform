@@ -9,7 +9,8 @@ defineProps<{
 
 const emit = defineEmits<{
   (e: "add"): void;
-  (e: "delete", lessonId: number): void;
+  (e: "edit", lesson: Lesson): void;
+  (e: "delete", lesson: Lesson): void;
 }>();
 </script>
 
@@ -52,7 +53,8 @@ const emit = defineEmits<{
         :order="lesson.order"
         :subdesc="lesson.duration_minutes + ' мин.'"
         :link="'/teacher/courses/' + slug + '/lessons/' + lesson.slug"
-        @delete="() => emit('delete', lesson.id)"
+        @edit="emit('edit', lesson)"
+        @delete="emit('delete', lesson)"
       >
         <template #leading>
           <div
@@ -65,9 +67,10 @@ const emit = defineEmits<{
         <template #title>
           <NuxtLink
             :to="`/teacher/courses/${slug}/lessons/${lesson.slug}`"
-            class="font-medium text-xl text-default"
-            >{{ lesson.title }}</NuxtLink
+            class="font-medium text-xl text-default hover:text-primary transition-colors"
           >
+            {{ lesson.title }}
+          </NuxtLink>
           <UBadge
             v-if="!lesson.is_published"
             color="warning"
