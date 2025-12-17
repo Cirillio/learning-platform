@@ -112,7 +112,8 @@ const pluralizeComments = (n: number): string => {
   const mod10 = n % 10;
   const mod100 = n % 100;
   if (mod10 === 1 && mod100 !== 11) return "комментарий";
-  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 10 || mod100 >= 20)) return "комментария";
+  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 10 || mod100 >= 20))
+    return "комментария";
   return "комментариев";
 };
 </script>
@@ -166,13 +167,7 @@ const pluralizeComments = (n: number): string => {
       icon="i-lucide-log-in"
     >
       <template #actions>
-        <UButton
-          to="/auth/login"
-          color="primary"
-          size="sm"
-        >
-          Войти
-        </UButton>
+        <UButton to="/auth/login" color="primary" size="sm"> Войти </UButton>
       </template>
     </UAlert>
 
@@ -206,13 +201,15 @@ const pluralizeComments = (n: number): string => {
     </UAlert>
 
     <!-- Empty state -->
-    <div
-      v-else-if="isEmpty"
-      class="text-center py-12"
-    >
-      <UIcon name="i-lucide-message-square-dashed" class="size-12 text-muted mx-auto mb-4" />
+    <div v-else-if="isEmpty" class="text-center py-12">
+      <UIcon
+        name="i-lucide-message-square-dashed"
+        class="size-12 text-muted mx-auto mb-4"
+      />
       <p class="text-muted">Пока нет комментариев</p>
-      <p class="text-sm text-muted mt-1">Будьте первым, кто оставит комментарий!</p>
+      <p class="text-sm text-muted mt-1">
+        Будьте первым, кто оставит комментарий!
+      </p>
     </div>
 
     <!-- Comments list -->
@@ -234,7 +231,10 @@ const pluralizeComments = (n: number): string => {
               class="ml-6 mt-3 pl-4 border-l-2 border-primary/30"
             >
               <div class="flex items-center gap-2 mb-2">
-                <UIcon name="i-lucide-corner-down-right" class="size-4 text-muted" />
+                <UIcon
+                  name="i-lucide-corner-down-right"
+                  class="size-4 text-muted"
+                />
                 <span class="text-sm text-muted">
                   Ответ на комментарий
                   <span class="font-medium text-default">
@@ -280,17 +280,13 @@ const pluralizeComments = (n: number): string => {
           </template>
 
           <p class="text-muted">
-            Вы уверены, что хотите удалить этот комментарий?
-            Это действие нельзя отменить.
+            Вы уверены, что хотите удалить этот комментарий? Это действие нельзя
+            отменить.
           </p>
 
           <template #footer>
             <div class="flex justify-end gap-2">
-              <UButton
-                color="neutral"
-                variant="ghost"
-                @click="cancelDelete"
-              >
+              <UButton color="neutral" variant="ghost" @click="cancelDelete">
                 Отмена
               </UButton>
               <UButton

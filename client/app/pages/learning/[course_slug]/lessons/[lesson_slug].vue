@@ -279,10 +279,7 @@ useHead(() => ({
 
             <!-- Comments Section -->
             <UCard class="mt-6">
-              <CommentsList
-                v-if="lesson.id"
-                :lesson-id="lesson.id"
-              />
+              <CommentsList v-if="lesson.id" :lesson-id="lesson.id" />
             </UCard>
           </div>
 

@@ -37,7 +37,7 @@ urlpatterns = [
     
     path('api/', include('users.urls')),
     path('api/', include('courses.urls')),
-    path('api/', include('core.urls')),
+    path('api/core/', include('core.urls')),
     path('api/', include('notifications.urls')),
 ]
 

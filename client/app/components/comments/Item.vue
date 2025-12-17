@@ -20,7 +20,8 @@ const canReply = computed(() => depth.value < maxDepth.value);
 
 const isTeacher = computed(() => props.comment.author.role === "teacher");
 const hasReplies = computed(
-  () => props.comment.replies_count > 0 || (props.comment.replies?.length ?? 0) > 0
+  () =>
+    props.comment.replies_count > 0 || (props.comment.replies?.length ?? 0) > 0
 );
 const showReplies = ref(false);
 const isLoadingReplies = ref(false);
@@ -61,7 +62,12 @@ const formatDate = (date: string): string => {
 };
 
 // Плюрализация
-const pluralize = (n: number, one: string, few: string, many: string): string => {
+const pluralize = (
+  n: number,
+  one: string,
+  few: string,
+  many: string
+): string => {
   const mod10 = n % 10;
   const mod100 = n % 100;
   if (mod10 === 1 && mod100 !== 11) return one;
@@ -71,14 +77,20 @@ const pluralize = (n: number, one: string, few: string, many: string): string =>
 
 // Полное имя автора
 const authorName = computed(() => {
-  return props.comment.author_name || 
-    `${props.comment.author.first_name} ${props.comment.author.last_name}`.trim() || 
-    props.comment.author.username;
+  return (
+    props.comment.author_name ||
+    `${props.comment.author.first_name} ${props.comment.author.last_name}`.trim() ||
+    props.comment.author.username
+  );
 });
 
 // Переключение показа ответов
 const toggleReplies = async () => {
-  if (!showReplies.value && props.comment.replies_count > 0 && !props.comment.replies?.length) {
+  if (
+    !showReplies.value &&
+    props.comment.replies_count > 0 &&
+    !props.comment.replies?.length
+  ) {
     isLoadingReplies.value = true;
     emit("loadReplies", props.comment.id);
     // Ждем немного для загрузки
@@ -111,32 +123,28 @@ const toggleReplies = async () => {
         <div class="flex-1 min-w-0">
           <!-- Header: имя, роль, время -->
           <div class="flex items-center flex-wrap gap-2 mb-2">
-            <span class="font-medium text-default truncate">{{ authorName }}</span>
+            <span class="font-medium text-default truncate">{{
+              authorName
+            }}</span>
 
             <!-- Badge роли -->
-            <UBadge
-              v-if="isTeacher"
-              color="primary"
-              variant="subtle"
-              size="xs"
-            >
+            <UBadge v-if="isTeacher" color="primary" variant="subtle" size="xs">
               <UIcon name="i-lucide-graduation-cap" class="size-3 mr-1" />
               Преподаватель
             </UBadge>
-            <UBadge
-              v-else
-              color="neutral"
-              variant="outline"
-              size="xs"
-            >
+            <UBadge v-else color="neutral" variant="outline" size="xs">
               Студент
             </UBadge>
 
             <!-- Время -->
-            <span class="text-xs text-muted">{{ formatDate(comment.created_at) }}</span>
+            <span class="text-xs text-muted">{{
+              formatDate(comment.created_at)
+            }}</span>
 
             <!-- Индикатор редактирования -->
-            <span v-if="comment.is_edited" class="text-xs text-muted italic">(изменено)</span>
+            <span v-if="comment.is_edited" class="text-xs text-muted italic"
+              >(изменено)</span
+            >
           </div>
 
           <!-- Текст комментария -->
@@ -164,13 +172,22 @@ const toggleReplies = async () => {
               size="xs"
               variant="ghost"
               color="neutral"
-              :icon="showReplies ? 'i-lucide-chevron-up' : 'i-lucide-chevron-down'"
+              :icon="
+                showReplies ? 'i-lucide-chevron-up' : 'i-lucide-chevron-down'
+              "
               :loading="isLoadingReplies"
               @click="toggleReplies"
             >
               {{ showReplies ? "Скрыть" : "Показать" }}
               {{ comment.replies_count || comment.replies?.length || 0 }}
-              {{ pluralize(comment.replies_count || comment.replies?.length || 0, "ответ", "ответа", "ответов") }}
+              {{
+                pluralize(
+                  comment.replies_count || comment.replies?.length || 0,
+                  "ответ",
+                  "ответа",
+                  "ответов"
+                )
+              }}
             </UButton>
 
             <!-- Spacer -->

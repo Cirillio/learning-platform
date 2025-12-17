@@ -28,12 +28,15 @@ export const useCommentsService = () => {
   const getComments = (filters?: CommentsFilters) => {
     const params: Record<string, string | number | boolean> = {};
 
-    if (filters?.content_type) params.content_type = filters.content_type;
-    if (filters?.object_id) params.object_id = filters.object_id;
+    if (filters?.content_type !== undefined)
+      params.content_type = filters.content_type;
+    if (filters?.object_id !== undefined) params.object_id = filters.object_id;
     if (filters?.parent) params.parent = filters.parent;
     if (filters?.top_level) params.top_level = "true";
     if (filters?.page) params.page = filters.page;
     if (filters?.page_size) params.page_size = filters.page_size;
+
+    console.log("getComments params:", params);
 
     return api.get<CommentsResponse>("/core/comments/", params);
   };
@@ -95,17 +98,24 @@ export const useCommentsService = () => {
         model: "lesson",
       });
 
+      console.log("ContentType response:", response);
+
       if (response && response.length > 0 && response[0]) {
         lessonContentTypeId = response[0].id;
+        console.log("Lesson ContentType ID:", lessonContentTypeId);
         return lessonContentTypeId;
       }
-    } catch {
-      // Если эндпоинт недоступен, используем хардкод (нужно будет настроить на бэкенде)
-      console.warn("ContentType endpoint not available, using hardcoded value");
+    } catch (e) {
+      // Если эндпоинт недоступен, используем хардкод
+      console.error("ContentType endpoint error:", e);
     }
 
-    // Fallback значение (нужно обновить на реальный ID из базы)
-    return 0;
+    // Fallback значение - ContentType ID для Lesson из базы данных
+    console.warn(
+      "Using fallback ContentType ID. Check if /api/core/content-types/ endpoint works."
+    );
+    lessonContentTypeId = 21; // ContentType ID для courses.Lesson
+    return lessonContentTypeId;
   };
 
   return {

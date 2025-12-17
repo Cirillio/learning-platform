@@ -31,7 +31,9 @@ export const useComments = (options: UseCommentsOptions) => {
   const contentTypeId = ref<number>(options.contentTypeId || 0);
 
   // Computed
-  const isEmpty = computed(() => comments.value.length === 0 && !isLoading.value);
+  const isEmpty = computed(
+    () => comments.value.length === 0 && !isLoading.value
+  );
   const canLoadMore = computed(() => hasMore.value && !isLoadingMore.value);
 
   /**
@@ -88,6 +90,20 @@ export const useComments = (options: UseCommentsOptions) => {
 
     try {
       await initContentType();
+
+      console.log("ContentType ID after init:", contentTypeId.value);
+
+      if (contentTypeId.value === 0) {
+        throw new Error(
+          "ContentType ID не получен. Проверьте доступность эндпоинта /api/core/content-types/"
+        );
+      }
+
+      console.log("Fetching comments with:", {
+        content_type: contentTypeId.value,
+        object_id: options.lessonId,
+        page,
+      });
 
       const response = await commentsService.getComments({
         content_type: contentTypeId.value,
@@ -163,7 +179,9 @@ export const useComments = (options: UseCommentsOptions) => {
         role: user.value.role,
         avatar: user.value.avatar || undefined,
       },
-      author_name: `${user.value.first_name} ${user.value.last_name}`.trim() || user.value.username,
+      author_name:
+        `${user.value.first_name} ${user.value.last_name}`.trim() ||
+        user.value.username,
       author_avatar: user.value.avatar || undefined,
       text,
       parent: parentId || null,
@@ -246,7 +264,10 @@ export const useComments = (options: UseCommentsOptions) => {
       const updated = await commentsService.updateComment(commentId, payload);
 
       // Обновляем комментарий реальными данными
-      replaceComment(comments.value, commentId, { ...updated, replies: oldComment?.replies || [] });
+      replaceComment(comments.value, commentId, {
+        ...updated,
+        replies: oldComment?.replies || [],
+      });
 
       toast.add({
         title: "Комментарий обновлён",
@@ -388,7 +409,11 @@ export const useComments = (options: UseCommentsOptions) => {
     return false;
   };
 
-  const addReplyToComment = (list: Comment[], parentId: number, reply: Comment) => {
+  const addReplyToComment = (
+    list: Comment[],
+    parentId: number,
+    reply: Comment
+  ) => {
     for (const comment of list) {
       if (comment.id === parentId) {
         comment.replies = comment.replies || [];

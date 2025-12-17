@@ -60,7 +60,7 @@ const placeholderText = computed(() => {
 const onSubmit = (event: FormSubmitEvent<FormData>) => {
   if (isOverLimit.value) return;
   emit("submit", event.data.text.trim(), props.parentId);
-  
+
   // Очищаем форму если не редактирование
   if (!isEditing.value) {
     state.text = "";
@@ -107,10 +107,7 @@ onMounted(() => {
     <!-- Footer: счетчик символов + кнопки -->
     <div class="flex items-center justify-between gap-3">
       <!-- Счетчик символов -->
-      <span
-        class="text-xs"
-        :class="isOverLimit ? 'text-error' : 'text-muted'"
-      >
+      <span class="text-xs" :class="isOverLimit ? 'text-error' : 'text-muted'">
         {{ charCount }} / {{ maxChars }}
       </span>
 
