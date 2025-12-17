@@ -166,3 +166,36 @@ class StatisticsView(APIView):
             'total_teachers': total_teachers,
         })
 
+
+class ContentTypeView(APIView):
+    """
+    Предоставляет ContentType ID для указанных моделей.
+    Используется для работы с комментариями через Generic Foreign Key.
+    
+    GET /api/core/content-types/?app_label=courses&model=lesson
+    """
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        app_label = request.query_params.get('app_label')
+        model = request.query_params.get('model')
+        
+        if not app_label or not model:
+            return Response(
+                {'detail': 'Параметры app_label и model обязательны'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        try:
+            content_type = ContentType.objects.get(app_label=app_label, model=model)
+            return Response([{
+                'id': content_type.id,
+                'app_label': content_type.app_label,
+                'model': content_type.model,
+            }])
+        except ContentType.DoesNotExist:
+            return Response(
+                {'detail': f'ContentType для {app_label}.{model} не найден'},
+                status=status.HTTP_404_NOT_FOUND
+            )
+

@@ -276,6 +276,14 @@ useHead(() => ({
               </UButton>
               <div v-else />
             </div>
+
+            <!-- Comments Section -->
+            <UCard class="mt-6">
+              <CommentsList
+                v-if="lesson.id"
+                :lesson-id="lesson.id"
+              />
+            </UCard>
           </div>
 
           <!-- Sidebar -->

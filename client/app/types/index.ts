@@ -8,3 +8,4 @@ export * from "./responses";
 export * from "./filters";
 export * from "./auth";
 export * from "./teacher";
+export * from "./comments";

@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import Comment, Feedback, ActivityLog
-from users.serializers import BasicUserSerializer
+from users.serializers import BasicUserSerializer, CommentAuthorSerializer
 from django.contrib.contenttypes.models import ContentType
 
 
@@ -16,9 +16,9 @@ class CommentSerializer(serializers.ModelSerializer):
     - replies_count: количество ответов на комментарий
     - is_author: является ли текущий пользователь автором
     """
-    author = BasicUserSerializer(read_only=True)
+    author = CommentAuthorSerializer(read_only=True)
     author_name = serializers.CharField(source='author.get_full_name', read_only=True)
-    author_avatar = serializers.ImageField(source='author.profile.avatar', read_only=True)
+    author_avatar = serializers.SerializerMethodField()
     replies_count = serializers.SerializerMethodField()
     is_author = serializers.SerializerMethodField()
 
@@ -37,6 +37,14 @@ class CommentSerializer(serializers.ModelSerializer):
     def get_is_author(self, obj):
         request = self.context.get('request')
         return request and request.user == obj.author
+
+    def get_author_avatar(self, obj):
+        if hasattr(obj.author, 'profile') and obj.author.profile and obj.author.profile.avatar:
+            request = self.context.get('request')
+            if request:
+                return request.build_absolute_uri(obj.author.profile.avatar.url)
+            return obj.author.profile.avatar.url
+        return None
 
 
 class FeedbackSerializer(serializers.ModelSerializer):

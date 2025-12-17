@@ -36,6 +36,26 @@ class BasicUserSerializer(serializers.ModelSerializer):
         fields = ['id', 'username', 'first_name', 'last_name']
 
 
+class CommentAuthorSerializer(serializers.ModelSerializer):
+    """
+    Сериализатор автора комментария с ролью и аватаром.
+    Используется в CommentSerializer.
+    """
+    avatar = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'first_name', 'last_name', 'role', 'avatar']
+
+    def get_avatar(self, obj):
+        if hasattr(obj, 'profile') and obj.profile and obj.profile.avatar:
+            request = self.context.get('request')
+            if request:
+                return request.build_absolute_uri(obj.profile.avatar.url)
+            return obj.profile.avatar.url
+        return None
+
+
 class UserRegistrationSerializer(serializers.ModelSerializer):
     """
     Сериализатор для регистрации нового пользователя.
