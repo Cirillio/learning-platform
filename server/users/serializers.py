@@ -50,9 +50,18 @@ class CommentAuthorSerializer(serializers.ModelSerializer):
     def get_avatar(self, obj):
         if hasattr(obj, 'profile') and obj.profile and obj.profile.avatar:
             request = self.context.get('request')
-            if request:
-                return request.build_absolute_uri(obj.profile.avatar.url)
-            return obj.profile.avatar.url
+            avatar = obj.profile.avatar
+            # Проверяем, является ли avatar строкой или файловым полем
+            if isinstance(avatar, str):
+                # Если это уже строка (путь), используем её напрямую
+                if request:
+                    return request.build_absolute_uri(avatar)
+                return avatar
+            else:
+                # Если это файловое поле, получаем URL
+                if request:
+                    return request.build_absolute_uri(avatar.url)
+                return avatar.url
         return None
 
 
