@@ -98,6 +98,8 @@ export const useLessonController = (options: UseLessonControllerOptions) => {
         lessonsService.getLessonsByCourse(courseSlug),
       ]);
 
+      console.log("Lesson:", { ...lessonData });
+
       lesson.value = lessonData;
       allLessons.value = lessonsListData.results || [];
 

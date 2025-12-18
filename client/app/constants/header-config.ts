@@ -1,6 +1,9 @@
 import type { ButtonProps } from "@nuxt/ui";
 
-export const getHeaderMenuItems = (config: { onLogout: () => void }) => {
+export const getHeaderMenuItems = (config: {
+  onLogout: () => void;
+  onFeedback: () => void;
+}) => {
   const headerMenuItems = ref<ButtonProps[]>([
     {
       label: "Настройки",
@@ -9,6 +12,14 @@ export const getHeaderMenuItems = (config: { onLogout: () => void }) => {
       color: "neutral",
       variant: "subtle",
       size: "md",
+    },
+    {
+      label: "Обратная связь",
+      icon: "heroicons:chat-bubble-left-right",
+      color: "neutral",
+      variant: "subtle",
+      size: "md",
+      onClick: config.onFeedback,
     },
     {
       label: "Выйти",

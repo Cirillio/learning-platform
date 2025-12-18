@@ -1,6 +1,12 @@
 <script lang="ts" setup>
 const { isAuthenticated, user } = useAuthStore();
 const { logout } = useAuth();
+
+const feedbackDialogOpen = ref(false);
+
+const handleOpenFeedback = () => {
+  feedbackDialogOpen.value = true;
+};
 </script>
 
 <template>
@@ -27,7 +33,10 @@ const { logout } = useAuth();
             }}</span>
           </div>
           <USeparator />
-          <HeaderMobileUserActions :user="user" />
+          <HeaderMobileUserActions
+            :user="user"
+            @open-feedback="handleOpenFeedback"
+          />
         </div>
 
         <HeaderMobileAuth v-else />
@@ -46,4 +55,6 @@ const { logout } = useAuth();
       </div>
     </template>
   </UPopover>
+
+  <FeedbackDialog v-model="feedbackDialogOpen" />
 </template>

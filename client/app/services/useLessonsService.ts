@@ -83,20 +83,18 @@ export const useLessonsService = () => {
    * Включает курс, материалы и контент
    */
   const getLessonBySlug = (courseSlug: string, lessonSlug: string) => {
-    return api.get<LessonDetail>(`/lessons/${lessonSlug}/`, {
-      course: courseSlug,
-    });
+    return api.get<LessonDetail>(`/lessons/${lessonSlug}/`);
   };
 
   /**
    * Получить полные данные для страницы урока
    * Включает навигацию и прогресс
    */
-  const getLessonView = (courseSlug: string, lessonSlug: string) => {
-    return api.get<LessonViewResponse>(`/lessons/${lessonSlug}/view/`, {
-      course: courseSlug,
-    });
-  };
+  // const getLessonView = (courseSlug: string, lessonSlug: string) => {
+  //   return api.get<LessonViewResponse>(`/lessons/${lessonSlug}/view/`, {
+  //     course: courseSlug,
+  //   });
+  // };
 
   /**
    * Отметить урок как просмотренный/завершённый
@@ -141,7 +139,7 @@ export const useLessonsService = () => {
     updateLesson,
     deleteLesson,
     getLessonBySlug,
-    getLessonView,
+    // getLessonView,
     markLessonComplete,
     getLessonProgress,
     updateVideoProgress,

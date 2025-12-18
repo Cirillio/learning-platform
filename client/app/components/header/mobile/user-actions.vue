@@ -6,6 +6,10 @@ const props = defineProps<{
   user: User | null;
 }>();
 
+const emit = defineEmits<{
+  openFeedback: [];
+}>();
+
 const avatarProps = computed<AvatarProps | undefined>(() => {
   const avatar = props.user?.avatar;
   return avatar
@@ -66,5 +70,15 @@ const dashboardLabel = computed(() =>
     block
     class="justify-start"
     to="/settings/notifications"
+  />
+
+  <UButton
+    label="Обратная связь"
+    variant="subtle"
+    icon="heroicons:chat-bubble-left-right"
+    color="neutral"
+    block
+    class="justify-start"
+    @click="emit('openFeedback')"
   />
 </template>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import type { Course, Submission } from "~/types";
+import { page } from "#build/ui";
+import type { Course, PaginatedResponse, Submission } from "~/types";
 
 definePageMeta({
   layout: "teacher",
@@ -16,12 +17,13 @@ interface CoursesResponse {
   results: Course[];
 }
 
-const { data: coursesData, pending: coursesPending } =
-  await useAsyncData<CoursesResponse>("teacher-courses", () =>
-    api.get<CoursesResponse>("/courses/", {
-      teacher: authStore.user?.id,
-    })
-  );
+const { data: coursesData, pending: coursesPending } = await useAsyncData<
+  PaginatedResponse<Course>
+>("teacher-courses", () =>
+  api.get<PaginatedResponse<Course>>("/courses/", {
+    page_size: 999,
+  })
+);
 
 const courses = computed(() => coursesData.value?.results || []);
 

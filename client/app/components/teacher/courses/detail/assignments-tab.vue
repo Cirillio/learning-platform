@@ -69,6 +69,7 @@ const formatDueDate = (dateString: string | null | undefined): string => {
         :key="assignment.id"
         :desc="`${assignment.submissions_count} сдач • Макс. балл: ${assignment.max_score}`"
         :subdesc="formatDueDate(assignment.due_date)"
+        :link="`/teacher/courses/${slug}/assignments/${assignment.id}`"
         @edit="emit('edit', assignment)"
         @delete="emit('delete', assignment)"
       >
