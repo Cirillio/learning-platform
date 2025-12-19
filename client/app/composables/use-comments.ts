@@ -1,5 +1,11 @@
 import type { Comment, CreateCommentDTO, UpdateCommentDTO } from "~/types";
 import { useCommentsService } from "~/services/useCommentsService";
+import {
+  findComment,
+  replaceComment,
+  removeComment,
+  addReplyToComment,
+} from "~/utils/comments-tree.util";
 
 interface UseCommentsOptions {
   /** ID урока */
@@ -46,38 +52,6 @@ export const useComments = (options: UseCommentsOptions) => {
   };
 
   /**
-   * Построение дерева комментариев из плоского списка
-   */
-  const buildCommentsTree = (flatComments: Comment[]): Comment[] => {
-    const commentMap = new Map<number, Comment>();
-    const rootComments: Comment[] = [];
-
-    // Создаем карту комментариев
-    flatComments.forEach((comment) => {
-      commentMap.set(comment.id, { ...comment, replies: [] });
-    });
-
-    // Строим дерево
-    flatComments.forEach((comment) => {
-      const node = commentMap.get(comment.id)!;
-      if (comment.parent) {
-        const parent = commentMap.get(comment.parent);
-        if (parent) {
-          parent.replies = parent.replies || [];
-          parent.replies.push(node);
-        } else {
-          // Родитель не найден, добавляем как корневой
-          rootComments.push(node);
-        }
-      } else {
-        rootComments.push(node);
-      }
-    });
-
-    return rootComments;
-  };
-
-  /**
    * Загрузка комментариев
    */
   const fetchComments = async (page = 1) => {
@@ -91,19 +65,11 @@ export const useComments = (options: UseCommentsOptions) => {
     try {
       await initContentType();
 
-      console.log("ContentType ID after init:", contentTypeId.value);
-
       if (contentTypeId.value === 0) {
         throw new Error(
           "ContentType ID не получен. Проверьте доступность эндпоинта /api/core/content-types/"
         );
       }
-
-      console.log("Fetching comments with:", {
-        content_type: contentTypeId.value,
-        object_id: options.lessonId,
-        page,
-      });
 
       const response = await commentsService.getComments({
         content_type: contentTypeId.value,
@@ -367,67 +333,6 @@ export const useComments = (options: UseCommentsOptions) => {
     }
   };
 
-  // Helper functions for tree manipulation
-  const findComment = (list: Comment[], id: number): Comment | null => {
-    for (const comment of list) {
-      if (comment.id === id) return comment;
-      if (comment.replies?.length) {
-        const found = findComment(comment.replies, id);
-        if (found) return found;
-      }
-    }
-    return null;
-  };
-
-  const replaceComment = (list: Comment[], id: number, newComment: Comment) => {
-    for (let i = 0; i < list.length; i++) {
-      const item = list[i];
-      if (!item) continue;
-      if (item.id === id) {
-        list[i] = newComment;
-        return true;
-      }
-      if (item.replies?.length) {
-        if (replaceComment(item.replies, id, newComment)) return true;
-      }
-    }
-    return false;
-  };
-
-  const removeComment = (list: Comment[], id: number): boolean => {
-    for (let i = 0; i < list.length; i++) {
-      const item = list[i];
-      if (!item) continue;
-      if (item.id === id) {
-        list.splice(i, 1);
-        return true;
-      }
-      if (item.replies?.length) {
-        if (removeComment(item.replies, id)) return true;
-      }
-    }
-    return false;
-  };
-
-  const addReplyToComment = (
-    list: Comment[],
-    parentId: number,
-    reply: Comment
-  ) => {
-    for (const comment of list) {
-      if (comment.id === parentId) {
-        comment.replies = comment.replies || [];
-        comment.replies.push(reply);
-        comment.replies_count++;
-        return true;
-      }
-      if (comment.replies?.length) {
-        if (addReplyToComment(comment.replies, parentId, reply)) return true;
-      }
-    }
-    return false;
-  };
-
   /**
    * Обновление при смене урока
    */
@@ -452,7 +357,6 @@ export const useComments = (options: UseCommentsOptions) => {
   );
 
   return {
-    // State
     comments,
     totalCount: readonly(totalCount),
     currentPage: readonly(currentPage),
@@ -461,12 +365,8 @@ export const useComments = (options: UseCommentsOptions) => {
     isLoadingMore: readonly(isLoadingMore),
     isSubmitting: readonly(isSubmitting),
     error: readonly(error),
-
-    // Computed
     isEmpty,
     canLoadMore,
-
-    // Actions
     fetchComments,
     loadMore,
     addComment,
