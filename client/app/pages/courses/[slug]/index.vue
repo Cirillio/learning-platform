@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useCoursesService } from "~/services";
+import { coursesService } from "~/services";
 import type { CourseDetail, Lesson } from "~/types";
 
 const route = useRoute();
@@ -7,7 +7,7 @@ const toast = useToast();
 const slug = route.params.slug as string;
 
 const { isAuthenticated } = useAuthStore();
-const coursesService = useCoursesService();
+const coursesApi = coursesService();
 const { enrollToCourse, unenrollFromCourse } = coursesService;
 
 const courseCacheKey = computed(() => `course-${slug}`);
@@ -21,13 +21,13 @@ const {
   pending: coursePending,
   error: courseError,
 } = await useAsyncData<CourseDetail>(courseCacheKey.value, () =>
-  coursesService.getCourse(slug)
+  coursesApi.getCourse(slug)
 );
 
 // Fetch Lessons (Syllabus)
 const { data: lessonsResponse, pending: lessonsPending } = await useAsyncData(
   lessongsCacheKey.value,
-  () => coursesService.getCourseLessons(slug)
+  () => coursesApi.getCourseLessons(slug)
 );
 const lessons = computed(
   () => (lessonsResponse.value as any)?.results || ([] as Lesson[])

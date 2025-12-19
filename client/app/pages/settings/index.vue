@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import { useAuthService } from "~/services";
+import { authService } from "~/services";
 import type { User } from "~/types";
 
-const authService = useAuthService();
+const authApi = authService();
 const { user } = useAuthStore();
 const toast = useToast();
 

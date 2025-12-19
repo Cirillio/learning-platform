@@ -47,7 +47,7 @@ interface UpdateLessonPayload {
  * Service для работы с уроками
  * Отвечает за HTTP-запросы к API уроков
  */
-export const useLessonsService = () => {
+export const lessonsService = () => {
   const api = useApi();
 
   /**

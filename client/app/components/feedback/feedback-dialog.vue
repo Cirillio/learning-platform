@@ -8,7 +8,7 @@ import type { FormSubmitEvent } from "#ui/types";
 
 const model = defineModel<boolean>({ required: true });
 
-const { createFeedback } = useFeedbackService();
+const { createFeedback } = feedbackService();
 const toast = useToast();
 
 const feedbackTypes = Object.entries(FEEDBACK_TYPE_LABELS).map(

@@ -77,7 +77,7 @@ interface GradeSubmissionData {
 /**
  * Service для работы с функциями учителя
  */
-export const useTeacherService = () => {
+export const teacherService = () => {
   const api = useApi();
   const authStore = useAuthStore();
 

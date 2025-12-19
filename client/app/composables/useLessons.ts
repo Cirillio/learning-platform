@@ -1,5 +1,5 @@
 import type { Lesson, LessonDetail } from "~/types";
-import { useLessonsService } from "~/services";
+import { lessonsService } from "~/services";
 
 interface UseLessonsOptions {
   courseSlug: string;
@@ -34,7 +34,7 @@ interface UpdateLessonPayload {
  */
 export const useLessons = (options: UseLessonsOptions) => {
   const { courseSlug } = options;
-  const lessonsService = useLessonsService();
+  const lessonsApi = lessonsService();
   const toast = useToast();
 
   // ---------------------------------------------------------------------------
@@ -78,7 +78,7 @@ export const useLessons = (options: UseLessonsOptions) => {
     error.value = null;
 
     try {
-      const response = await lessonsService.getLessonsByCourse(courseSlug);
+      const response = await lessonsApi.getLessonsByCourse(courseSlug);
       lessons.value = response.results;
     } catch (e) {
       error.value = e as Error;
@@ -98,7 +98,7 @@ export const useLessons = (options: UseLessonsOptions) => {
     error.value = null;
 
     try {
-      const response = await lessonsService.getLessonView(
+      const response = await lessonsApi.getLessonView(
         courseSlug,
         lessonSlug
       );
@@ -145,7 +145,7 @@ export const useLessons = (options: UseLessonsOptions) => {
     lessons.value.push(tempLesson);
 
     try {
-      const newLesson = await lessonsService.createLesson({
+      const newLesson = await lessonsApi.createLesson({
         ...payload,
         course: courseSlug,
       });
@@ -199,7 +199,7 @@ export const useLessons = (options: UseLessonsOptions) => {
     }
 
     try {
-      const updatedLesson = await lessonsService.updateLesson(
+      const updatedLesson = await lessonsApi.updateLesson(
         lessonSlug,
         payload
       );
@@ -254,7 +254,7 @@ export const useLessons = (options: UseLessonsOptions) => {
     lessons.value = lessons.value.filter((l) => l.slug !== lessonSlug);
 
     try {
-      await lessonsService.deleteLesson(lessonSlug);
+      await lessonsApi.deleteLesson(lessonSlug);
 
       // Очищаем currentLesson если удалили его
       if (currentLesson.value?.slug === lessonSlug) {
@@ -315,7 +315,7 @@ export const useLessons = (options: UseLessonsOptions) => {
     });
 
     try {
-      await lessonsService.updateLesson(lessonSlug, { order: newOrder });
+      await lessonsApi.updateLesson(lessonSlug, { order: newOrder });
       return true;
     } catch (e) {
       // Rollback - перезагружаем уроки

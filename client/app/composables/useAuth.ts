@@ -1,5 +1,5 @@
 import type { LoginCredentials, RegisterCredentials } from "~/types";
-import { useAuthService } from "~/services/useAuthService";
+import { authService } from "~/services/auth-service";
 
 /**
  * Composable for authentication operations
@@ -8,12 +8,12 @@ import { useAuthService } from "~/services/useAuthService";
  */
 export const useAuth = () => {
   const authStore = useAuthStore();
-  const authService = useAuthService();
+  const authApi = authService();
 
   const login = async (credentials: LoginCredentials) => {
     authStore.setLoading(true);
     try {
-      const response = await authService.login(credentials);
+      const response = await authApi.login(credentials);
       authStore.setUser(response.user);
 
       await navigateTo("/profile");
@@ -30,7 +30,7 @@ export const useAuth = () => {
   const register = async (credentials: RegisterCredentials) => {
     authStore.setLoading(true);
     try {
-      await authService.register(credentials);
+      await authApi.register(credentials);
       await login({
         username: credentials.username,
         password: credentials.password,
@@ -48,7 +48,7 @@ export const useAuth = () => {
 
   const logout = async () => {
     try {
-      await authService.logout();
+      await authApi.logout();
     } catch {}
 
     authStore.clearAuth();
@@ -56,7 +56,7 @@ export const useAuth = () => {
 
   const fetchUser = async () => {
     try {
-      const user = await authService.fetchUser();
+      const user = await authApi.fetchUser();
       authStore.setUser(user);
     } catch (error) {
       authStore.clearAuth();

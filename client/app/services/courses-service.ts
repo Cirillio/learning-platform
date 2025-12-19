@@ -9,7 +9,7 @@ import type {
   PaginationParams,
 } from "~/types";
 
-export const useCoursesService = () => {
+export const coursesService = () => {
   const api = useApi();
 
   const getCourses = (params: CourseFilters) => {

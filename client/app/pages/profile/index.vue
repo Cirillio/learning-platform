@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useAuthService, useCoursesService } from "~/services";
+import { authService, coursesService } from "~/services";
 import type { User, CoursesResponse } from "~/types";
 
 definePageMeta({
@@ -8,8 +8,8 @@ definePageMeta({
 
 const toast = useToast();
 
-const authService = useAuthService();
-const coursesService = useCoursesService();
+const authApi = authService();
+const coursesApi = coursesService();
 const { logout, isLoading, user } = useAuth();
 
 // --- Data Fetching ---
@@ -23,14 +23,14 @@ const { data: profile, pending: profilePending } = await useAsyncData<User>(
       return user.value;
     }
     // На клиенте загружаем свежие данные, чтобы гарантировать наличие всех полей профиля
-    return authService.fetchUser();
+    return authApi.fetchUser();
   }
 );
 
 const { data: coursesResponse, pending: coursesPending } =
   await useAsyncData<CoursesResponse>(
     "my-courses",
-    () => coursesService.getMyCourses(),
+    () => coursesApi.getMyCourses(),
     {
       lazy: true,
       server: false,

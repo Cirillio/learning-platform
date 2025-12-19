@@ -1,4 +1,4 @@
-import { useCoursesService } from "~/services";
+import { coursesService } from "~/services";
 
 /**
  * Middleware для проверки записи на курс
@@ -23,8 +23,8 @@ export default defineNuxtRouteMiddleware(async (to) => {
   }
 
   try {
-    const coursesService = useCoursesService();
-    const course = await coursesService.getCourse(courseSlug);
+    const coursesApi = coursesService();
+    const course = await coursesApi.getCourse(courseSlug);
 
     // Проверяем, записан ли пользователь на курс
     if (!course.is_enrolled) {

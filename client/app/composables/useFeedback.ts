@@ -5,7 +5,7 @@ import type { CreateFeedbackInput } from "~/schemas/feedback.schema";
  * Упрощает отправку обратной связи с клиентской стороны
  */
 export const useFeedback = () => {
-  const { createFeedback } = useFeedbackService();
+  const { createFeedback } = feedbackService();
   const toast = useToast();
 
   const isSubmitting = ref(false);

@@ -1,6 +1,6 @@
 // composables/useStudentCourses.ts
 import type { Course, CoursesResponse } from "~/types";
-import { useCoursesService } from "../services/useCoursesService";
+import { coursesService } from "../services/courses-service";
 
 interface UseStudentCoursesReturn {
   courses: Ref<Course[]>;
@@ -14,7 +14,7 @@ interface UseStudentCoursesReturn {
 }
 
 export function useStudentCourses(): UseStudentCoursesReturn {
-  const coursesService = useCoursesService();
+  const coursesApi = coursesService();
   const { isAuthenticated, isStudent } = useAuthStore();
 
   const data = ref<CoursesResponse | null>(null);
@@ -56,7 +56,7 @@ export function useStudentCourses(): UseStudentCoursesReturn {
     error.value = null;
 
     try {
-      data.value = await coursesService.getMyCourses();
+      data.value = await coursesApi.getMyCourses();
     } catch (err: any) {
       error.value = err;
       console.error("Failed to load student courses:", err);

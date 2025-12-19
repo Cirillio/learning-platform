@@ -18,7 +18,7 @@ interface CommentsFilters {
 /**
  * Service для работы с комментариями
  */
-export const useCommentsService = () => {
+export const commentsService = () => {
   const api = useApi();
 
   /**

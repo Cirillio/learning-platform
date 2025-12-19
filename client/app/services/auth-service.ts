@@ -7,7 +7,7 @@ import type {
 } from "~/types";
 import { normalizeUser } from "~/utils/get-user-from-profile";
 
-export const useAuthService = () => {
+export const authService = () => {
   const api = useApi();
 
   const login = (credentials: LoginCredentials) => {

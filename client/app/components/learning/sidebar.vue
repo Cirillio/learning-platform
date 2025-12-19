@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { CourseDetail, Lesson } from "~/types";
-import { useCoursesService } from "~/services";
+import { coursesService } from "~/services";
 
 interface Props {
   isCollapsed: boolean;
@@ -19,20 +19,20 @@ const emit = defineEmits<{
 }>();
 
 const route = useRoute();
-const coursesService = useCoursesService();
+const coursesApi = coursesService();
 const courseSlug = computed(() => route.params.course_slug as string);
 
 // Fetch course data for sidebar
 const { data: course, pending } = await useAsyncData<CourseDetail>(
   `learning-sidebar-course-${courseSlug.value}`,
-  () => coursesService.getCourse(courseSlug.value),
+  () => coursesApi.getCourse(courseSlug.value),
   { watch: [courseSlug] }
 );
 
 // Fetch lessons for navigation
 const { data: lessonsResponse } = await useAsyncData<LessonsResponse>(
   `learning-sidebar-lessons-${courseSlug.value}`,
-  () => coursesService.getCourseLessons(courseSlug.value),
+  () => coursesApi.getCourseLessons(courseSlug.value),
   { watch: [courseSlug] }
 );
 

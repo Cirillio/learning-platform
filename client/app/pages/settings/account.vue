@@ -1,14 +1,14 @@
 <script lang="ts" setup>
 import type { User } from "~/types";
 import type { EditSchema } from "~/components/profile/edit-form.vue";
-import { useAuthService } from "~/services";
+import { authService } from "~/services";
 
-const authService = useAuthService();
+const authApi = authService();
 const {
   data: profile,
   pending: profilePending,
   refresh: refreshProfile, // eslint-disable-line @typescript-eslint/no-unused-vars
-} = await useAsyncData<User>("user-profile", () => authService.fetchUser());
+} = await useAsyncData<User>("user-profile", () => authApi.fetchUser());
 
 const { patch } = useApi();
 const { setUser } = useAuthStore();

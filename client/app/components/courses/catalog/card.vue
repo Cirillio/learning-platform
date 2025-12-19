@@ -1,6 +1,6 @@
 <!-- components/courses/item-card.vue -->
 <script lang="ts" setup>
-import { useCoursesService } from "~/services";
+import { coursesService } from "~/services";
 import type { Course } from "~/types";
 
 interface Props {

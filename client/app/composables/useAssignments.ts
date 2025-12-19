@@ -1,5 +1,5 @@
 import type { Assignment, Submission, SubmissionDetail, Grade } from "~/types";
-import { useAssignmentsService, useSubmissionsService } from "~/services";
+import { assignmentsService, submissionsService } from "~/services";
 
 interface UseAssignmentsOptions {
   courseSlug?: string;
@@ -10,8 +10,8 @@ interface UseAssignmentsOptions {
  * Composable для работы с заданиями студента
  */
 export const useAssignments = (options: UseAssignmentsOptions = {}) => {
-  const assignmentsService = useAssignmentsService();
-  const submissionsService = useSubmissionsService();
+  const assignmentsApi = assignmentsService();
+  const submissionsApi = submissionsService();
   const toast = useToast();
 
   // State
@@ -37,7 +37,7 @@ export const useAssignments = (options: UseAssignmentsOptions = {}) => {
     error.value = null;
 
     try {
-      const response = await assignmentsService.getAssignments({
+      const response = await assignmentsApi.getAssignments({
         course: options.courseSlug,
         lesson: options.lessonSlug,
       });
@@ -56,8 +56,8 @@ export const useAssignments = (options: UseAssignmentsOptions = {}) => {
 
     try {
       const [assignment, submission] = await Promise.all([
-        assignmentsService.getAssignment(id),
-        assignmentsService.getMySubmission(id),
+        assignmentsApi.getAssignment(id),
+        assignmentsApi.getMySubmission(id),
       ]);
 
       currentAssignment.value = assignment;
@@ -65,7 +65,7 @@ export const useAssignments = (options: UseAssignmentsOptions = {}) => {
 
       // Fetch grade if submitted
       if (submission?.status === "graded") {
-        currentGrade.value = await submissionsService.getGrade(submission.id);
+        currentGrade.value = await submissionsApi.getGrade(submission.id);
       }
     } catch (e) {
       error.value = e as Error;
@@ -86,7 +86,7 @@ export const useAssignments = (options: UseAssignmentsOptions = {}) => {
     try {
       if (currentSubmission.value) {
         // Update existing
-        currentSubmission.value = await submissionsService.updateSubmission(
+        currentSubmission.value = await submissionsApi.updateSubmission(
           currentSubmission.value.id,
           { content, files }
         );
@@ -97,7 +97,7 @@ export const useAssignments = (options: UseAssignmentsOptions = {}) => {
         });
       } else {
         // Create new
-        currentSubmission.value = await submissionsService.createSubmission({
+        currentSubmission.value = await submissionsApi.createSubmission({
           assignment: assignmentId,
           content,
           files,

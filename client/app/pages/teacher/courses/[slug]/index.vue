@@ -8,8 +8,8 @@ definePageMeta({
 
 const route = useRoute();
 const toast = useToast();
-const lessonsService = useLessonsService();
-const assignmentsService = useAssignmentsService();
+const lessonsApi = lessonsService();
+const assignmentsApi = assignmentsService();
 
 const slug = computed(() => route.params.slug as string);
 
@@ -34,7 +34,7 @@ const {
   refresh: refreshLessons,
 } = await useAsyncData<LessonsResponse>(
   `teacher-course-lessons-${slug.value}`,
-  () => lessonsService.getLessonsByCourse(slug.value)
+  () => lessonsApi.getLessonsByCourse(slug.value)
 );
 
 const lessons = computed(() => lessonsData.value?.results || []);
@@ -51,7 +51,7 @@ const {
   refresh: refreshAssignments,
 } = await useAsyncData<AssignmentsResponse>(
   `teacher-course-assignments-${slug.value}`,
-  () => assignmentsService.getAssignments({ course: slug.value })
+  () => assignmentsApi.getAssignments({ course: slug.value })
 );
 
 const assignments = computed(() => assignmentsData.value?.results || []);
@@ -92,7 +92,7 @@ const handleAddLesson = async (lesson: {
 }) => {
   addLessonModalRef.value?.setLoading(true);
   try {
-    await lessonsService.createLesson({
+    await lessonsApi.createLesson({
       course: slug.value,
       title: lesson.title,
       slug:
@@ -137,7 +137,7 @@ const handleEditLesson = async (data: {
 
   editLessonModalRef.value?.setLoading(true);
   try {
-    await lessonsService.updateLesson(selectedLesson.value.slug, data);
+    await lessonsApi.updateLesson(selectedLesson.value.slug, data);
     toast.add({ title: "Урок обновлён", color: "success" });
     showEditLesson.value = false;
     selectedLesson.value = null;
@@ -165,7 +165,7 @@ const handleDeleteLesson = async () => {
 
   lessonDeleteLoading.value = true;
   try {
-    await lessonsService.deleteLesson(selectedLesson.value.slug);
+    await lessonsApi.deleteLesson(selectedLesson.value.slug);
     toast.add({ title: "Урок удалён", color: "success" });
     showDeleteLesson.value = false;
     selectedLesson.value = null;
@@ -211,7 +211,7 @@ const handleEditAssignment = async (data: {
 
   editAssignmentModalRef.value?.setLoading(true);
   try {
-    await assignmentsService.updateAssignment(selectedAssignment.value.id, {
+    await assignmentsApi.updateAssignment(selectedAssignment.value.id, {
       ...data,
       due_date: data.due_date || null,
     });
@@ -242,7 +242,7 @@ const handleDeleteAssignment = async () => {
 
   assignmentDeleteLoading.value = true;
   try {
-    await assignmentsService.deleteAssignment(selectedAssignment.value.id);
+    await assignmentsApi.deleteAssignment(selectedAssignment.value.id);
     toast.add({ title: "Задание удалено", color: "success" });
     showDeleteAssignment.value = false;
     selectedAssignment.value = null;

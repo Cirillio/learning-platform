@@ -1,5 +1,5 @@
 import type { Comment, CreateCommentDTO, UpdateCommentDTO } from "~/types";
-import { useCommentsService } from "~/services/useCommentsService";
+import { commentsService } from "~/services/comments-service";
 import {
   findComment,
   replaceComment,
@@ -18,7 +18,7 @@ interface UseCommentsOptions {
  * Composable для работы с комментариями к уроку
  */
 export const useComments = (options: UseCommentsOptions) => {
-  const commentsService = useCommentsService();
+  const commentsApi = commentsService();
   const toast = useToast();
   const { user } = useAuth();
 
@@ -47,7 +47,7 @@ export const useComments = (options: UseCommentsOptions) => {
    */
   const initContentType = async () => {
     if (contentTypeId.value === 0) {
-      contentTypeId.value = await commentsService.getLessonContentType();
+      contentTypeId.value = await commentsApi.getLessonContentType();
     }
   };
 
@@ -71,7 +71,7 @@ export const useComments = (options: UseCommentsOptions) => {
         );
       }
 
-      const response = await commentsService.getComments({
+      const response = await commentsApi.getComments({
         content_type: contentTypeId.value,
         object_id: options.lessonId,
         page,
@@ -178,7 +178,7 @@ export const useComments = (options: UseCommentsOptions) => {
         parent: parentId || null,
       };
 
-      const newComment = await commentsService.createComment(payload);
+      const newComment = await commentsApi.createComment(payload);
 
       // Заменяем временный комментарий реальным
       replaceComment(comments.value, tempId, { ...newComment, replies: [] });
@@ -227,7 +227,7 @@ export const useComments = (options: UseCommentsOptions) => {
 
     try {
       const payload: UpdateCommentDTO = { text };
-      const updated = await commentsService.updateComment(commentId, payload);
+      const updated = await commentsApi.updateComment(commentId, payload);
 
       // Обновляем комментарий реальными данными
       replaceComment(comments.value, commentId, {
@@ -277,7 +277,7 @@ export const useComments = (options: UseCommentsOptions) => {
     totalCount.value--;
 
     try {
-      await commentsService.deleteComment(commentId);
+      await commentsApi.deleteComment(commentId);
 
       toast.add({
         title: "Комментарий удалён",
@@ -314,7 +314,7 @@ export const useComments = (options: UseCommentsOptions) => {
    */
   const loadReplies = async (commentId: number) => {
     try {
-      const response = await commentsService.getReplies(commentId);
+      const response = await commentsApi.getReplies(commentId);
       const comment = findComment(comments.value, commentId);
 
       if (comment) {

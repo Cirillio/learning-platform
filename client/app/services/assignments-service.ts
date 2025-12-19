@@ -38,7 +38,7 @@ interface UpdateAssignmentPayload {
 /**
  * Service для работы с заданиями
  */
-export const useAssignmentsService = () => {
+export const assignmentsService = () => {
   const api = useApi();
 
   /**

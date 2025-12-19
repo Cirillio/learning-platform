@@ -6,14 +6,14 @@ import type {
   Submission,
   Grade,
 } from "~/types";
-import { useTeacherService } from "~/services";
+import { teacherService } from "~/services";
 
 /**
  * Composable для панели управления учителя
  * Предоставляет централизованный доступ к данным и действиям учителя
  */
 export const useTeacher = () => {
-  const teacherService = useTeacherService();
+  const teacherApi = teacherService();
   const authStore = useAuthStore();
   const toast = useToast();
 
@@ -54,7 +54,7 @@ export const useTeacher = () => {
     error.value = null;
 
     try {
-      const response = await teacherService.getMyCourses();
+      const response = await teacherApi.getMyCourses();
       courses.value = response.results;
     } catch (e) {
       error.value = e as Error;
@@ -65,10 +65,10 @@ export const useTeacher = () => {
   };
 
   const createCourse = async (
-    data: Parameters<typeof teacherService.createCourse>[0]
+    data: Parameters<typeof teacherApi.createCourse>[0]
   ) => {
     try {
-      const course = await teacherService.createCourse(data);
+      const course = await teacherApi.createCourse(data);
       toast.add({
         title: "Курс создан",
         color: "success",
@@ -87,7 +87,7 @@ export const useTeacher = () => {
 
   const deleteCourse = async (slug: string) => {
     try {
-      await teacherService.deleteCourse(slug);
+      await teacherApi.deleteCourse(slug);
       toast.add({
         title: "Курс удалён",
         color: "success",
@@ -108,7 +108,7 @@ export const useTeacher = () => {
   // ---------------------------------------------------------------------------
   const fetchCourseLessons = async (courseSlug: string) => {
     try {
-      const response = await teacherService.getCourseLessons(courseSlug);
+      const response = await teacherApi.getCourseLessons(courseSlug);
       lessons.value = response.results;
     } catch (e) {
       console.error("Failed to fetch lessons:", e);
@@ -116,10 +116,10 @@ export const useTeacher = () => {
   };
 
   const createLesson = async (
-    data: Parameters<typeof teacherService.createLesson>[0]
+    data: Parameters<typeof teacherApi.createLesson>[0]
   ) => {
     try {
-      const lesson = await teacherService.createLesson(data);
+      const lesson = await teacherApi.createLesson(data);
       toast.add({
         title: "Урок создан",
         color: "success",
@@ -140,7 +140,7 @@ export const useTeacher = () => {
 
   const deleteLesson = async (lessonId: number, courseSlug: string) => {
     try {
-      await teacherService.deleteLesson(lessonId);
+      await teacherApi.deleteLesson(lessonId);
       toast.add({
         title: "Урок удалён",
         color: "success",
@@ -161,7 +161,7 @@ export const useTeacher = () => {
   // ---------------------------------------------------------------------------
   const fetchCourseAssignments = async (courseSlug: string) => {
     try {
-      const response = await teacherService.getCourseAssignments(courseSlug);
+      const response = await teacherApi.getCourseAssignments(courseSlug);
       assignments.value = response.results;
     } catch (e) {
       console.error("Failed to fetch assignments:", e);
@@ -169,10 +169,10 @@ export const useTeacher = () => {
   };
 
   const createAssignment = async (
-    data: Parameters<typeof teacherService.createAssignment>[0]
+    data: Parameters<typeof teacherApi.createAssignment>[0]
   ) => {
     try {
-      const assignment = await teacherService.createAssignment(data);
+      const assignment = await teacherApi.createAssignment(data);
       toast.add({
         title: "Задание создано",
         color: "success",
@@ -193,7 +193,7 @@ export const useTeacher = () => {
   // ---------------------------------------------------------------------------
   const fetchPendingSubmissions = async () => {
     try {
-      const response = await teacherService.getSubmissions({
+      const response = await teacherApi.getSubmissions({
         status: "pending",
       });
       submissions.value = response.results;
@@ -207,7 +207,7 @@ export const useTeacher = () => {
     data: { score: number; feedback?: string }
   ) => {
     try {
-      const grade = await teacherService.gradeSubmission(submissionId, data);
+      const grade = await teacherApi.gradeSubmission(submissionId, data);
       toast.add({
         title: "Оценка выставлена",
         color: "success",

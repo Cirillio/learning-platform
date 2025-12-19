@@ -5,7 +5,7 @@ import type {
   LessonProgress,
   LessonCompletionStatus,
 } from "~/types";
-import { useLessonsService } from "~/services";
+import { lessonsService } from "~/services";
 
 interface UseLessonControllerOptions {
   courseSlug: string;
@@ -18,7 +18,7 @@ interface UseLessonControllerOptions {
  */
 export const useLessonController = (options: UseLessonControllerOptions) => {
   const { courseSlug, lessonSlug } = options;
-  const lessonsService = useLessonsService();
+  const lessonsApi = lessonsService();
   const toast = useToast();
   const router = useRouter();
 
@@ -94,8 +94,8 @@ export const useLessonController = (options: UseLessonControllerOptions) => {
     try {
       // Параллельная загрузка данных для оптимизации
       const [lessonData, lessonsListData] = await Promise.all([
-        lessonsService.getLessonBySlug(courseSlug, lessonSlug),
-        lessonsService.getLessonsByCourse(courseSlug),
+        lessonsApi.getLessonBySlug(courseSlug, lessonSlug),
+        lessonsApi.getLessonsByCourse(courseSlug),
       ]);
 
       console.log("Lesson:", { ...lessonData });
@@ -108,7 +108,7 @@ export const useLessonController = (options: UseLessonControllerOptions) => {
 
       // Пробуем загрузить прогресс (может не быть если не записан)
       try {
-        progress.value = await lessonsService.getLessonProgress(lessonSlug);
+        progress.value = await lessonsApi.getLessonProgress(lessonSlug);
       } catch {
         // Прогресс недоступен - пользователь не записан или нет прогресса
         progress.value = null;
@@ -178,7 +178,7 @@ export const useLessonController = (options: UseLessonControllerOptions) => {
     isCompletingLesson.value = true;
 
     try {
-      const response = await lessonsService.markLessonComplete(lessonSlug);
+      const response = await lessonsApi.markLessonComplete(lessonSlug);
 
       if (response.success) {
         progress.value = response.progress;
@@ -225,7 +225,7 @@ export const useLessonController = (options: UseLessonControllerOptions) => {
    */
   const updateVideoProgress = async (percent: number) => {
     try {
-      await lessonsService.updateVideoProgress(lessonSlug, percent);
+      await lessonsApi.updateVideoProgress(lessonSlug, percent);
 
       // Обновляем локальный прогресс
       if (progress.value) {

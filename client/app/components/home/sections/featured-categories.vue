@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import { useCoursesService } from "~/services/useCoursesService";
+import { coursesService } from "~/services/courses-service";
 import type { CategoriesResponse } from "~/types";
 
-const coursesService = useCoursesService();
+const coursesApi = coursesService();
 
 const {
   data: categoriesResponse,
   pending: categoriesPending,
   error: categoriesError,
 } = await useAsyncData<CategoriesResponse>("categories-featured", () =>
-  coursesService.getCategories({
+  coursesApi.getCategories({
     page: 1,
     page_size: 4,
     ordering: "-created_at",

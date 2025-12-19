@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { CourseDetail, LessonWithProgress } from "~/types";
-import { useCoursesService } from "~/services";
+import { coursesService } from "~/services";
 
 definePageMeta({
   layout: "default",
@@ -9,12 +9,12 @@ definePageMeta({
 
 const route = useRoute();
 const courseSlug = computed(() => route.params.course_slug as string);
-const coursesService = useCoursesService();
+const coursesApi = coursesService();
 
 // Fetch course details
 const { data: course, pending: coursePending } =
   await useAsyncData<CourseDetail>(`learning-course-${courseSlug.value}`, () =>
-    coursesService.getCourse(courseSlug.value)
+    coursesApi.getCourse(courseSlug.value)
   );
 
 // Fetch lessons with progress
@@ -28,7 +28,7 @@ interface LessonsResponse {
 const { data: lessonsResponse, pending: lessonsPending } =
   await useAsyncData<LessonsResponse>(
     `learning-lessons-${courseSlug.value}`,
-    () => coursesService.getCourseLessons(courseSlug.value)
+    () => coursesApi.getCourseLessons(courseSlug.value)
   );
 
 const lessons = computed(() => lessonsResponse.value?.results || []);

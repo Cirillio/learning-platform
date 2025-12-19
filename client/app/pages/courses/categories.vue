@@ -1,14 +1,14 @@
 <script lang="ts" setup>
-import { useCoursesService } from "~/services";
+import { coursesService } from "~/services";
 import type { CategoriesResponse } from "~/types";
 
-const coursesService = useCoursesService();
+const coursesApi = coursesService();
 const {
   data: categoriesResponse,
   pending,
   error,
 } = await useAsyncData<CategoriesResponse>("categories-all", () =>
-  coursesService.getCategories({
+  coursesApi.getCategories({
     page_size: 100,
   })
 );

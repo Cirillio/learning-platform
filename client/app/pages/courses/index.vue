@@ -6,11 +6,11 @@ import {
   COURSE_PAGE_SIZE_DEFAULT,
   COURSE_ORDERING_DEFAULT,
 } from "~/constants/courseFilters";
-import { useCoursesService } from "~/services";
+import { coursesService } from "~/services";
 const PAGE_SIZE = COURSE_PAGE_SIZE_DEFAULT;
 
 const { isAuthenticated, isStudent } = useAuthStore();
-const coursesService = useCoursesService();
+const coursesApi = coursesService();
 
 const { get } = useApi();
 
@@ -38,7 +38,7 @@ const {
   error: coursesError,
 } = await useAsyncData<CoursesResponse>(
   () => `courses-${JSON.stringify(apiParams.value)}`, // Unique key based on params
-  () => coursesService.getCourses(apiParams.value),
+  () => coursesApi.getCourses(apiParams.value),
   {
     watch: [apiParams], // Re-fetch when filters change
   }
@@ -87,7 +87,7 @@ function clearSearch() {
 
 async function handleEnroll(slug: string) {
   try {
-    await coursesService.enrollToCourse(slug);
+    await coursesApi.enrollToCourse(slug);
     await refreshStudentCourses();
   } catch (e) {
     console.error("Failed to enroll", e);

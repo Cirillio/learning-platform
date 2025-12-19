@@ -21,7 +21,7 @@ interface UpdateSubmissionData {
 /**
  * Service для работы со сдачами заданий
  */
-export const useSubmissionsService = () => {
+export const submissionsService = () => {
   const api = useApi();
 
   /**

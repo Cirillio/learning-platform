@@ -5,7 +5,7 @@ import type {
   FeedbackStatus,
 } from "~/schemas/feedback.schema";
 
-export const useFeedbackService = () => {
+export const feedbackService = () => {
   const { post, get } = useApi();
 
   /**
