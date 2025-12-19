@@ -115,6 +115,7 @@ class UserAPITest(TestCase):
             'password_confirm': 'a-very-strong-password-123!',
             'first_name': 'Test',
             'last_name': 'User',
+            'birth_date': '2000-01-01',
         }
 
     def test_user_registration(self):

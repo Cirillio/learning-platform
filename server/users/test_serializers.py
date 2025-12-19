@@ -17,6 +17,7 @@ class UserRegistrationSerializerTest(TestCase):
             'password_confirm': 'a-very-strong-password-123!',
             'first_name': 'Test',
             'last_name': 'User',
+            'birth_date': '2000-01-01',
         }
         serializer = UserRegistrationSerializer(data=data)
         self.assertTrue(serializer.is_valid())
@@ -25,14 +26,15 @@ class UserRegistrationSerializerTest(TestCase):
         data = {
             'username': 'testuser',
             'email': 'test@example.com',
-            'password': 'password123',
+            'password': 'a-very-strong-password-123!',
             'password_confirm': 'password456',
             'first_name': 'Test',
             'last_name': 'User',
+            'birth_date': '2000-01-01',
         }
         serializer = UserRegistrationSerializer(data=data)
         self.assertFalse(serializer.is_valid())
-        self.assertIn('password', serializer.errors)
+        self.assertIn('password_confirm', serializer.errors)
 
     def test_email_exists(self):
         User.objects.create_user(username='existinguser', email='test@example.com', password='password')
@@ -43,6 +45,7 @@ class UserRegistrationSerializerTest(TestCase):
             'password_confirm': 'a-very-strong-password-123!',
             'first_name': 'Test',
             'last_name': 'User',
+            'birth_date': '2000-01-01',
         }
         serializer = UserRegistrationSerializer(data=data)
         self.assertFalse(serializer.is_valid())
@@ -62,7 +65,7 @@ class UserProfileSerializerTest(TestCase):
             'user': self.user.id,
             'student_id': 'new-student-id',
         }
-        serializer = UserProfileSerializer(instance=self.profile, data=data)
+        serializer = UserProfileSerializer(instance=self.profile, data=data, partial=True)
         self.assertTrue(serializer.is_valid())
         self.assertNotEqual(serializer.validated_data.get('student_id'), 'new-student-id')
 

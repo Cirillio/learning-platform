@@ -333,9 +333,14 @@ class CourseAPITest(TestCase):
         url = reverse('courses:course-list')
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data['results']), 1)
+        # Ожидаем 0, так как курс в setUp не опубликован (status='draft' по умолчанию)
+        self.assertEqual(len(response.data['results']), 0)
 
     def test_retrieve_course(self):
+        # Публикуем курс, чтобы он был доступен
+        self.course.status = 'published'
+        self.course.save()
+        
         url = reverse('courses:course-detail', kwargs={'slug': self.course.slug})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
