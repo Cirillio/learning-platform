@@ -1,0 +1,55 @@
+# PROJECT RULES & ARCHITECTURE
+
+## 1. Core Principles
+*   **Role:** Senior Enterprise LMS.
+*   **Stack:** Nuxt 4 (Vue 3, TypeScript), Django REST Framework, Docker.
+*   **Philosophy:** "Fat Models/Services, Thin Views". UI should be dumb; logic should be encapsulated.
+
+## 2. Naming Conventions (File System)
+
+### Frontend (Client)
+*   **Vue Components:** `kebab-case.vue` (e.g., `assignment-card.vue`, `user-profile.vue`).
+    *   *Nuxt Auto-import:* Nuxt automatically maps `assignment-card.vue` to `<AssignmentCard />`.
+*   **Composables:** `use-kebab-case.ts` (e.g., `use-auth.ts`, `use-teacher-actions.ts`).
+    *   *Usage:* Exposed as camelCase in code: `useTeacherActions()`.
+*   **Services (API/Logic):** `kebab-case.service.ts` (e.g., `auth.service.ts`, `payment-gateway.service.ts`).
+*   **Types/Schemas:** `kebab-case.types.ts` or `kebab-case.schema.ts`.
+*   **Utils:** `kebab-case.util.ts`.
+
+### Backend (Server)
+*   **Python Modules:** `snake_case.py` (Standard Python).
+*   **Classes:** `PascalCase` (e.g., `AssignmentSerializer`).
+*   **Variables/Functions:** `snake_case`.
+
+## 3. Frontend Architecture (Nuxt)
+
+### A. Component Structure
+*   **Script:** Only `<script setup lang="ts">`.
+*   **Style:** No custom CSS if Tailwind can handle it.
+*   **Size Limit:**
+    *   **Warning:** > 200 lines.
+    *   **Refactor Required:** > 300 lines.
+*   **Props:** Always typed via `defineProps<{ ... }>()` or imported interface.
+
+### B. Logic Separation (Refactoring Rules)
+If a component exceeds the size limit:
+1.  **Data Fetching** -> Move to `composables/use-feature-data.ts`.
+2.  **Complex Computation** -> Move to `utils/` or `composables/`.
+3.  **UI Parts** -> Extract to `components/feature/part-name.vue`.
+
+### C. State Management
+*   **Pinia:** Only for global app state (User Session, Theme, Notifications).
+*   **Composables (useState):** For shared state within a specific feature/page.
+*   **Local Ref:** For transient UI state (dropdown open/close).
+
+## 4. Backend Architecture (Django)
+
+### A. Layers
+1.  **Views (API):** Extremely thin. Only handle request parsing and response formatting.
+2.  **Services/Selectors:** Business logic lives here (e.g., `services.py`, `selectors.py` in apps).
+3.  **Models:** Rich models. Encapsulate data integrity rules here.
+4.  **Serializers:** Validation and data shaping.
+
+## 5. Development Workflow
+1.  **Type Safety:** No `any`. Use Zod for API validation.
+2.  **Commits:** Conventional Commits (e.g., `feat: add lesson editor`, `fix: assignment submission error`).
