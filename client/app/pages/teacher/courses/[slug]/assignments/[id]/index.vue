@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Assignment, LessonDetail, Submission } from "~/types";
+import { formatDate, formatFileSize } from "~/utils/formatters.util";
 
 definePageMeta({
   layout: "teacher",
@@ -7,113 +7,19 @@ definePageMeta({
   title: "Просмотр задания",
 });
 
-const route = useRoute();
-const router = useRouter();
-const api = useApi();
-const toast = useToast();
-
-const courseSlug = computed(() => route.params.slug as string);
-const assignmentId = computed(() => route.params.id as string);
-
-// Fetch assignment
-const { data: assignment, status: assignmentStatus } =
-  await useAsyncData<Assignment>(
-    `teacher-assignment-${assignmentId.value}`,
-    () => api.get<Assignment>(`/assignments/${assignmentId.value}/`)
-  );
-
-// Fetch lesson info
-const { data: lesson } = await useAsyncData<LessonDetail | null>(
-  `teacher-assignment-lesson-${assignmentId.value}`,
-  async () => {
-    if (!assignment.value?.lesson) return null;
-    try {
-      return await api.get<LessonDetail>(
-        `/lessons/${assignment.value.lesson}/`
-      );
-    } catch {
-      return null;
-    }
-  },
-  { watch: [assignment] }
-);
-
-// Fetch submissions for this assignment
-interface SubmissionsResponse {
-  count: number;
-  results: Submission[];
-}
-
-const { data: submissionsData, refresh: refreshSubmissions } =
-  await useAsyncData<SubmissionsResponse>(
-    `teacher-assignment-submissions-${assignmentId.value}`,
-    () =>
-      api.get<SubmissionsResponse>("/submissions/", {
-        assignment: assignmentId.value,
-      })
-  );
-
-const submissions = computed(() => submissionsData.value?.results || []);
-
-// Stats
-const pendingCount = computed(
-  () => submissions.value.filter((s) => s.status === "pending").length
-);
-
-const gradedCount = computed(
-  () => submissions.value.filter((s) => s.status === "graded").length
-);
-
-const lateCount = computed(
-  () => submissions.value.filter((s) => s.is_late).length
-);
-
-// Delete assignment
-const handleDelete = async () => {
-  if (
-    !confirm(
-      "Вы уверены, что хотите удалить это задание? Все сдачи студентов также будут удалены."
-    )
-  )
-    return;
-
-  try {
-    await api.delete(`/assignments/${assignmentId.value}/`);
-    toast.add({ title: "Задание удалено", color: "success" });
-    router.push(`/teacher/courses/${courseSlug.value}/assignments`);
-  } catch (e) {
-    toast.add({
-      title: "Ошибка удаления",
-      description: (e as Error).message,
-      color: "error",
-    });
-  }
-};
-
-// Format date
-const formatDate = (dateString: string | null | undefined): string => {
-  if (!dateString) return "Без срока";
-  return new Date(dateString).toLocaleDateString("ru-RU", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-};
-
-// Format file size
-const formatFileSize = (bytes: number): string => {
-  if (bytes < 1024) return bytes + " B";
-  if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB";
-  return (bytes / (1024 * 1024)).toFixed(1) + " MB";
-};
-
-// Check if due date passed
-const isDueDatePassed = computed(() => {
-  if (!assignment.value?.due_date) return false;
-  return new Date(assignment.value.due_date) < new Date();
-});
+const {
+  courseSlug,
+  assignmentId,
+  assignment,
+  assignmentStatus,
+  lesson,
+  submissions,
+  pendingCount,
+  gradedCount,
+  lateCount,
+  isDueDatePassed,
+  handleDelete,
+} = useTeacherAssignment();
 </script>
 
 <template>
@@ -234,52 +140,12 @@ const isDueDatePassed = computed(() => {
       </UCard>
 
       <!-- Quick Stats -->
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <UCard>
-          <div class="flex items-center gap-3">
-            <div class="p-2 bg-primary/10 rounded-lg">
-              <UIcon name="i-lucide-file-text" class="size-5 text-primary" />
-            </div>
-            <div>
-              <div class="text-2xl font-bold">{{ submissions.length }}</div>
-              <div class="text-sm text-muted">Всего сдач</div>
-            </div>
-          </div>
-        </UCard>
-        <UCard>
-          <div class="flex items-center gap-3">
-            <div class="p-2 bg-warning/10 rounded-lg">
-              <UIcon name="i-lucide-clock" class="size-5 text-warning" />
-            </div>
-            <div>
-              <div class="text-2xl font-bold">{{ pendingCount }}</div>
-              <div class="text-sm text-muted">Ожидают проверки</div>
-            </div>
-          </div>
-        </UCard>
-        <UCard>
-          <div class="flex items-center gap-3">
-            <div class="p-2 bg-success/10 rounded-lg">
-              <UIcon name="i-lucide-check-circle" class="size-5 text-success" />
-            </div>
-            <div>
-              <div class="text-2xl font-bold">{{ gradedCount }}</div>
-              <div class="text-sm text-muted">Проверено</div>
-            </div>
-          </div>
-        </UCard>
-        <UCard>
-          <div class="flex items-center gap-3">
-            <div class="p-2 bg-error/10 rounded-lg">
-              <UIcon name="i-lucide-alert-triangle" class="size-5 text-error" />
-            </div>
-            <div>
-              <div class="text-2xl font-bold">{{ lateCount }}</div>
-              <div class="text-sm text-muted">Просрочено</div>
-            </div>
-          </div>
-        </UCard>
-      </div>
+      <TeacherAssignmentsAssignmentStats
+        :total-count="submissions.length"
+        :pending-count="pendingCount"
+        :graded-count="gradedCount"
+        :late-count="lateCount"
+      />
 
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <!-- Main Content -->
@@ -341,104 +207,7 @@ const isDueDatePassed = computed(() => {
           </UCard>
 
           <!-- Submissions -->
-          <UCard>
-            <template #header>
-              <div class="flex items-center justify-between">
-                <div class="flex items-center gap-2">
-                  <UIcon name="i-lucide-users" class="size-5 text-primary" />
-                  <h3 class="font-semibold">
-                    Сдачи студентов ({{ submissions.length }})
-                  </h3>
-                </div>
-              </div>
-            </template>
-
-            <!-- Empty -->
-            <div v-if="submissions.length === 0" class="text-center py-8">
-              <UIcon
-                name="i-lucide-inbox"
-                class="size-12 text-muted mx-auto mb-3"
-              />
-              <p class="text-muted">Пока никто не сдал это задание</p>
-            </div>
-
-            <!-- Submissions List -->
-            <div v-else class="divide-y divide-default">
-              <div
-                v-for="submission in submissions"
-                :key="submission.id"
-                class="p-4 flex items-center justify-between hover:bg-muted/30 transition-colors"
-              >
-                <div class="flex items-center gap-3">
-                  <UAvatar :alt="submission.student_name" size="md" />
-                  <div>
-                    <div class="font-medium">{{ submission.student_name }}</div>
-                    <div class="text-sm text-muted">
-                      {{
-                        new Date(submission.submitted_at).toLocaleString(
-                          "ru-RU"
-                        )
-                      }}
-                      <span v-if="submission.is_late" class="text-error ml-1"
-                        >(просрочено)</span
-                      >
-                    </div>
-                    <div
-                      v-if="submission.content"
-                      class="text-sm text-muted mt-1 line-clamp-1"
-                    >
-                      {{ submission.content }}
-                    </div>
-                  </div>
-                </div>
-                <div class="flex items-center gap-3">
-                  <div class="flex items-center gap-2">
-                    <UIcon
-                      v-if="submission.files_count"
-                      name="i-lucide-paperclip"
-                      class="size-4 text-muted"
-                    />
-                    <span
-                      v-if="submission.files_count"
-                      class="text-sm text-muted"
-                      >{{ submission.files_count }}</span
-                    >
-                  </div>
-                  <UBadge
-                    :color="
-                      submission.status === 'pending'
-                        ? 'warning'
-                        : submission.status === 'graded'
-                        ? 'success'
-                        : 'info'
-                    "
-                    variant="soft"
-                  >
-                    {{
-                      submission.status === "pending"
-                        ? "Ожидает"
-                        : submission.status === "graded"
-                        ? "Оценено"
-                        : "Возвращено"
-                    }}
-                  </UBadge>
-                  <UButton
-                    :to="`/teacher/grading/${submission.id}`"
-                    color="primary"
-                    variant="soft"
-                    icon="i-lucide-eye"
-                    size="sm"
-                  >
-                    {{
-                      submission.status === "pending"
-                        ? "Проверить"
-                        : "Подробнее"
-                    }}
-                  </UButton>
-                </div>
-              </div>
-            </div>
-          </UCard>
+          <TeacherAssignmentsSubmissionsList :submissions="submissions" />
         </div>
 
         <!-- Sidebar -->
