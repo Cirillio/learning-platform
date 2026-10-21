@@ -58,7 +58,7 @@ Browser ──► Nuxt 4 (SSR) ──► Django REST API ──► SQLite
 токенам доступа не имеет. В Pinia хранится только объект пользователя. При первой
 загрузке Nitro-middleware получает профиль на сервере и гидрирует store, поэтому
 защищённые страницы рендерятся без «мигания» гостевого состояния. Подробно —
-[client/AUTH_SYSTEM.md](client/AUTH_SYSTEM.md).
+[client/context/auth.md](client/context/auth.md).
 
 **Фронтенд** разделён на слои:
 
@@ -80,8 +80,11 @@ Browser ──► Nuxt 4 (SSR) ──► Django REST API ──► SQLite
 | `core` | `Comment`, `Feedback`, `ActivityLog` |
 | `notifications` | `Notification` |
 
-Права доступа — через DRF permissions по ролям и владению объектом. Соглашения по коду —
-[ARCHITECTURE.md](ARCHITECTURE.md), справочник эндпоинтов — [API.md](API.md).
+Права доступа — через DRF permissions по ролям и владению объектом.
+
+Подробная документация — в папках `context/`: обзор и карта документов
+[context/README.md](context/README.md), справочник эндпоинтов [context/api.md](context/api.md),
+фронтенд [client/context/](client/context/), бэкенд [server/context/](server/context/).
 
 ---
 
@@ -93,7 +96,7 @@ Browser ──► Nuxt 4 (SSR) ──► Django REST API ──► SQLite
 cp server/.env.example server/.env
 cp client/.env.example client/.env
 docker compose up -d --build
-docker compose exec backend python manage.py createsuperuser
+docker compose exec backend python manage.py seed_data
 ```
 
 | Сервис | Адрес |
@@ -119,7 +122,7 @@ python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 echo "REDIS_URL=redis://localhost:6379/0" >> .env
 python manage.py migrate
-python manage.py createsuperuser
+python manage.py seed_data          # демо-данные
 python manage.py runserver
 
 # Celery (отдельные терминалы, по желанию)
@@ -132,8 +135,9 @@ pnpm install
 pnpm dev
 ```
 
-Пользователей с ролями student/teacher удобно создать через страницу регистрации или
-Django Admin.
+`seed_data` создаёт демо-аккаунты: преподаватели `teacher1`, `teacher2`, студенты
+`student1`–`student3`, пароль у всех `password123`. Администратор —
+`python manage.py createsuperuser`.
 
 ### Переменные окружения backend
 
@@ -160,14 +164,15 @@ cd server && python manage.py test     # или: make test (в Docker)
 ```
 ├── client/               # Nuxt 4
 │   ├── app/              # pages, components, composables, services, schemas, stores, middleware
-│   └── server/           # Nitro middleware (SSR-авторизация)
+│   ├── server/           # Nitro middleware (SSR-авторизация)
+│   └── context/          # архитектура фронта, авторизация, чек-лист проверки
 ├── server/               # Django
 │   ├── config/           # settings, urls, celery
 │   ├── users/ courses/ core/ notifications/
+│   ├── context/          # архитектура бэкенда, гайд разработчика
 │   └── requirements.txt
 ├── nginx/                # reverse proxy
 ├── screenshots/          # скриншоты интерфейса
-├── API.md                # справочник REST API
-├── ARCHITECTURE.md       # соглашения по коду
+├── context/              # документация: обзор, API, открытые задачи
 └── docker-compose.yml
 ```

@@ -49,3 +49,8 @@ Thumbs.db
 
 # Docker
 docker-compose.override.yml
+# Personal / local-only files
+*.pdf
+*.zip
+server/db_dump.json
+launch.json

@@ -1,13 +1,18 @@
-# Руководство по тестированию API учебного портала
+# REST API
 
-Данный документ содержит инструкции по тестированию функционала учебного портала через его API в **Insomnia** или **Postman**.
-Для каждой функции представлены эндпоинты, методы запроса, необходимые данные и примеры использования.
+Справочник эндпоинтов Django-бэкенда: методы, тела запросов, примеры ответов.
+Удобно проверять через Insomnia или Postman.
 
 **Базовая настройка:**
 
-- **Base URL:** `http://localhost:8000/api` (или ваш сервер)
-- **Authorization:** Bearer Token (получается после логина)
-- Замените все `<PLACEHOLDER>` значения на актуальные данные из вашей системы.
+- **Base URL:** `http://localhost:8000/api`
+- **Авторизация:** JWT в HttpOnly-cookies `access_token` / `refresh_token`. Их ставит
+  `POST /auth/login/`; в Insomnia/Postman включите автоматическую отправку cookies.
+  Заголовок `Authorization: Bearer …` тоже принимается.
+- Пагинация по умолчанию — 20 элементов (`?page=`, `?page_size=`), поиск — `?search=`,
+  сортировка — `?ordering=` (например `-created_at`).
+- Ошибки: `400` — `{"поле": ["описание"]}`, `401/403/404` — `{"detail": "…"}`.
+- Замените все `<PLACEHOLDER>` на актуальные данные.
 
 ---
 
@@ -123,7 +128,7 @@ Content-Type: application/json
 }
 ```
 
-**Примечание:** Поле `remember_me` влияет на время жизни refresh токена (30 дней если `true`, 7 дней если `false`).
+**Примечание:** `remember_me: true` — refresh-cookie живёт 30 дней; `false` — сессионная cookie (удаляется при закрытии браузера). Access-токен живёт 15 минут.
 
 **Пример ответа (200 OK):**
 
@@ -1452,3 +1457,22 @@ Content-Type: application/json
 - `?page_size=10` - 10 элементов на странице
 
 **Пример:** `{{base_url}}/courses/?page=2&page_size=10`
+
+---
+
+## 10. Комментарии, обратная связь, служебное
+
+Префикс `core`-приложения — `/core/`.
+
+| Метод | URL | Доступ | Назначение |
+| :--- | :--- | :--- | :--- |
+| `GET` | `/core/comments/?content_type=<id>&object_id=<id>` | авторизованные | Комментарии к объекту (например, уроку). |
+| `POST` | `/core/comments/` | авторизованные | Создать комментарий: `content_type`, `object_id`, `text`, опционально `parent` для ответа. |
+| `PATCH`/`DELETE` | `/core/comments/<id>/` | автор | Изменить или удалить свой комментарий. |
+| `GET` | `/core/content-types/?app_label=courses&model=lesson` | авторизованные | ID ContentType — нужен для `content_type` в комментариях. |
+| `GET`/`POST` | `/core/feedback/` | авторизованные | Свои обращения / новое обращение (`bug`, `feature`, `improvement`, `question`, `other`). |
+| `PATCH`/`DELETE` | `/core/feedback/<id>/` | администратор | Изменить статус (`new`, `in_progress`, `resolved`, `closed`) или удалить. |
+| `POST` | `/core/feedback/<id>/resolve/` | администратор | Пометить решённым с ответом. |
+| `GET` | `/core/statistics/` | все | Счётчики курсов, уроков, студентов, преподавателей. |
+| `GET` | `/users/me/` | авторизованные | Текущий пользователь (альтернатива `/auth/profile/`). |
+
